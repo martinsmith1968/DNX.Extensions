@@ -3,6 +3,7 @@ run-name: CIBuild_${{ github.ref_name }}
 
 env:
   BUILD_CONFIG: 'Release'
+  BUILD_PLATFORM: 'Any CPU'
   PKG_VER: 1.0
 
 on:
@@ -10,6 +11,8 @@ on:
     branches:
       - main
       - 'feature/**'
+      - 'task/**'
+      - 'spike/**'
 
   pull_request:
     branches:
@@ -19,11 +22,13 @@ on:
 
 jobs:
   build:
+    name: Build .NET
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v3
@@ -34,12 +39,36 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration $BUILD_CONFIG --no-restore
+      run: dotnet build --configuration $BUILD_CONFIG /p:Platform='$BUILD_PLATFORM' --no-restore
 
     - name: Test
       run: dotnet test /p:Configuration=$BUILD_CONFIG --no-restore --no-build --verbosity normal
 
+  release:
+    name: Create GitHub Release
+    if: startsWith(github.ref, 'refs/heads/main')
+  
+    needs: build
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Tag git
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.1
+      with:
+        tag_prefix: v
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create a GitHub release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ steps.tag_version.outputs.new_tag }}
+        name: Release ${{ steps.tag_version.outputs.new_tag }}
+        body: ${{ steps.tag_version.outputs.changelog }}
+
   publish:
+    name: Publish to NuGet
     if: startsWith(github.ref, 'refs/heads/main')
 
     needs: build
