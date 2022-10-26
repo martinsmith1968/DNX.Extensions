@@ -1,4 +1,9 @@
 name: CI Build
+run-name: CIBuild_${{ githjub.ref_name }}
+
+env:
+  BUILD_CONFIG: 'Release'
+  PKG_VER: 1.0
 
 on:
   push:
@@ -10,7 +15,6 @@ on:
     branches:
       - main
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -30,7 +34,26 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration $BUILD_CONFIG --no-restore
 
     - name: Test
-      run: dotnet test --no-restore
+      run: dotnet test /p:Configuration=$env:BUILD_CONFIG --no-restore --no-build --verbosity normal
+
+  publish:
+    if: startsWith(github.ref, 'refs/heads/main')
+
+    needs: build
+    
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.1.1
+      with:
+        nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+        nuget-version: '5.x'
+
+    - name: Publish
+      run: nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json'
