@@ -37,7 +37,7 @@ jobs:
       run: dotnet build --configuration $BUILD_CONFIG --no-restore
 
     - name: Test
-      run: dotnet test /p:Configuration=$env:BUILD_CONFIG --no-restore --no-build --verbosity normal
+      run: dotnet test /p:Configuration=$BUILD_CONFIG --no-restore --no-build --verbosity normal
 
   publish:
     if: startsWith(github.ref, 'refs/heads/main')
