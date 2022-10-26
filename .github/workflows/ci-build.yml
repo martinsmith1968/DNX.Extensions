@@ -39,7 +39,7 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration $BUILD_CONFIG /p:Platform='$BUILD_PLATFORM' --no-restore
+      run: dotnet build --configuration $BUILD_CONFIG /p:"Platform=$BUILD_PLATFORM" --no-restore
 
     - name: Test
       run: dotnet test /p:Configuration=$BUILD_CONFIG --no-restore --no-build --verbosity normal
@@ -71,7 +71,7 @@ jobs:
     name: Publish to NuGet
     if: startsWith(github.ref, 'refs/heads/main')
 
-    needs: build
+    needs: release
     
     runs-on: ubuntu-latest
 
