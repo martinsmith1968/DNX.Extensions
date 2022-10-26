@@ -1,5 +1,5 @@
 name: CI Build
-run-name: CIBuild_${{ githjub.ref_name }}
+run-name: CIBuild_${{ github.ref_name }}
 
 env:
   BUILD_CONFIG: 'Release'
