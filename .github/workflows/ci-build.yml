@@ -84,13 +84,13 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: $DOTNET_VERSION
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.1.1
       with:
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
-        nuget-version: $NUGET_VERSION
+        nuget-version: ${{ env.NUGET_VERSION }}
 
     - name: Restore
       run: dotnet restore
