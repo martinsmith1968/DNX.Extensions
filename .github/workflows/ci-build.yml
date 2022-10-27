@@ -2,9 +2,12 @@ name: CI Build
 run-name: CIBuild_${{ github.event_name }}_${{ github.ref_name }}_${{ github.run_number }}.${{ github.run_attempt }}
 
 env:
-  BUILD_CONFIG: 'Release'
-  BUILD_PLATFORM: 'Any CPU'
   PKG_VER: 1.0
+  DOTNET_VERSION: 6.0.x
+  NUGET_VERSION: 5.x
+  BUILD_CONFIG: Release
+  BUILD_PLATFORM: Any CPU
+  PACK_PARAMETERS: ''
 
 on:
   push:
@@ -33,7 +36,7 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: $DOTNET_VERSION
 
     - name: Restore
       run: dotnet restore
@@ -46,7 +49,7 @@ jobs:
 
   release:
     name: Create GitHub Release
-    if: startsWith(github.ref, 'refs/heads/main')
+    if: github.ref == 'refs/heads/main' && success()
   
     needs: build
     
@@ -69,7 +72,7 @@ jobs:
 
   publish:
     name: Publish to NuGet
-    if: startsWith(github.ref, 'refs/heads/main')
+    if: github.ref == 'refs/heads/main' && success()
 
     needs: release
     
@@ -78,11 +81,22 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: $DOTNET_VERSION
+
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.1.1
       with:
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
-        nuget-version: '5.x'
+        nuget-version: $NUGET_VERSION
+
+    - name: Restore
+      run: dotnet restore
+
+    - name: Pack
+      run: dotnet pack --configuration $BUILD_CONFIG /p:"Platform=$BUILD_PLATFORM" --no-restore --output nupkgs
 
     - name: Publish
       run: nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json'
