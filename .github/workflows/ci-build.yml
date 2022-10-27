@@ -3,10 +3,10 @@ run-name: CIBuild_${{ github.event_name }}_${{ github.ref_name }}_${{ github.run
 
 env:
   PKG_VER: 1.0
-  DOTNET_VERSION: '6.0.x'
-  NUGET_VERSION: '5.x'
-  BUILD_CONFIG: 'Release'
-  BUILD_PLATFORM: 'Any CPU'
+  DOTNET_VERSION: 6.0.x
+  NUGET_VERSION: 5.x
+  BUILD_CONFIG: Release
+  BUILD_PLATFORM: Any CPU
   PACK_PARAMETERS: ''
 
 on:
@@ -36,7 +36,7 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: $DOTNET_VERSION
+        dotnet-version: $env:DOTNET_VERSION
 
     - name: Restore
       run: dotnet restore
