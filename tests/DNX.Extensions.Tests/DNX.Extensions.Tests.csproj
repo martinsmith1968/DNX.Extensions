@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="3.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="Bogus" version="29.0.2" />
     <PackageReference Include="NBuilder" version="6.1.0" />
@@ -16,7 +20,8 @@
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>    <PackageReference Include="Shouldly" Version="4.1.0" />
+    </PackageReference>
+    <PackageReference Include="Shouldly" Version="4.1.0" />
   </ItemGroup>
 
   <ItemGroup>
