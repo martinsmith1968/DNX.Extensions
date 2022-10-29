@@ -32,9 +32,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Get Current Date
-      id: current_date
-      run: echo "current_date=$(date +'%Y%m%d')" >> $GITHUB_ENV
+    - name: Get Current Build Date
+      id: build_date
+      run: echo "build_date=$(date +'%y%j')" >> $GITHUB_ENV
 
     - name: Set Product Version
       id: product_version
@@ -42,7 +42,7 @@ jobs:
 
     - name: Set Assembly Version
       id: assembly_version
-      run: echo "assembly_version=${{ env.PKG_MAJOR_VERSION }}.${{ env.current_date }}.${{ github.run_number }}${{ github.run_attempt }}" >> $GITHUB_ENV
+      run: echo "assembly_version=${{ env.PKG_MAJOR_VERSION }}.${{ env.build_date }}.${{ github.run_number }}${{ github.run_attempt }}" >> $GITHUB_ENV
 
     - name: Checkout
       uses: actions/checkout@v3
