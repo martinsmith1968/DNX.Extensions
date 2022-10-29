@@ -83,7 +83,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: rickstaa/action-create-tag@v1
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Tag git
+      uses: rickstaa/action-create-tag@v1
       with:
         tag: "v${{ env.assembly_version }}"
         force_push_tag: true
