@@ -2,6 +2,7 @@ name: CI Build
 run-name: CIBuild_${{ github.event_name }}_${{ github.ref_name }}_${{ github.run_number }}.${{ github.run_attempt }}
 
 env:
+  PROJECT_NAME: 'DNX.Extensions'
   PKG_MAJOR_VERSION: '1.0'
   DOTNET_VERSION: 6.0.x
   NUGET_VERSION: 5.x
@@ -30,14 +31,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Get current date
-      id: build_date
-      run: echo "build_date=$(date +'%Y%m%d')" >> $GITHUB_ENV
-
-    - name: Set build number
-      id: build_number
-      run: echo "build_number=${{ github.run_number }}${{ github.run_attempt }}" >> $GITHUB_ENV
-
     - name: Set Assembly Version
       id: assembly_version
       run: echo "assembly_version=${{ env.PKG_MAJOR_VERSION }}.${{ github.run_number }}.${{ github.run_attempt }}" >> $GITHUB_ENV
@@ -58,6 +51,12 @@ jobs:
 
     - name: Test
       run: dotnet test /p:Configuration=$BUILD_CONFIG --no-restore --no-build --verbosity normal
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build_output
+        path: $PROJECT_NAME/bin/$BUILD_CONFIG/**
 
   release:
     name: Create GitHub Release
