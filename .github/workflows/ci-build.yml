@@ -36,7 +36,7 @@ jobs:
 
     - name: Get current date
       id: buildnumber
-      run: echo "::set-output name=buildnumber::"${{ github.run_id }}${{ github.run_number }}${{ github.run_attempt }}"
+      run: echo "::set-output name=buildnumber::'${{ github.run_id }}${{ github.run_number }}${{ github.run_attempt }}'"
 
     - name: Checkout
       uses: actions/checkout@v3
