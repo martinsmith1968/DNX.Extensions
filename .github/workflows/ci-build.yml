@@ -73,6 +73,10 @@ jobs:
         name: nuget_output
         path: "${{ env.NUGET_OUTPUT_FOLDER }}/**"
         if-no-files-found: error
+    
+    outputs:
+      assembly_version: ${{ env.assembly_version }}
+      product_version: ${{ env.product_version }}
 
   release:
     name: Create GitHub Release
@@ -83,15 +87,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      
-    - name: Tag git
-      uses: rickstaa/action-create-tag@v1
-      with:
-        tag: "v${{ env.assembly_version }}"
-        force_push_tag: true
-
     - name: Tag git
       uses: pkgdeps/git-tag-action@v2
       with:
@@ -99,7 +94,7 @@ jobs:
         github_repo: ${{ github.repository }}
         git_commit_sha: ${{ github.sha }}
         git_tag_prefix: "v"
-        version: ${{ env.assembly_version }}
+        version: ${{ needs.build.outputs.assembly_version }}
 
     - name: Build git Changelog
       id: build_changelog
@@ -110,8 +105,8 @@ jobs:
     - name: Create a GitHub release
       uses: ncipollo/release-action@v1
       with:
-        tag: v${{ env.assembly_version }}
-        name: Release ${{ env.assembly_version }}
+        tag: v${{ needs.build.outputs.assembly_version }}
+        name: Release ${{ needs.build.outputs.assembly_version }}
         body: ${{ steps.build_changelog.outputs.changelog }}
 
   publish:
