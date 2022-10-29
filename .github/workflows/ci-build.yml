@@ -83,6 +83,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - uses: rickstaa/action-create-tag@v1
+      with:
+        tag: "v${{ env.assembly_version }}"
+        force_push_tag: true
+
     - name: Tag git
       uses: pkgdeps/git-tag-action@v2
       with:
