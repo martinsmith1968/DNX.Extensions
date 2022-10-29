@@ -9,6 +9,7 @@ env:
   BUILD_CONFIG: Release
   BUILD_PLATFORM: Any CPU
   PACK_PARAMETERS: ''
+  NUGET_OUTPUT_FOLDER: nupkgs
 
 on:
   push:
@@ -31,6 +32,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set Product Version
+      id: product_version
+      run: echo "product_version=${{ env.PKG_MAJOR_VERSION }}" >> $GITHUB_ENV
+      
     - name: Set Assembly Version
       id: assembly_version
       run: echo "assembly_version=${{ env.PKG_MAJOR_VERSION }}.${{ github.run_number }}.${{ github.run_attempt }}" >> $GITHUB_ENV
@@ -47,13 +52,13 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"AssemblyVersion=${{ env.assembly_version }}" --no-restore
+      run: dotnet build --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version==${{ env.product_version }}" /p:"AssemblyVersion=${{ env.assembly_version }}" --no-restore
 
     - name: Test
       run: dotnet test --configuration ${{ env.BUILD_CONFIG }} --no-restore --no-build --verbosity normal
 
     - name: Pack
-      run: dotnet pack --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"AssemblyVersion=${{ env.assembly_version }}" --no-restore --output nupkgs
+      run: dotnet pack --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version==${{ env.product_version }}" /p:"AssemblyVersion=${{ env.assembly_version }}" --no-restore --output "${{ env.NUGET_OUTPUT_FOLDER }}"
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
@@ -66,7 +71,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: nuget_output
-        path: "nupkgs/**"
+        path: "${{ env.NUGET_OUTPUT_FOLDER }}/**"
         if-no-files-found: error
 
   release:
@@ -109,16 +114,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Download NuGet Output
-      uses: actions/download-artifact@v3
-      with:
-        name: nuget_output
-
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.1.1
       with:
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
         nuget-version: ${{ env.NUGET_VERSION }}
 
+    - name: Download NuGet Output
+      id: download_nuget
+      uses: actions/download-artifact@v3
+      with:
+        name: nuget_output
+        path: ${{ env.NUGET_OUTPUT_FOLDER }}
+
     - name: Publish
-      run: nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json'
+      run: nuget push "$${{steps.download_nuget.outputs.download-path}}/**/*.nupkg" -Source 'https://api.nuget.org/v3/index.json'
