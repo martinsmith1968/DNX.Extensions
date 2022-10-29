@@ -115,16 +115,13 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Tag git
-      uses: actions/github-script@v5
+      uses: pkgdeps/git-tag-action@v2.0.5
       with:
-        script: |
-          github.rest.git.createRef({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            ref: 'refs/tags/v${{ needs.build.outputs.assembly_version }}',
-            sha: context.sha,
-            force: true
-          })
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_repo: ${{ github.repository }}
+        git_commit_sha: ${{ github.sha }}
+        git_tag_prefix: "v"
+        version: ${{ needs.build.outputs.assembly_version }}
 
     - name: Build Changelog
       id: build_changelog
