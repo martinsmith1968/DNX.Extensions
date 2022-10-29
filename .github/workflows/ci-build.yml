@@ -40,7 +40,7 @@ jobs:
 
     - name: Set Assembly Version
       id: assembly_version
-      run: echo "{assembly_version}=${{ env.PKG_MAJOR_VERSION }}.${{ env.build_date }}.${{ env.build_number }}
+      run: echo "{assembly_version}=${{ env.PKG_MAJOR_VERSION }}.${{ env.build_date }}.${{ env.build_number }}" >> $GITHUB_ENV
 
     - name: Checkout
       uses: actions/checkout@v3
@@ -54,9 +54,7 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration $BUILD_CONFIG /p:"Platform=$BUILD_PLATFORM" /p:"AssemblyVersion=${{ env.BUILD_VERSION }}" --no-restore
-      env:
-        BUILD_VERSION: ${{ env.PKG_MAJOR_VERSION }}.${{ env.build_date }}.${{ env.build_number }}
+      run: dotnet build --configuration $BUILD_CONFIG /p:"Platform=$BUILD_PLATFORM" /p:"AssemblyVersion=${{ env.assembly_version }}" --no-restore
 
     - name: Test
       run: dotnet test /p:Configuration=$BUILD_CONFIG --no-restore --no-build --verbosity normal
