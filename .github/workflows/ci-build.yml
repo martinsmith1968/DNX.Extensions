@@ -32,15 +32,15 @@ jobs:
     steps:
     - name: Get current date
       id: build_date
-      run: echo "{build_date}=$(date +'%Y%m%d')" >> $GITHUB_ENV
+      run: echo "build_date=$(date +'%Y%m%d')" >> $GITHUB_ENV
 
     - name: Set build number
       id: build_number
-      run: echo "{build_number}=${{ github.run_number }}${{ github.run_attempt }}" >> $GITHUB_ENV
+      run: echo "build_number=${{ github.run_number }}${{ github.run_attempt }}" >> $GITHUB_ENV
 
     - name: Set Assembly Version
       id: assembly_version
-      run: echo "{assembly_version}=${{ env.PKG_MAJOR_VERSION }}.${{ env.build_date }}.${{ env.build_number }}" >> $GITHUB_ENV
+      run: echo "assembly_version=${{ env.PKG_MAJOR_VERSION }}.${{ env.build_date }}.${{ env.build_number }}" >> $GITHUB_ENV
 
     - name: Checkout
       uses: actions/checkout@v3
