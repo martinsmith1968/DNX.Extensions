@@ -79,18 +79,26 @@ jobs:
     
     steps:
     - name: Tag git
-      id: tag_version
-      uses: mathieudutour/github-tag-action@v6.1
+      uses: pkgdeps/git-tag-action@v2
       with:
-        tag_prefix: v
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_repo: ${{ github.repository }}
+        git_commit_sha: ${{ github.sha }}
+        version: "${{ env.assembly_version }}"
+        git_tag_prefix: "v"    
 
+    - name: Build git Changelog
+      id: build_changelog
+      uses: mikepenz/release-changelog-builder-action@{latest-release}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
     - name: Create a GitHub release
       uses: ncipollo/release-action@v1
       with:
-        tag: ${{ steps.tag_version.outputs.new_tag }}
-        name: Release ${{ steps.tag_version.outputs.new_tag }}
-        body: ${{ steps.tag_version.outputs.changelog }}
+        tag: v${{ env.assembly_version }}
+        name: Release ${{ env.assembly_version }}
+        body: ${{ steps.build_changelog.outputs.changelog }}
 
   publish:
     name: Publish to NuGet
