@@ -52,13 +52,13 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version==${{ env.product_version }}" /p:"AssemblyVersion=${{ env.assembly_version }}" --no-restore
+      run: dotnet build --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version=${{ env.product_version }}" /p:"AssemblyVersion=${{ env.assembly_version }}" --no-restore
 
     - name: Test
       run: dotnet test --configuration ${{ env.BUILD_CONFIG }} --no-restore --no-build --verbosity normal
 
     - name: Pack
-      run: dotnet pack --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version==${{ env.product_version }}" /p:"AssemblyVersion=${{ env.assembly_version }}" --no-restore --output "${{ env.NUGET_OUTPUT_FOLDER }}"
+      run: dotnet pack --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version=${{ env.product_version }}" /p:"AssemblyVersion=${{ env.assembly_version }}" --no-restore --output "${{ env.NUGET_OUTPUT_FOLDER }}"
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
