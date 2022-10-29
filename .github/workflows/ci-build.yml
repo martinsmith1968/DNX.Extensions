@@ -56,7 +56,8 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: build_output
-        path: **/${{ env.PROJECT_NAME }}/bin/${{ env.BUILD_CONFIG }}/**
+        path: "**/${{ env.PROJECT_NAME }}/bin/${{ env.BUILD_CONFIG }}/**"
+        if-no-files-found: error
 
   release:
     name: Create GitHub Release
