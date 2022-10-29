@@ -2,8 +2,8 @@ name: CI Build
 run-name: CIBuild_${{ github.event_name }}_${{ github.ref_name }}_${{ github.run_number }}.${{ github.run_attempt }}
 
 env:
-  PROJECT_NAME: 'DNX.Extensions'
   PKG_MAJOR_VERSION: '1.0'
+  PROJECT_NAME: 'DNX.Extensions'
   DOTNET_VERSION: 6.0.x
   NUGET_VERSION: 5.x
   BUILD_CONFIG: Release
@@ -43,12 +43,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Setup .NET SDK
+    - name: Install .NET SDK
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Restore
+    - name: Restore NuGet packages
       run: dotnet restore
 
     - name: Build
@@ -67,7 +67,7 @@ jobs:
         path: "**/${{ env.PROJECT_NAME }}/bin/${{ env.BUILD_CONFIG }}/**"
         if-no-files-found: error
 
-    - name: Upload NuGet  Artifact
+    - name: Upload NuGet Artifact
       uses: actions/upload-artifact@v3
       with:
         name: nuget_output
@@ -105,7 +105,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Create a GitHub release
+    - name: Create Release
       uses: ncipollo/release-action@v1
       with:
         tag: v${{ needs.build.outputs.assembly_version }}
@@ -121,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Setup NuGet
+    - name: Install NuGet
       uses: NuGet/setup-nuget@v1.1.1
       with:
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
@@ -135,4 +135,4 @@ jobs:
         path: ${{ env.NUGET_OUTPUT_FOLDER }}
 
     - name: Publish
-      run: nuget push "$${{steps.download_nuget.outputs.download-path}}/**/*.nupkg" -Source 'https://api.nuget.org/v3/index.json'
+      run: nuget push "**/*.nupkg" -Source 'https://api.nuget.org/v3/index.json'
