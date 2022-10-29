@@ -58,7 +58,7 @@ jobs:
       run: dotnet test --configuration ${{ env.BUILD_CONFIG }} --no-restore --no-build --verbosity normal
 
     - name: Pack
-      run: dotnet pack --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version=${{ env.product_version }}" /p:"AssemblyVersion=${{ env.assembly_version }}" --no-restore --output "${{ env.NUGET_OUTPUT_FOLDER }}"
+      run: dotnet pack --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version=${{ env.assembly_version }}" --no-restore --output "${{ env.NUGET_OUTPUT_FOLDER }}"
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
@@ -91,7 +91,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Tag git
-      uses: pkgdeps/git-tag-action@v2
+      uses: pkgdeps/git-tag-action@v2.0.5
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         github_repo: ${{ github.repository }}
