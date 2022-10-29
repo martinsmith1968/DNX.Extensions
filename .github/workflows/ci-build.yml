@@ -89,15 +89,15 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         github_repo: ${{ github.repository }}
         git_commit_sha: ${{ github.sha }}
-        version: "${{ env.assembly_version }}"
-        git_tag_prefix: "v"    
+        git_tag_prefix: "v"
+        version: ${{ env.assembly_version }}
 
     - name: Build git Changelog
       id: build_changelog
       uses: mikepenz/release-changelog-builder-action@v3.4.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+
     - name: Create a GitHub release
       uses: ncipollo/release-action@v1
       with:
