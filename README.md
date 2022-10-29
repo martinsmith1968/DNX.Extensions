@@ -1,6 +1,6 @@
 # DNX.Extensions
 
-[![CI Build](https://github.com/martinsmith1968/DNX.Extensions/actions/workflows/ci-build.yml/badge.svg)](https://github.com/martinsmith1968/DNX.Extensions/actions/workflows/ci-build.yml)
+[![CI Build](https://github.com/martinsmith1968/DNX.Extensions/actions/workflows/ci-build.yml/badge.svg?branch=main)](https://github.com/martinsmith1968/DNX.Extensions/actions/workflows/ci-build.yml)
 
 A collection of useful .NET Extensions methods
 
