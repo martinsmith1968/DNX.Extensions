@@ -34,7 +34,7 @@ jobs:
     steps:
     - name: Get Current Date
       id: current_date
-      run: echo "current_date=$(date +'%Y%m%d'')" >> $GITHUB_ENV
+      run: echo "current_date=$(date +'%Y%m%d')" >> $GITHUB_ENV
 
     - name: Set Product Version
       id: product_version
