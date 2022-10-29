@@ -31,12 +31,12 @@ jobs:
 
     steps:
     - name: Get current date
-      id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      id: build_date
+      run: echo "{build_date}=$(date +'%Y-%m-%d')" >> $GITHUB_STATE
 
     - name: Set build number
-      id: buildnumber
-      run: echo "::set-output name=buildnumber::'${{ github.run_number }}${{ github.run_attempt }}'"
+      id: build_number
+      run: echo "{build_number}=${{ github.run_number }}${{ github.run_attempt }}" >> $GITHUB_STATE
 
     - name: Checkout
       uses: actions/checkout@v3
@@ -50,9 +50,9 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration $BUILD_CONFIG /p:"Platform=$BUILD_PLATFORM" /p:"AssemblyVersion=$BUILD_VERSION" --no-restore
+      run: dotnet build --configuration $BUILD_CONFIG /p:"Platform=$BUILD_PLATFORM" /p:"AssemblyVersion=${{ env.BUILD_VERSION }}" --no-restore
       env:
-        BUILD_VERSION: ${{ env.PKG_MAJOR_VERSION }}.${{ steps.date.outputs.date }}.${{ steps.buildnumber.outputs.buildnumber }}
+        BUILD_VERSION: ${{ env.PKG_MAJOR_VERSION }}.${{ env.build_date }}.${{ env.build_number }}
 
     - name: Test
       run: dotnet test /p:Configuration=$BUILD_CONFIG --no-restore --no-build --verbosity normal
