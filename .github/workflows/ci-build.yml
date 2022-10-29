@@ -47,16 +47,16 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration $BUILD_CONFIG /p:"Platform=$BUILD_PLATFORM" /p:"AssemblyVersion=${{ env.assembly_version }}" --no-restore
+      run: dotnet build --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"AssemblyVersion=${{ env.assembly_version }}" --no-restore
 
     - name: Test
-      run: dotnet test /p:Configuration=$BUILD_CONFIG --no-restore --no-build --verbosity normal
+      run: dotnet test /p:Configuration=${{ env.BUILD_CONFIG }} --no-restore --no-build --verbosity normal
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
       with:
         name: build_output
-        path: $PROJECT_NAME/bin/$BUILD_CONFIG/**
+        path: ${{ env.PROJECT_NAME }}/bin/${{ env.BUILD_CONFIG }}/**
 
   release:
     name: Create GitHub Release
