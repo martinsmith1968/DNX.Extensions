@@ -2,6 +2,33 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Martin Smith</Authors>
+    <Copyright>Copyright © 2016-2019 DNX Solutions Ltd</Copyright>
+    <Description>.NET Extensions and helpers for Core and Common .NET types</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/martinsmith1968/DNX.Extensions</PackageProjectUrl>
+    <PackageId>DNX.Extensions</PackageId>
+    <PackageTags>DNX helpers extensions string array linq</PackageTags>
+    <PackageIcon>favicon-32x32.png</PackageIcon>
+    <PackageIconUrl>https://raw.githubusercontent.com/martinsmith1968/DNX.Extensions/main/images/favicon-32x32.png</PackageIconUrl>
+    <PackageReleaseNotes>
+      Interpolation to a working version and some preparation for moving to .NET Standard
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="../../images/favicon-32x32.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
