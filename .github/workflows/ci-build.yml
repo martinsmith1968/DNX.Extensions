@@ -178,7 +178,7 @@ jobs:
   ## Publish to NuGet
   publish:
     name: Publish to NuGet
-    if: '${{ env.should_publish }}' == 'true' && success()
+    if: env.should_publish == 'true' && success()
 
     needs: release
 
