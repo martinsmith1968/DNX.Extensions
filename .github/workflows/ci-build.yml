@@ -186,9 +186,9 @@ jobs:
   ## Publish to NuGet
   publish:
     name: Publish to NuGet
-    if: needs.setup.outputs.should_publish && always()
+    if: needs.setup.outputs.should_publish
 
-    needs: [setup, release]
+    needs: [setup, build]
 
     runs-on: ubuntu-latest
 
