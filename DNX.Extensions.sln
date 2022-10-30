@@ -7,16 +7,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E832563B-3DD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{27BBD260-1C33-4F57-925A-12AB922D6AB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNX.Extensions", "src\DNX.Extensions\DNX.Extensions.csproj", "{E2B8F640-BCFE-4BD7-B158-E7FE957A38CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNX.Extensions", "src\DNX.Extensions\DNX.Extensions.csproj", "{E2B8F640-BCFE-4BD7-B158-E7FE957A38CB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{9E70C755-0A39-46EA-8063-0A3B594B7271}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\ci-build.yml = .github\workflows\ci-build.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNX.Extensions.Tests", "tests\DNX.Extensions.Tests\DNX.Extensions.Tests.csproj", "{B14EFA70-CA77-4439-9C08-357061B97E4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNX.Extensions.Tests", "tests\DNX.Extensions.Tests\DNX.Extensions.Tests.csproj", "{B14EFA70-CA77-4439-9C08-357061B97E4D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".code", ".code", "{5936EA03-F95A-4407-9149-A23F4A378E4E}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

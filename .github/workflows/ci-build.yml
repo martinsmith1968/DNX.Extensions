@@ -26,10 +26,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  ##########################################################
-  ## Bulid DotNet projects
-  build:
-    name: Build .NET
+  setup:
+    name: Setup Pipeline
 
     runs-on: ubuntu-latest
 
@@ -51,7 +49,7 @@ jobs:
 
         echo "package_suffix=${package_suffix}" >> $GITHUB_ENV
 
-    - name: Determine should publish the package
+    - name: Determine package publishing
       id: should_publish
       run: |
         should_publish=false
@@ -78,6 +76,22 @@ jobs:
       id: package_version
       run: echo "package_version=${{ env.assembly_version }}${{ env.package_suffix }}" >> $GITHUB_ENV
 
+    outputs:
+      assembly_version: ${{ env.assembly_version }}
+      product_version: ${{ env.product_version }}
+      package_version: ${{ env.package_version }}
+      should_publish: ${{ env.should_publish }}
+
+  ##########################################################
+  ## Bulid DotNet projects
+  build:
+    name: Build .NET
+
+    needs: setup
+
+    runs-on: ubuntu-latest
+
+    steps:
     - name: Checkout
       uses: actions/checkout@v3
 
@@ -90,7 +104,7 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version=${{ env.product_version }}" /p:"AssemblyVersion=${{ env.assembly_version }}" --no-restore
+      run: dotnet build --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version=${{ needs.setup.outputs.product_version }}" /p:"AssemblyVersion=${{ needs.setup.outputs.assembly_version }}" --no-restore
 
     - name: Test
       run: dotnet test --configuration ${{ env.BUILD_CONFIG }} --no-restore --no-build --verbosity normal --collect:"XPlat Code Coverage"
@@ -116,7 +130,7 @@ jobs:
         path: code-coverage-results.md
 
     - name: Pack
-      run: dotnet pack --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"PackageVersion=${{ env.package_version }}" --no-restore --output "${{ env.NUGET_OUTPUT_FOLDER }}"
+      run: dotnet pack --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"PackageVersion=${{ needs.setup.outputs.package_version }}" --no-restore --output "${{ env.NUGET_OUTPUT_FOLDER }}"
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
@@ -132,19 +146,13 @@ jobs:
         path: "${{ env.NUGET_OUTPUT_FOLDER }}/**"
         if-no-files-found: error
 
-    outputs:
-      assembly_version: ${{ env.assembly_version }}
-      product_version: ${{ env.product_version }}
-      package_version: ${{ env.package_version }}
-      should_publish: ${{ env.should_publish }}
-
   ##########################################################
   ## Generate a Release and Tag in git
   release:
     name: Create GitHub Release
     if: github.ref == 'refs/heads/main' && success()
 
-    needs: build
+    needs: [setup, build]
 
     runs-on: ubuntu-latest
 
@@ -159,7 +167,7 @@ jobs:
         github_repo: ${{ github.repository }}
         git_commit_sha: ${{ github.sha }}
         git_tag_prefix: "v"
-        version: ${{ needs.build.outputs.assembly_version }}
+        version: ${{ needs.setup.outputs.assembly_version }}
 
     - name: Build Changelog
       id: build_changelog
@@ -170,15 +178,15 @@ jobs:
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
-        tag: v${{ needs.build.outputs.assembly_version }}
-        name: Release ${{ needs.build.outputs.assembly_version }}
+        tag: v${{ needs.setup.outputs.assembly_version }}
+        name: Release ${{ needs.setup.outputs.assembly_version }}
         body: ${{ steps.build_changelog.outputs.changelog }}
 
   ##########################################################
   ## Publish to NuGet
   publish:
     name: Publish to NuGet
-    if: needs.build.outputs.should_publish == 'true' && success()
+    if: needs.setup.outputs.should_publish == 'true' && success()
 
     needs: release
 
