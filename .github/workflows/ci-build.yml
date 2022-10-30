@@ -38,15 +38,7 @@ jobs:
       id: build_date
       run: echo "build_date=$(date +'%y%j')" >> $GITHUB_ENV
 
-    - name: Set Product Version
-      id: product_version
-      run: echo "product_version=${{ env.PKG_MAJOR_VERSION }}" >> $GITHUB_ENV
-
-    - name: Set Assembly Version
-      id: assembly_version
-      run: echo "assembly_version=${{ env.PKG_MAJOR_VERSION }}.${{ env.build_date }}.${{ github.run_number }}${{ github.run_attempt }}" >> $GITHUB_ENV
-
-    - name: Set Pacakge Suffix
+    - name: Set Package Suffix
       id: package_suffix
       run: |
         branch='${{ github.ref }}'
@@ -71,6 +63,20 @@ jobs:
         then
             should_publish=true
         fi
+
+        echo "should_publish=${should_publish}" >> $GITHUB_ENV
+
+    - name: Set Product Version
+      id: product_version
+      run: echo "product_version=${{ env.PKG_MAJOR_VERSION }}" >> $GITHUB_ENV
+
+    - name: Set Assembly Version
+      id: assembly_version
+      run: echo "assembly_version=${{ env.PKG_MAJOR_VERSION }}.${{ env.build_date }}.${{ github.run_number }}${{ github.run_attempt }}" >> $GITHUB_ENV
+
+    - name: Set Package Version
+      id: package_version
+      run: echo "package_version=${{ env.assembly_version }}${{ env.package_suffix }}" >> $GITHUB_ENV
 
     - name: Checkout
       uses: actions/checkout@v3
@@ -110,7 +116,7 @@ jobs:
         path: code-coverage-results.md
 
     - name: Pack
-      run: dotnet pack --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version=${{ env.assembly_version }}" --no-restore --output "${{ env.NUGET_OUTPUT_FOLDER }}"
+      run: dotnet pack --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"PackageVersion=${{ env.package_version }}" --no-restore --output "${{ env.NUGET_OUTPUT_FOLDER }}"
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
@@ -129,6 +135,7 @@ jobs:
     outputs:
       assembly_version: ${{ env.assembly_version }}
       product_version: ${{ env.product_version }}
+      package_version: ${{ env.package_version }}
 
   ##########################################################
   ## Generate a Release and Tag in git
@@ -170,7 +177,7 @@ jobs:
   ## Publish to NuGet
   publish:
     name: Publish to NuGet
-    if: github.ref == 'refs/heads/main' && success()
+    if: '${{ env.should_publish }}' == 'true' && success()
 
     needs: release
 
