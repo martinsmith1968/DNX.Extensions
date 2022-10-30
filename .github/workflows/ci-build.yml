@@ -26,6 +26,8 @@ on:
   workflow_dispatch:
 
 jobs:
+  ##########################################################
+  ## Bulid DotNet projects
   build:
     name: Build .NET
 
@@ -43,6 +45,32 @@ jobs:
     - name: Set Assembly Version
       id: assembly_version
       run: echo "assembly_version=${{ env.PKG_MAJOR_VERSION }}.${{ env.build_date }}.${{ github.run_number }}${{ github.run_attempt }}" >> $GITHUB_ENV
+
+    - name: Set Pacakge Suffix
+      id: package_suffix
+      run: |
+        branch='${{ github.ref }}'
+        package_suffix=''
+
+        if [ "$branch" != "refs/heads/main" ]
+        then
+            package_suffix='-beta'
+        fi
+
+        echo "package_suffix=${package_suffix}" >> $GITHUB_ENV
+
+    - name: Determine should publish the package
+      id: should_publish
+      run: |
+        should_publish=false
+
+        if [ "${{ github.event_name }}" == "pull_request" ]
+        then
+            should_publish=true
+        elif [ "${{ github.ref }}" == 'refs/heads/main' ]
+        then
+            should_publish=true
+        fi
 
     - name: Checkout
       uses: actions/checkout@v3
@@ -102,6 +130,8 @@ jobs:
       assembly_version: ${{ env.assembly_version }}
       product_version: ${{ env.product_version }}
 
+  ##########################################################
+  ## Generate a Release and Tag in git
   release:
     name: Create GitHub Release
     if: github.ref == 'refs/heads/main' && success()
@@ -136,6 +166,8 @@ jobs:
         name: Release ${{ needs.build.outputs.assembly_version }}
         body: ${{ steps.build_changelog.outputs.changelog }}
 
+  ##########################################################
+  ## Publish to NuGet
   publish:
     name: Publish to NuGet
     if: github.ref == 'refs/heads/main' && success()
