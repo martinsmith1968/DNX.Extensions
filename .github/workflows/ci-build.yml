@@ -186,7 +186,7 @@ jobs:
   ## Publish to NuGet
   publish:
     name: Publish to NuGet
-    if: needs.setup.outputs.should_publish  && success()
+    if: needs.setup.outputs.should_publish && always()
 
     needs: release
 
