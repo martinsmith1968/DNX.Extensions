@@ -160,15 +160,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Tag git
-      uses: pkgdeps/git-tag-action@v2.0.5
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        github_repo: ${{ github.repository }}
-        git_commit_sha: ${{ github.sha }}
-        git_tag_prefix: "v"
-        version: ${{ needs.setup.outputs.assembly_version }}
-
     - name: Build Changelog
       id: build_changelog
       uses: mikepenz/release-changelog-builder-action@v3.4.0
@@ -181,6 +172,15 @@ jobs:
         tag: v${{ needs.setup.outputs.assembly_version }}
         name: Release ${{ needs.setup.outputs.assembly_version }}
         body: ${{ steps.build_changelog.outputs.changelog }}
+
+    - name: Tag git
+      uses: pkgdeps/git-tag-action@v2.0.5
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_repo: ${{ github.repository }}
+        git_commit_sha: ${{ github.sha }}
+        git_tag_prefix: "v"
+        version: ${{ needs.setup.outputs.assembly_version }}
 
   ##########################################################
   ## Publish to NuGet
