@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using DNX.Extensions.Enumerations;
+using DNX.Extensions.Linq;
 
 // ReSharper disable InconsistentNaming
 
