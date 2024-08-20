@@ -476,8 +476,7 @@ namespace DNX.Extensions.Tests.Strings
             // Assert
             ex.Should().NotBeNull();
             ex.ParamName.Should().Be("delimiterType");
-            ex.Message.Should().Be(nameof(SplitDelimiterType.Any));
-            ex.Message.Should().Be(nameof(SplitDelimiterType.All));
+            ex.Message.Should().ContainAll(Enum.GetValues<SplitDelimiterType>().Select(x => x.ToString()));
         }
 
         [Theory]
