@@ -16,7 +16,7 @@ on:
   push:
     branches:
       - main
-      - ${{ env.BRANCH_RELEASE_CANDIDATE }}
+      - rc/**
       - feature/**
       - task/**
       - spike/**
