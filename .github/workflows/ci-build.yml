@@ -11,7 +11,6 @@ env:
   BUILD_PLATFORM: Any CPU
   PACK_PARAMETERS: ''
   NUGET_OUTPUT_FOLDER: nupkgs
-  PRIMARY_BRANCH: refs/heads/main
 
 on:
   push:
@@ -44,7 +43,7 @@ jobs:
         branch="${{ github.ref }}"
         package_suffix=''
 
-        if [ "$branch" != "${{ env.PRIMARY_BRANCH }}" ]
+        if [ "$branch" != "refs/heads/main" ]
         then
             package_suffix='-beta'
         fi
@@ -59,7 +58,7 @@ jobs:
         if [ "${{ github.event_name }}" == "pull_request" ]
         then
             should_publish=true
-        elif [ "${{ github.ref }}" == "${{ env.PRIMARY_BRANCH }}" ]
+        elif [ "${{ github.ref }}" == "refs/heads/main" ]
         then
             should_publish=true
         fi
@@ -152,7 +151,7 @@ jobs:
   ## Generate a Release and Tag in git
   release:
     name: Create GitHub Release
-    if: github.ref == "${{ env.PRIMARY_BRANCH }}" && success()
+    if: github.ref == "refs/heads/main" && success()
 
     needs:
       - setup
