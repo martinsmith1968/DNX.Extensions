@@ -151,7 +151,7 @@ jobs:
   ## Generate a Release and Tag in git
   release:
     name: Create GitHub Release
-    if: github.ref == "refs/heads/main" && success()
+    if: github.ref == 'refs/heads/main' && success()
 
     needs:
       - setup
