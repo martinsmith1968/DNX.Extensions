@@ -1,23 +1,25 @@
 name: CI Build
-run-name: CIBuild_${{ github.event_name }}_${{ github.ref_name }}_${{ github.run_number }}${{ github.run_attempt }}
+run-name: CIBuild_${{ github.event_name }}_${{ github.ref_name }}_${{ github.run_number }}.${{ github.run_attempt }}
 
 env:
   PKG_MAJOR_VERSION: '1.1'
   PROJECT_NAME: 'DNX.Extensions'
-  DOTNET_VERSION: 6.0.x
+  DOTNET_VERSION: 8.0.x
   NUGET_VERSION: 5.x
   BUILD_CONFIG: Release
   BUILD_PLATFORM: Any CPU
   PACK_PARAMETERS: ''
   NUGET_OUTPUT_FOLDER: nupkgs
+  BRANCH_RELEASE_CANDIDATE: rc/**
 
 on:
   push:
     branches:
       - main
-      - 'feature/**'
-      - 'task/**'
-      - 'spike/**'
+      - rc/**
+      - feature/**
+      - task/**
+      - spike/**
 
   pull_request:
     branches:
@@ -26,6 +28,8 @@ on:
   workflow_dispatch:
 
 jobs:
+  ##########################################################
+  ## Pipeline Configuration and Setup
   setup:
     name: Setup Pipeline
 
@@ -39,7 +43,7 @@ jobs:
     - name: Set Package Suffix
       id: package_suffix
       run: |
-        branch='${{ github.ref }}'
+        branch="${{ github.ref }}"
         package_suffix=''
 
         if [ "$branch" != "refs/heads/main" ]
@@ -57,7 +61,10 @@ jobs:
         if [ "${{ github.event_name }}" == "pull_request" ]
         then
             should_publish=true
-        elif [ "${{ github.ref }}" == 'refs/heads/main' ]
+        elif [ "${{ github.ref }}" == "refs/heads/main" ]
+        then
+            should_publish=true
+        elif [[ "${{ github.ref }}" == ${{ env.BRANCH_RELEASE_CANDIDATE }}* ]]
         then
             should_publish=true
         fi
@@ -83,7 +90,7 @@ jobs:
       should_publish: ${{ env.should_publish }}
 
   ##########################################################
-  ## Bulid DotNet projects
+  ## Build DotNet projects
   build:
     name: Build .NET
 
@@ -93,10 +100,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install .NET SDK
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -104,10 +111,10 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version=${{ needs.setup.outputs.product_version }}" /p:"AssemblyVersion=${{ needs.setup.outputs.assembly_version }}" --no-restore
+      run: dotnet build --no-restore --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version=${{ needs.setup.outputs.product_version }}" /p:"AssemblyVersion=${{ needs.setup.outputs.assembly_version }}"
 
     - name: Test
-      run: dotnet test --configuration ${{ env.BUILD_CONFIG }} --no-restore --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      run: dotnet test --no-restore --no-build --configuration ${{ env.BUILD_CONFIG }} --verbosity normal --collect:"XPlat Code Coverage"
 
     - name: Code Coverage Report
       uses: irongut/CodeCoverageSummary@v1.3.0
@@ -133,14 +140,14 @@ jobs:
       run: dotnet pack --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"PackageVersion=${{ needs.setup.outputs.package_version }}" --no-restore --output "${{ env.NUGET_OUTPUT_FOLDER }}"
 
     - name: Upload Build Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build_output
         path: "**/${{ env.PROJECT_NAME }}/bin/${{ env.BUILD_CONFIG }}/**"
         if-no-files-found: error
 
     - name: Upload NuGet Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: nuget_output
         path: "${{ env.NUGET_OUTPUT_FOLDER }}/**"
@@ -152,13 +159,15 @@ jobs:
     name: Create GitHub Release
     if: github.ref == 'refs/heads/main' && success()
 
-    needs: [setup, build]
+    needs:
+      - setup
+      - build
 
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Build Changelog
       id: build_changelog
@@ -172,6 +181,7 @@ jobs:
         tag: v${{ needs.setup.outputs.assembly_version }}
         name: Release ${{ needs.setup.outputs.assembly_version }}
         body: ${{ steps.build_changelog.outputs.changelog }}
+        artifacts: '**/*.nupkg'
 
     - name: Tag git
       uses: pkgdeps/git-tag-action@v2.0.5
@@ -188,7 +198,10 @@ jobs:
     name: Publish to NuGet
     if: needs.setup.outputs.should_publish == 'true'
 
-    needs: [setup, build, release]
+    needs:
+      - setup
+      - build
+      - release
 
     runs-on: ubuntu-latest
 
@@ -201,7 +214,7 @@ jobs:
 
     - name: Download NuGet Output
       id: download_nuget
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: nuget_output
         path: ${{ env.NUGET_OUTPUT_FOLDER }}

@@ -1,18 +1,17 @@
-﻿namespace DNX.Extensions.Strings
+namespace DNX.Extensions.Strings;
+
+/// <summary>
+/// How the delimiter is to be treated when splitting text
+/// </summary>
+public enum SplitDelimiterType
 {
     /// <summary>
-    /// How the delimiter is to be treated when splitting text
+    /// Any specified value can be a delimiter
     /// </summary>
-    public enum SplitDelimiterType
-    {
-        /// <summary>
-        /// Any specified value can be a delimiter
-        /// </summary>
-        Any = 0,
+    Any = 0,
 
-        /// <summary>
-        /// All specified values are the delimiter
-        /// </summary>
-        All
-    }
+    /// <summary>
+    /// All specified values are the delimiter
+    /// </summary>
+    All
 }
