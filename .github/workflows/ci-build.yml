@@ -41,7 +41,7 @@ jobs:
     - name: Set Package Suffix
       id: package_suffix
       run: |
-        branch='${{ github.ref }}'
+        branch="${{ github.ref }}"
         package_suffix=''
 
         if [ "$branch" != "${{ env.PRIMARY_BRANCH }}" ]
@@ -59,7 +59,7 @@ jobs:
         if [ "${{ github.event_name }}" == "pull_request" ]
         then
             should_publish=true
-        elif [ "${{ github.ref }}" == '${{ env.PRIMARY_BRANCH }}' ]
+        elif [ "${{ github.ref }}" == "${{ env.PRIMARY_BRANCH }}" ]
         then
             should_publish=true
         fi
@@ -152,7 +152,7 @@ jobs:
   ## Generate a Release and Tag in git
   release:
     name: Create GitHub Release
-    if: github.ref == '${{ env.PRIMARY_BRANCH }}' && success()
+    if: github.ref == "${{ env.PRIMARY_BRANCH }}" && success()
 
     needs:
       - setup
