@@ -564,27 +564,68 @@ public class StringExtensionsTests
     }
 
     [Theory]
+    [InlineData(null, null)]
+    [InlineData("", "")]
+    [InlineData("TwoWords", "Two Words")]
+    [InlineData("ThreeWordsTogether", "Three Words Together")]
+    [InlineData("pascalCase", "pascal Case")]
+    [InlineData("Already Spaced", "Already Spaced")]
+    [InlineData("AnEntireSentenceSquashedTogetherIntoOneSingleWord", "An Entire Sentence Squashed Together Into One Single Word")]
+    [InlineData("SouthendUnitedFCAreRubbish", "Southend United F C Are Rubbish")]
+    [InlineData("BobCarolgeesIsALegend", "Bob Carolgees Is A Legend")]
+    [InlineData("IsITVDramaBetterThanBBCDrama", "Is I T V Drama Better Than B B C Drama")]
+    [InlineData("IsTheHoLAnOutdatedInstitution", "Is The Ho L An Outdated Institution")]
+    [InlineData("VirusesLikeH1N1AndH5N1WereWarningsForThePanDemicToCome", "Viruses Like H1 N1 And H5 N1 Were Warnings For The Pan Demic To Come")]
+    public void Wordify_Tests(string text, string expectedResult)
+    {
+        // Act
+        var result = text.Wordify();
+
+        // Assert
+        result.Should().Be(expectedResult);
+    }
+
+    [Theory]
     [InlineData(null, null, null)]
     [InlineData("", null, "")]
+    [InlineData(null, "", null)]
+    [InlineData("", "", "")]
     [InlineData("TwoWords", null, "Two Words")]
     [InlineData("ThreeWordsTogether", null, "Three Words Together")]
     [InlineData("pascalCase", null, "pascal Case")]
     [InlineData("Already Spaced", null, "Already Spaced")]
     [InlineData("AnEntireSentenceSquashedTogetherIntoOneSingleWord", null, "An Entire Sentence Squashed Together Into One Single Word")]
-    [InlineData("IsITVDramaBetterThanBBCDrama", null, "Is ITV Drama Better Than BBC Drama")]
+    [InlineData("IsITVDramaBetterThanBBCDrama", null, "Is I T V Drama Better Than B B C Drama")]
+    [InlineData("IsITVDramaBetterThanBBCDrama", "ITV|BBC", "Is ITV Drama Better Than BBC Drama")]
     [InlineData("IsTheHoLAnOutdatedInstitution", null, "Is The Ho L An Outdated Institution")]
     [InlineData("IsTheHoLAnOutdatedInstitution", "HoL", "Is The HoL An Outdated Institution")]
-    [InlineData("VirusesLikeH1N1AndH5N1WereWarningsForThePanDemicToCome", null, "Viruses Like H1N1 And H5N1 Were Warnings For The Pan Demic To Come")]
+    [InlineData("VirusesLikeH1N1AndH5N1WereWarningsForThePanDemicToCome", null, "Viruses Like H1 N1 And H5 N1 Were Warnings For The Pan Demic To Come")]
     [InlineData("VirusesLikeH1N1AndH5N1WereWarningsForThePanDemicToCome", "H1N1|H5N1|PanDemic", "Viruses Like H1N1 And H5N1 Were Warnings For The PanDemic To Come")]
-    public void Wordify_Tests(string text, string preservedWordsText, string expectedResult)
+    [InlineData("SouthendUnitedFCAreRubbish", null, "Southend United F C Are Rubbish")]
+    [InlineData("SouthendUnitedFCAreRubbish", "FC", "Southend United FC Are Rubbish")]
+    [InlineData("BobCarolgeesIsALegend", null, "Bob Carolgees Is A Legend")]
+    [InlineData("BobCarolgeesIsALegend", "FC", "Bob Carolgees Is A Legend")]
+    public void Wordify_with_reserved_words_Tests(string text, string reservedWordsText, string expectedResult)
     {
-        // Arrange
-        var preservedWords = preservedWordsText?
-            .Split("|")
-            .ToArray();
+        var reservedWordsList = reservedWordsText?.Split("|").ToArray();
 
         // Act
-        var result = text.Wordify(preservedWords);
+        var result = text.Wordify(reservedWordsList);
+
+        // Assert
+        result.Should().Be(expectedResult);
+    }
+
+    [Theory]
+    [InlineData("Some text", 5, "Some ")]
+    [InlineData("Some text", 20, "Some text")]
+    [InlineData("Some text", 0, "")]
+    [InlineData("", 0, "")]
+    [InlineData("", 5, "")]
+    [InlineData(null, 2, null)]
+    public void Test_Truncate(string text, int length, string expectedResult)
+    {
+        var result = text.Truncate(length);
 
         // Assert
         result.Should().Be(expectedResult);
