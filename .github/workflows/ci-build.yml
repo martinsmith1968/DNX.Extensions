@@ -176,7 +176,7 @@ jobs:
         tag: v${{ needs.setup.outputs.assembly_version }}
         name: Release ${{ needs.setup.outputs.assembly_version }}
         body: ${{ steps.build_changelog.outputs.changelog }}
-        artifacts: **/*.nupkg
+        artifacts: '**/*.nupkg'
 
     - name: Tag git
       uses: pkgdeps/git-tag-action@v2.0.5
