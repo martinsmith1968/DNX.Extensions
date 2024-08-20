@@ -18,9 +18,8 @@ namespace DNX.Extensions.Strings;
 /// </summary>
 public static class StringExtensions
 {
-    private const string SI_WORDIFY_REGEX_TEXT = "(?<=[a-z])(?<x>[A-Z])|(?<=.)(?<x>[A-Z])(?=[a-z])";
-
-    private static readonly Regex WordifyRegex = new Regex(SI_WORDIFY_REGEX_TEXT, RegexOptions.Compiled);
+    private const string Wordify_RegexText = @"\B[A-Z]";
+    private static readonly Regex Wordify_Regex = new(Wordify_RegexText);
 
     /// <summary>
     /// Determines whether the specified text is null or empty
@@ -40,6 +39,26 @@ public static class StringExtensions
     public static bool IsNullOrWhiteSpace(this string text)
     {
         return string.IsNullOrWhiteSpace(text);
+    }
+
+    /// <summary>
+    /// Return null is text is null or empty
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public static string NullIfEmpty(this string text)
+    {
+        return string.IsNullOrEmpty(text) ? null : text;
+    }
+
+    /// <summary>
+    /// Return null if text is null or whitespace
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public static string NullIfEmptyOrWhitespace(this string text)
+    {
+        return string.IsNullOrWhiteSpace(text) ? null : text;
     }
 
     /// <summary>
@@ -86,13 +105,13 @@ public static class StringExtensions
     /// Ensures a string starts and ends with a prefix / suffix string.
     /// </summary>
     /// <param name="text">The text.</param>
-    /// <param name="prefixsuffix">The prefix / suffix.</param>
+    /// <param name="prefixSuffix">The prefix / suffix.</param>
     /// <returns>System.String.</returns>
     /// <remarks>Also available as an extension method</remarks>
-    public static string EnsureStartsAndEndsWith(this string text, string prefixsuffix)
+    public static string EnsureStartsAndEndsWith(this string text, string prefixSuffix)
     {
-        return text.EnsureStartsWith(prefixsuffix)
-            .EnsureEndsWith(prefixsuffix);
+        return text.EnsureStartsWith(prefixSuffix)
+            .EnsureEndsWith(prefixSuffix);
     }
 
     /// <summary>
@@ -158,8 +177,7 @@ public static class StringExtensions
     /// <remarks>Also available as an extension method</remarks>
     public static string RemoveStartsAndEndsWith(this string text, string prefixSuffix)
     {
-        return text.RemoveEndsWith(prefixSuffix)
-            .RemoveStartsWith(prefixSuffix);
+        return text.RemoveStartsAndEndsWith(prefixSuffix, prefixSuffix);
     }
 
     /// <summary>
@@ -193,6 +211,22 @@ public static class StringExtensions
     }
 
     /// <summary>
+    /// Gets the text between the first specified start and the last end text.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="startText">The start text.</param>
+    /// <param name="endText">The end text.</param>
+    /// <param name="comparison">The comparison.</param>
+    /// <returns>System.String.</returns>
+    public static string BetweenFirstAndLast(this string text, string startText, string endText, StringComparison comparison = StringComparison.Ordinal)
+    {
+        return text
+                .After(startText, comparison)
+                .BeforeLast(endText, comparison)
+            ;
+    }
+
+    /// <summary>
     /// Gets the text before the specified end text.
     /// </summary>
     /// <param name="text">The text.</param>
@@ -201,14 +235,39 @@ public static class StringExtensions
     /// <returns>System.String.</returns>
     public static string Before(this string text, string endText, StringComparison comparison = StringComparison.Ordinal)
     {
-        if (text.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(text))
         {
             return null;
         }
 
-        var endIndex = endText.IsNullOrEmpty()
+        var endIndex = string.IsNullOrEmpty(endText)
             ? -1
             : text.IndexOf(endText, comparison);
+
+        var result = endIndex >= 0
+            ? text.Substring(0, endIndex)
+            : null;
+
+        return result;
+    }
+
+    /// <summary>
+    /// Gets the text before the last instance of the specified end text.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="endText">The end text.</param>
+    /// <param name="comparison">The comparison.</param>
+    /// <returns>System.String.</returns>
+    public static string BeforeLast(this string text, string endText, StringComparison comparison = StringComparison.Ordinal)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return null;
+        }
+
+        var endIndex = string.IsNullOrEmpty(endText)
+            ? -1
+            : text.LastIndexOf(endText, comparison);
 
         var result = endIndex >= 0
             ? text.Substring(0, endIndex)
@@ -239,6 +298,129 @@ public static class StringExtensions
 
         var result = startIndex >= 0
             ? text.Substring(startIndex + startTextLength)
+            : null;
+
+        return result;
+    }
+
+    /// <summary>
+    /// Gets the text after the last instance of the specified start text.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="startText">The start text.</param>
+    /// <param name="comparison">The comparison.</param>
+    /// <returns>System.String.</returns>
+    public static string AfterLast(this string text, string startText, StringComparison comparison = StringComparison.Ordinal)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return null;
+        }
+
+        var startTextLength = startText?.Length ?? 0;
+
+        var startIndex = string.IsNullOrEmpty(startText)
+            ? -1
+            : text.LastIndexOf(startText, comparison);
+
+        var result = startIndex >= 0
+            ? text.Substring(startIndex + startTextLength)
+            : null;
+
+        return result;
+    }
+
+    /// <summary>
+    /// Gets the text after the specified start text.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="startText">The start text.</param>
+    /// <param name="comparison">The comparison.</param>
+    /// <returns>System.String.</returns>
+    public static string From(this string text, string startText, StringComparison comparison = StringComparison.Ordinal)
+    {
+        if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(startText))
+        {
+            return null;
+        }
+
+        var startIndex = text.IndexOf(startText, comparison);
+
+        var result = startIndex >= 0
+            ? text.Substring(startIndex)
+            : null;
+
+        return result;
+    }
+
+    /// <summary>
+    /// Gets the text after the specified start text.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="startText">The start text.</param>
+    /// <param name="comparison">The comparison.</param>
+    /// <returns>System.String.</returns>
+    public static string FromLast(this string text, string startText, StringComparison comparison = StringComparison.Ordinal)
+    {
+        if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(startText))
+        {
+            return null;
+        }
+
+        var startIndex = text.LastIndexOf(startText, comparison);
+
+        var result = startIndex >= 0
+            ? text.Substring(startIndex)
+            : null;
+
+        return result;
+    }
+
+    /// <summary>
+    /// Gets the text before the specified end text.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="endText">The end text.</param>
+    /// <param name="comparison">The comparison.</param>
+    /// <returns>System.String.</returns>
+    public static string AsFarAs(this string text, string endText, StringComparison comparison = StringComparison.Ordinal)
+    {
+        if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(endText))
+        {
+            return null;
+        }
+
+        var endTextLength = endText?.Length ?? 0;
+
+        var endIndex = text.IndexOf(endText, comparison);
+
+        var result = endIndex >= 0
+            ? text.Substring(0, endIndex + endTextLength)
+            : null;
+
+        return result;
+    }
+
+    /// <summary>
+    /// Gets the text before the last instance of the specified end text.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="endText">The end text.</param>
+    /// <param name="comparison">The comparison.</param>
+    /// <returns>System.String.</returns>
+    public static string AsFarAsLast(this string text, string endText, StringComparison comparison = StringComparison.Ordinal)
+    {
+        if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(endText))
+        {
+            return null;
+        }
+
+        var endTextLength = endText?.Length ?? 0;
+
+        var endIndex = text.LastIndexOf(endText, comparison);
+
+        var result = endIndex >= 0
+            ? text.Substring(0, endIndex + endTextLength)
             : null;
 
         return result;
@@ -408,18 +590,14 @@ public static class StringExtensions
     /// <remarks>Also available as an extension method</remarks>
     public static IEnumerable<string> SplitText(this string text, string delimiters, StringSplitOptions options = StringSplitOptions.None, SplitDelimiterType delimiterType = SplitDelimiterType.Any)
     {
-        switch (delimiterType)
+        return delimiterType switch
         {
-            case SplitDelimiterType.Any:
-                return text.Split(delimiters.ToCharArray(), options);
-
-            case SplitDelimiterType.All:
+            SplitDelimiterType.Any => text.Split(delimiters.ToCharArray(), options),
+            SplitDelimiterType.All =>
                 // NOTE: A native text.Split(string, ...) is available in NET Core 2.1+
-                return text.SplitByText(delimiters, options);
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(delimiterType), delimiterType, $"Value must be one of {string.Join(",", Enum.GetNames(typeof(SplitDelimiterType)))}");
-        }
+                text.SplitByText(delimiters, options),
+            _ => throw new ArgumentOutOfRangeException(nameof(delimiterType), delimiterType, $"Value must be one of {string.Join(",", Enum.GetNames(typeof(SplitDelimiterType)))}")
+        };
     }
 
     /// <summary>
@@ -459,14 +637,25 @@ public static class StringExtensions
     }
 
     /// <summary>
-    /// Coalesces the list of strings to find the first not null
+    /// Coalesces this value with the first value that is not null or empty.
     /// </summary>
-    /// <param name="strings">The strings.</param>
-    /// <returns>System.String.</returns>
-    /// <remarks>Also available as an extension method</remarks>
-    public static string CoalesceNull(params string[] strings)
+    /// <param name="text">The text.</param>
+    /// <param name="items">The items.</param>
+    /// <returns></returns>
+    public static string CoalesceNullWith(this string text, params string[] items)
     {
-        return strings.CoalesceNull();
+        return text ?? items.CoalesceNull();
+    }
+
+    /// <summary>
+    /// Coalesces this value with the first value that is not null or empty.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="items">The items.</param>
+    /// <returns></returns>
+    public static string CoalesceNullWith(this string text, IList<string> items)
+    {
+        return text ?? items.CoalesceNull();
     }
 
     /// <summary>
@@ -483,14 +672,29 @@ public static class StringExtensions
     }
 
     /// <summary>
-    /// Coalesces the list of strings to find the first not null or empty.
+    /// Coalesces this value with the first value that is not null or empty.
     /// </summary>
-    /// <param name="strings">The strings.</param>
-    /// <returns>System.String.</returns>
-    /// <remarks>Also available as an extension method</remarks>
-    public static string CoalesceNullOrEmpty(params string[] strings)
+    /// <param name="text">The text.</param>
+    /// <param name="items">The items.</param>
+    /// <returns></returns>
+    public static string CoalesceNullOrEmptyWith(this string text, params string[] items)
     {
-        return strings.CoalesceNullOrEmpty();
+        return string.IsNullOrEmpty(text)
+            ? items.CoalesceNullOrEmpty()
+            : text;
+    }
+
+    /// <summary>
+    /// Coalesces this value with the first value that is not null or empty.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="items">The items.</param>
+    /// <returns></returns>
+    public static string CoalesceNullOrEmptyWith(this string text, IList<string> items)
+    {
+        return string.IsNullOrEmpty(text)
+            ? items.CoalesceNullOrEmpty()
+            : text;
     }
 
     /// <summary>
@@ -501,20 +705,35 @@ public static class StringExtensions
     /// <remarks>Also available as an extension method</remarks>
     public static string CoalesceNullOrEmpty(this IList<string> strings)
     {
-        var value = strings.FirstOrDefault(s => !string.IsNullOrEmpty(s));
+        var value = strings?.FirstOrDefault(s => !string.IsNullOrEmpty(s));
 
         return value;
     }
 
     /// <summary>
-    /// Coalesces the list of strings to find the first not null or whitespace.
+    /// Coalesces this value with the first value that is not null or empty.
     /// </summary>
-    /// <param name="strings">The strings.</param>
-    /// <returns>System.String.</returns>
-    /// <remarks>Also available as an extension method</remarks>
-    public static string CoalesceNullOrWhitespace(params string[] strings)
+    /// <param name="text">The text.</param>
+    /// <param name="items">The items.</param>
+    /// <returns></returns>
+    public static string CoalesceNullOrWhitespaceWith(this string text, params string[] items)
     {
-        return strings.CoalesceNullOrWhitespace();
+        return string.IsNullOrWhiteSpace(text)
+            ? items.CoalesceNullOrWhitespace()
+            : text;
+    }
+
+    /// <summary>
+    /// Coalesces this value with the first value that is not null or empty.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="items">The items.</param>
+    /// <returns></returns>
+    public static string CoalesceNullOrWhitespaceWith(this string text, IList<string> items)
+    {
+        return string.IsNullOrWhiteSpace(text)
+            ? items.CoalesceNullOrWhitespace()
+            : text;
     }
 
     /// <summary>
@@ -525,7 +744,7 @@ public static class StringExtensions
     /// <remarks>Also available as an extension method</remarks>
     public static string CoalesceNullOrWhitespace(this IList<string> strings)
     {
-        var value = strings.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s));
+        var value = strings?.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s));
 
         return value;
     }
@@ -582,11 +801,11 @@ public static class StringExtensions
     /// lowercase letter (but not for the first char in string).
     /// This keeps groups of uppercase letters - e.g. preservedWords - together.
     /// </summary>
-    /// <param name="titleCaseString">A string in PascalCase</param>
+    /// <param name="text">A string in PascalCase</param>
     /// <returns></returns>
-    public static string Wordify(this string titleCaseString)
+    public static string Wordify(this string text)
     {
-        return titleCaseString.Wordify(null);
+        return text.Wordify(null);
     }
 
     /// <summary>
@@ -596,17 +815,15 @@ public static class StringExtensions
     /// lowercase letter (but not for the first char in string).
     /// This keeps groups of uppercase letters - e.g. acronyms - together.
     /// </summary>
-    /// <param name="titleCaseString">A string in PascalCase</param>
+    /// <param name="text">A string in PascalCase</param>
     /// <param name="preservedWords">The preservedWords - beyond acronyms</param>
     /// <returns>System.String.</returns>
-    public static string Wordify(this string titleCaseString, IList<string> preservedWords)
+    public static string Wordify(this string text, IList<string> preservedWords)
     {
-        if (string.IsNullOrWhiteSpace(titleCaseString))
-            return titleCaseString;
+        if (string.IsNullOrEmpty(text))
+            return text;
 
-        var text = WordifyRegex
-            .Replace(titleCaseString, " ${x}")
-            .Replace("  ", " ");
+        var result = Wordify_Regex.Replace(text, " $0");
 
         if (preservedWords.HasAny())
         {
@@ -615,11 +832,53 @@ public static class StringExtensions
                     .ToDictionary(x => x.Wordify(), x => x)
                 ;
 
-            text = acronymDict.Aggregate(text,
+            result = acronymDict.Aggregate(result,
                 (current, dict) => current.Replace(dict.Key, dict.Value)
             );
         }
 
-        return text;
+        return result;
+    }
+
+    /// <summary>
+    /// Truncates a string to the given length if it is longer than the given length, otherwise returns the original string.
+    /// </summary>
+    public static string Truncate(this string input, int length)
+    {
+        return input != null && input.Length > length
+            ? input.Substring(0, length)
+            : input;
+    }
+
+    /// <summary>
+    /// Converts an ASCII encoded string to Hexadecimal
+    /// </summary>
+    /// <param name="input">ASCII Encoded Input</param>
+    /// <returns>Input as Hexadecimal</returns>
+    public static string ToHexString(this string input, string format = "X2")
+    {
+        return string.Join("", input.Select(c => ((int)c).ToString(format)));
+    }
+
+    /// <summary>
+    /// Converts string into a byte[] using the default encoding (UTF-8)
+    /// </summary>
+    /// <param name="input">The string to turn into the byte[]</param>
+    public static byte[] GetBytes(this string input)
+    {
+        return input.GetBytes(Encoding.UTF8);
+    }
+
+    /// <summary>
+    /// Converts string into a byte[] using the specified encoding
+    /// </summary>
+    /// <param name="input">The string to turn into the byte[]</param>
+    /// <param name="encoding">The encoding.</param>
+    /// <returns></returns>
+    public static byte[] GetBytes(this string input, Encoding encoding)
+    {
+        encoding ??= Encoding.UTF8;
+
+        return encoding.GetBytes(input);
     }
 }
