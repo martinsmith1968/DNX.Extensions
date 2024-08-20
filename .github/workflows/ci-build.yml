@@ -10,14 +10,16 @@ env:
   BUILD_PLATFORM: Any CPU
   PACK_PARAMETERS: ''
   NUGET_OUTPUT_FOLDER: nupkgs
+  BRANCH_RELEASE_CANDIDATE: rc/**
 
 on:
   push:
     branches:
       - main
-      - 'feature/**'
-      - 'task/**'
-      - 'spike/**'
+      - ${{ env.BRANCH_RELEASE_CANDIDATE }}
+      - feature/**
+      - task/**
+      - spike/**
 
   pull_request:
     branches:
@@ -26,6 +28,8 @@ on:
   workflow_dispatch:
 
 jobs:
+  ##########################################################
+  ## Pipeline Configuration and Setup
   setup:
     name: Setup Pipeline
 
@@ -58,6 +62,9 @@ jobs:
         then
             should_publish=true
         elif [ "${{ github.ref }}" == "refs/heads/main" ]
+        then
+            should_publish=true
+        elif [[ "${{ github.ref }}" == ${{ env.BRANCH_RELEASE_CANDIDATE }}* ]]
         then
             should_publish=true
         fi
