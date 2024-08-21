@@ -138,8 +138,6 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         comment-title: 'Unit Test Results'
         results-path: "**/*.trx"
-        coverage-path: "**/coverage.cobertura.xml"
-        coverage-threshold: ${{ env.COVERAGE_WARNING_THRESHOLD }}
 
     - uses: dorny/test-reporter@v1
       if: success() || failure()        # run this step even if previous step failed
