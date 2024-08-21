@@ -1,4 +1,5 @@
 using DNX.Extensions.IO;
+using DNX.Extensions.Strings;
 using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
@@ -130,7 +131,7 @@ namespace DNX.Extensions.Tests.IO
                 { Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3"), "file1.tf" },
                 { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot2, "folder2"),
                     Configuration.EnvironmentConfig.IsLinuxStyleFileSystem
-                        ? Path.Combine("..", "..", DriveRoot1, "Temp", "folder1", "file.txt")
+                        ? Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt").EnsureStartsWith(Path.Combine("..", ".."))
                         : Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt")
                 },
                 { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot1, "Temp", "folder2"), Path.Combine("..", "folder1", "file.txt") },
@@ -147,7 +148,7 @@ namespace DNX.Extensions.Tests.IO
                 { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot1, "Temp", "folder2"), Path.Combine("..", "folder1") },
                 { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot2, "folder2"),
                     Configuration.EnvironmentConfig.IsLinuxStyleFileSystem
-                        ? Path.Combine("..", "..", DriveRoot1, "Temp", "folder1")
+                        ? Path.Combine(DriveRoot1, "Temp", "folder1").EnsureStartsWith(Path.Combine("..", ".."))
                         : Path.Combine(DriveRoot1, "Temp", "folder1")
                 },
             };
