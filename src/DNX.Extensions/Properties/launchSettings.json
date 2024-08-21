@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "DNX.Extensions": {
+      "commandName": "Project"
+    }
+  }
+}
