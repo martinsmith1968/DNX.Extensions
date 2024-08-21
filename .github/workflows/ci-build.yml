@@ -145,10 +145,8 @@ jobs:
       if: success() || failure()        # run this step even if previous step failed
       with:
         name: test-results
-        badge-title: Test Results
         path: "**/*.trx"
         reporter: dotnet-trx
-        artifact: test-results
 
     - name: Pull Request - Add Coverage Comment
       uses: marocchino/sticky-pull-request-comment@v2
