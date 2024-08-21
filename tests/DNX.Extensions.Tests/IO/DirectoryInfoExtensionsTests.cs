@@ -1,5 +1,5 @@
 using DNX.Extensions.IO;
-using DNX.Extensions.Linq;
+using DNX.Extensions.Strings;
 using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
@@ -226,7 +226,7 @@ namespace DNX.Extensions.Tests.IO
         [MemberData(nameof(GetRelativePath_Data))]
         public void GetRelativePath_can_extract_relative_path_correctly(string dirName, string relativeToDirName, string expected)
         {
-            _outputHelper.WriteLine($"{Environment.OSVersion.Platform} - Checking DirName: {dirName} -> {relativeToDirName}");
+            _outputHelper.WriteLine($"{Environment.OSVersion.Platform} - Checking DirName: {dirName} -> {relativeToDirName} = {expected}");
 
             var dirInfo = dirName == null ? null : new DirectoryInfo(dirName);
             var relativeToDirInfo = relativeToDirName == null ? null : new DirectoryInfo(relativeToDirName);
@@ -258,9 +258,9 @@ namespace DNX.Extensions.Tests.IO
             {
                 data.Add(Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("D:", "folder2"), Path.Combine(Path.GetTempPath(), "folder1"));
             }
-            else if (Configuration.EnvironmentConfig.IsLinuxStyleFileSystem)
+            if (Configuration.EnvironmentConfig.IsLinuxStyleFileSystem)
             {
-                data.Add(Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("/etc", "folder2"), Path.Combine("..", "..", Path.GetTempPath(), "folder1"));
+                data.Add(Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("/etc", "folder2"), Path.Combine(Path.GetTempPath(), "folder1").EnsureStartsWith(Path.Combine("..", "..")));
             }
 
             return data;

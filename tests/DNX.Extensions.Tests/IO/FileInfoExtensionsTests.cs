@@ -1,5 +1,4 @@
 using DNX.Extensions.IO;
-using DNX.Extensions.Linq;
 using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
@@ -32,7 +31,7 @@ namespace DNX.Extensions.Tests.IO
         [MemberData(nameof(GetRelativeFileName_Data))]
         public void GetRelativeFileName_can_extract_relative_filename_correctly(string fileName, string dirName, string expected)
         {
-            outputHelper.WriteLine($"{Environment.OSVersion.Platform} - Checking FileName: {fileName} -> {dirName}");
+            outputHelper.WriteLine($"{Environment.OSVersion.Platform} - Checking FileName: {fileName} -> {dirName} = {expected}");
 
             var fileInfo = new FileInfo(fileName);
             var dirInfo = new DirectoryInfo(dirName);
@@ -46,7 +45,7 @@ namespace DNX.Extensions.Tests.IO
         [MemberData(nameof(GetRelativeFilePath_Data))]
         public void GetRelativeFilePath_can_extract_relative_path_correctly(string fileName, string dirName, string expected)
         {
-            outputHelper.WriteLine($"{Environment.OSVersion.Platform} - Checking FileName: {fileName} -> {dirName}");
+            outputHelper.WriteLine($"{Environment.OSVersion.Platform} - Checking FileName: {fileName} -> {dirName} = {expected}");
 
             var fileInfo = new FileInfo(fileName);
             var dirInfo = new DirectoryInfo(dirName);
