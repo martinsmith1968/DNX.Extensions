@@ -1,4 +1,5 @@
 using DNX.Extensions.IO;
+using DNX.Extensions.Linq;
 using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
@@ -7,6 +8,26 @@ namespace DNX.Extensions.Tests.IO
 {
     public class FileInfoExtensionsTests(ITestOutputHelper outputHelper)
     {
+        private static string DriveRoot1
+        {
+            get
+            {
+                return Environment.OSVersion.Platform.IsOneOf(PlatformID.Unix, PlatformID.MacOSX)
+                    ? "/root1"
+                    : "C:";
+            }
+        }
+
+        private static string DriveRoot2
+        {
+            get
+            {
+                return Environment.OSVersion.Platform.IsOneOf(PlatformID.Unix, PlatformID.MacOSX)
+                    ? "/root2"
+                    : "D:";
+            }
+        }
+
         [Theory]
         [MemberData(nameof(GetRelativeFileName_Data))]
         public void GetRelativeFileName_can_extract_relative_filename_correctly(string fileName, string dirName, string expected)
@@ -18,7 +39,7 @@ namespace DNX.Extensions.Tests.IO
 
             var result = fileInfo.GetRelativeFileName(dirInfo);
 
-            result.Should().Be(expected);
+            result.Should().Be(expected, $"{nameof(dirName)}: {dirName} - {nameof(fileName)}: {fileName}");
         }
 
         [Theory]
@@ -32,7 +53,7 @@ namespace DNX.Extensions.Tests.IO
 
             var result = fileInfo.GetRelativeFilePath(dirInfo);
 
-            result.Should().Be(expected);
+            result.Should().Be(expected, $"{nameof(dirName)}: {dirName} - {nameof(fileName)}: {fileName}");
         }
 
         [Theory]
@@ -104,12 +125,12 @@ namespace DNX.Extensions.Tests.IO
         {
             return new TheoryData<string, string, string>
             {
-                { Path.Combine("C:", "Temp", "abcdefg", "file.txt"), Path.Combine("C:", "Temp", "abcdefg"), "file.txt" },
-                { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg"), Path.Combine("dir3", "file1.tf") },
-                { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg", "dir3"), "file1.tf" },
-                { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg", "dir3"), "file1.tf" },
-                { Path.Combine("C:", "Temp", "folder1", "file.txt"), Path.Combine("D:", "folder2"), Path.Combine("C:", "Temp", "folder1", "file.txt") },
-                { Path.Combine("C:", "Temp", "folder1", "file.txt"), Path.Combine("C:", "Temp", "folder2"), Path.Combine("..", "folder1", "file.txt") },
+                { Path.Combine(DriveRoot1, "Temp", "abcdefg", "file.txt"), Path.Combine(DriveRoot1, "Temp", "abcdefg"), "file.txt" },
+                { Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine(DriveRoot1, "Temp", "abcdefg"), Path.Combine("dir3", "file1.tf") },
+                { Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3"), "file1.tf" },
+                { Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3"), "file1.tf" },
+                { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot2, "folder2"), Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt") },
+                { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot1, "Temp", "folder2"), Path.Combine("..", "folder1", "file.txt") },
             };
         }
 
@@ -117,11 +138,11 @@ namespace DNX.Extensions.Tests.IO
         {
             return new TheoryData<string, string, string>
             {
-                { Path.Combine("C:", "Temp", "abcdefg", "file.txt"), Path.Combine("C:", "Temp", "abcdefg"), "" },
-                { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg"), "dir3" },
-                { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg", "dir3"), "" },
-                { Path.Combine("C:", "Temp", "folder1", "file.txt"), Path.Combine("C:", "Temp", "folder2"), Path.Combine("..", "folder1") },
-                { Path.Combine("C:", "Temp", "folder1", "file.txt"), Path.Combine("D:", "folder2"), Path.Combine("C:", "Temp", "folder1") },
+                { Path.Combine(DriveRoot1, "Temp", "abcdefg", "file.txt"), Path.Combine(DriveRoot1, "Temp", "abcdefg"), "" },
+                { Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine(DriveRoot1, "Temp", "abcdefg"), "dir3" },
+                { Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3"), "" },
+                { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot1, "Temp", "folder2"), Path.Combine("..", "folder1") },
+                { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot2, "folder2"), Path.Combine(DriveRoot1, "Temp", "folder1") },
             };
         }
     }

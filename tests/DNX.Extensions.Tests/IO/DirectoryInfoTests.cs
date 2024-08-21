@@ -1,4 +1,5 @@
 using DNX.Extensions.IO;
+using DNX.Extensions.Linq;
 using FluentAssertions;
 using Xunit;
 
@@ -235,7 +236,7 @@ namespace DNX.Extensions.Tests.IO
             var guid2 = Guid.NewGuid().ToString();
             var guid3 = Guid.NewGuid().ToString();
 
-            return new TheoryData<string, string, string>()
+            var data = new TheoryData<string, string, string>()
             {
                 { Path.Combine(Path.GetTempPath(), guid1), null, null },
                 { null, Path.Combine(Path.GetTempPath(), guid1), null },
@@ -245,8 +246,18 @@ namespace DNX.Extensions.Tests.IO
                 { Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"), Path.Combine(Path.GetTempPath(), "abcdefg"), "dir3" },
                 { Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"), Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"), "" },
                 { Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine(Path.GetTempPath(), "folder2"), Path.Combine("..", "folder1") },
-                { Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("D:", "folder2"), Path.Combine(Path.GetTempPath(), "folder1") },
             };
+
+            if (Environment.OSVersion.Platform.ToString().StartsWith("Win"))
+            {
+                data.Add(Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("D:", "folder2"), Path.Combine(Path.GetTempPath(), "folder1"));
+            }
+            else if (Environment.OSVersion.Platform.IsOneOf(PlatformID.Unix, PlatformID.MacOSX))
+            {
+                data.Add(Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("/etc", "folder2"), Path.Combine(Path.GetTempPath(), "folder1"));
+            }
+
+            return data;
         }
     }
 }
