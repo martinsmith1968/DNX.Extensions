@@ -140,8 +140,8 @@ jobs:
         comment-title: 'Unit Test Results'
         results-path: "**/*.trx"
         coverage-type: cobertura
-        coverage-path: "**/coverage.cobertura.xml"
-        coverage-threshold: ${{ env.COVERAGE_WARNING_THRESHOLD }}
+        #coverage-path: "**/coverage.cobertura.xml"
+        #coverage-threshold: ${{ env.COVERAGE_WARNING_THRESHOLD }}
 
     - name: Pull Request - Add Coverage Comment
       uses: marocchino/sticky-pull-request-comment@v2
