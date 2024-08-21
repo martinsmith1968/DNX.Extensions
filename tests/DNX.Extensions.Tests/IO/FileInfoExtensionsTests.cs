@@ -32,7 +32,7 @@ namespace DNX.Extensions.Tests.IO
         [MemberData(nameof(GetRelativeFileName_Data))]
         public void GetRelativeFileName_can_extract_relative_filename_correctly(string fileName, string dirName, string expected)
         {
-            outputHelper.WriteLine($"Checking FileName: {fileName} -> {dirName}");
+            outputHelper.WriteLine($"{Environment.OSVersion.Platform} - Checking FileName: {fileName} -> {dirName}");
 
             var fileInfo = new FileInfo(fileName);
             var dirInfo = new DirectoryInfo(dirName);
@@ -46,7 +46,7 @@ namespace DNX.Extensions.Tests.IO
         [MemberData(nameof(GetRelativeFilePath_Data))]
         public void GetRelativeFilePath_can_extract_relative_path_correctly(string fileName, string dirName, string expected)
         {
-            outputHelper.WriteLine($"Checking FileName: {fileName} -> {dirName}");
+            outputHelper.WriteLine($"{Environment.OSVersion.Platform} - Checking FileName: {fileName} -> {dirName}");
 
             var fileInfo = new FileInfo(fileName);
             var dirInfo = new DirectoryInfo(dirName);
@@ -129,7 +129,11 @@ namespace DNX.Extensions.Tests.IO
                 { Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine(DriveRoot1, "Temp", "abcdefg"), Path.Combine("dir3", "file1.tf") },
                 { Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3"), "file1.tf" },
                 { Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3"), "file1.tf" },
-                { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot2, "folder2"), Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt") },
+                { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot2, "folder2"),
+                    Configuration.EnvironmentConfig.IsLinuxStyleFileSystem
+                        ? Path.Combine("..", "..", DriveRoot1, "Temp", "folder1", "file.txt")
+                        : Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt")
+                },
                 { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot1, "Temp", "folder2"), Path.Combine("..", "folder1", "file.txt") },
             };
         }

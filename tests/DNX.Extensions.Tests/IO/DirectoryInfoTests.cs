@@ -2,6 +2,7 @@ using DNX.Extensions.IO;
 using DNX.Extensions.Linq;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 // ReSharper disable StringLiteralTypo
 
@@ -10,9 +11,12 @@ namespace DNX.Extensions.Tests.IO
     public class DirectoryInfoExtensionsTests : IDisposable
     {
         private readonly DirectoryInfo _directoryInfo;
+        private readonly ITestOutputHelper _outputHelper;
 
-        public DirectoryInfoExtensionsTests()
+        public DirectoryInfoExtensionsTests(ITestOutputHelper outputHelper)
         {
+            _outputHelper = outputHelper;
+
             var directoryPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             _directoryInfo = new DirectoryInfo(directoryPath);
             _directoryInfo.Create();
@@ -222,6 +226,8 @@ namespace DNX.Extensions.Tests.IO
         [MemberData(nameof(GetRelativePath_Data))]
         public void GetRelativePath_can_extract_relative_path_correctly(string dirName, string relativeToDirName, string expected)
         {
+            _outputHelper.WriteLine($"{Environment.OSVersion.Platform} - Checking DirName: {dirName} -> {relativeToDirName}");
+
             var dirInfo = dirName == null ? null : new DirectoryInfo(dirName);
             var relativeToDirInfo = relativeToDirName == null ? null : new DirectoryInfo(relativeToDirName);
 
