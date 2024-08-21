@@ -101,6 +101,10 @@ jobs:
       id: package_version
       run: echo "package_version=${{ env.assembly_version }}${{ env.package_suffix }}" >> $GITHUB_ENV
 
+    - name: Show Configuration
+      id: show_configuration
+      run: env
+
     outputs:
       assembly_version: ${{ env.assembly_version }}
       product_version: ${{ env.product_version }}
