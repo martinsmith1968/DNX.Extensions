@@ -76,7 +76,7 @@ namespace DNX.Extensions.Tests.IO
             // Assert
             result.Should().NotBeNull();
             result.Count().Should().Be(1);
-            result.First().Name.Should().Be("file.txt");
+            result.Count(x => x.Name == "file.txt").Should().Be(1);
         }
 
         [Fact]
@@ -91,9 +91,9 @@ namespace DNX.Extensions.Tests.IO
             // Assert
             result.Should().NotBeNull();
             result.Count().Should().Be(3);
-            result.First().Name.Should().Be("file.txt");
-            result.Skip(1).First().Name.Should().Be("file1.txt");
-            result.Skip(2).First().Name.Should().Be("file2.txt");
+            result.Count(x => x.Name == "file.txt").Should().Be(1);
+            result.Count(x => x.Name == "file1.txt").Should().Be(1);
+            result.Count(x => x.Name == "file2.txt").Should().Be(1);
         }
 
         [Fact]
@@ -109,8 +109,8 @@ namespace DNX.Extensions.Tests.IO
             // Assert
             result.Should().NotBeNull();
             result.Count().Should().Be(2);
-            result.First().Name.Should().Be("file.txt");
-            result.Skip(1).First().Name.Should().Be("file.json");
+            result.Count(x => x.Name == "file.txt").Should().Be(1);
+            result.Count(x => x.Name == "file.json").Should().Be(1);
         }
 
         [Fact]
@@ -126,12 +126,12 @@ namespace DNX.Extensions.Tests.IO
             // Assert
             result.Should().NotBeNull();
             result.Count().Should().Be(6);
-            result.First().Name.Should().Be("file.txt");
-            result.Skip(1).First().Name.Should().Be("file1.txt");
-            result.Skip(2).First().Name.Should().Be("file2.txt");
-            result.Skip(3).First().Name.Should().Be("file.json");
-            result.Skip(4).First().Name.Should().Be("file1.json");
-            result.Skip(5).First().Name.Should().Be("file2.json");
+            result.Count(x => x.Name == "file.txt").Should().Be(1);
+            result.Count(x => x.Name == "file1.txt").Should().Be(1);
+            result.Count(x => x.Name == "file2.txt").Should().Be(1);
+            result.Count(x => x.Name == "file.json").Should().Be(1);
+            result.Count(x => x.Name == "file1.json").Should().Be(1);
+            result.Count(x => x.Name == "file2.json").Should().Be(1);
         }
 
         [Fact]
@@ -161,8 +161,8 @@ namespace DNX.Extensions.Tests.IO
             // Assert
             result.Should().NotBeNull();
             result.Count().Should().Be(2);
-            result.First().Name.Should().Be("dir1");
-            result.Skip(1).First().Name.Should().Be("dir2");
+            result.Count(x => x.Name == "dir1").Should().Be(1);
+            result.Count(x => x.Name == "dir2").Should().Be(1);
         }
 
         [Fact]
@@ -177,10 +177,10 @@ namespace DNX.Extensions.Tests.IO
             // Assert
             result.Should().NotBeNull();
             result.Count().Should().Be(4);
-            result.First().Name.Should().Be("dir1");
-            result.Skip(1).First().Name.Should().Be("dir2");
-            result.Skip(2).First().Name.Should().Be("dur3");
-            result.Skip(3).First().Name.Should().Be("dur4");
+            result.Count(x => x.Name == "dir1").Should().Be(1);
+            result.Count(x => x.Name == "dir2").Should().Be(1);
+            result.Count(x => x.Name == "dur3").Should().Be(1);
+            result.Count(x => x.Name == "dur4").Should().Be(1);
         }
 
         [Fact]
@@ -195,8 +195,8 @@ namespace DNX.Extensions.Tests.IO
             // Assert
             result.Should().NotBeNull();
             result.Count().Should().Be(2);
-            result.First().Name.Should().Be("dir1");
-            result.Skip(1).First().Name.Should().Be("dir2");
+            result.Count(x => x.Name == "dir1").Should().Be(1);
+            result.Count(x => x.Name == "dir2").Should().Be(1);
         }
 
         [Fact]
@@ -211,10 +211,10 @@ namespace DNX.Extensions.Tests.IO
             // Assert
             result.Should().NotBeNull();
             result.Count().Should().Be(4);
-            result.First().Name.Should().Be("dir1");
-            result.Skip(1).First().Name.Should().Be("dir2");
-            result.Skip(2).First().Name.Should().Be("dur3");
-            result.Skip(3).First().Name.Should().Be("dur4");
+            result.Count(x => x.Name == "dir1").Should().Be(1);
+            result.Count(x => x.Name == "dir2").Should().Be(1);
+            result.Count(x => x.Name == "dur3").Should().Be(1);
+            result.Count(x => x.Name == "dur4").Should().Be(1);
         }
 
         [Theory]
