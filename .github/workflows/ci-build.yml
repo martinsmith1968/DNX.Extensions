@@ -12,7 +12,8 @@ env:
   COVERAGE_WARNING_THRESHOLD: 60
   COVERAGE_ERROR_THRESHOLD: 80
   NUGET_OUTPUT_FOLDER: nupkgs
-  BRANCH_RELEASE_CANDIDATE: rc/**
+  BRANCH_PREFIX_RELEASE_CANDIDATE: rc/
+  BRANCH_PREFIX_PUBLISH_CANDIDATE: beta/
 
 on:
   push:
@@ -55,6 +56,21 @@ jobs:
 
         echo "package_suffix=${package_suffix}" >> $GITHUB_ENV
 
+    - name: Determing GitHub Releasing
+      id: should_release
+      run: |
+        should_release=false
+
+        if [ "${{ github.ref }}" == 'refs/heads/main' ]
+        then
+            should_release=true
+        elif [[ "${{ github.ref }}" == refs/heads/${{ env.BRANCH_PREFIX_RELEASE_CANDIDATE }}* ]]
+        then
+            should_publish=true
+        fi
+
+        echo "should_release=${should_release}" >> $GITHUB_ENV
+
     - name: Determine package publishing
       id: should_publish
       run: |
@@ -66,7 +82,7 @@ jobs:
         elif [ "${{ github.ref }}" == "refs/heads/main" ]
         then
             should_publish=true
-        elif [[ "${{ github.ref }}" == ${{ env.BRANCH_RELEASE_CANDIDATE }}* ]]
+        elif [[ "${{ github.ref }}" == refs/heads/${{ env.BRANCH_PREFIX_PUBLISH_CANDIDATE }}* ]]
         then
             should_publish=true
         fi
@@ -84,6 +100,10 @@ jobs:
     - name: Set Package Version
       id: package_version
       run: echo "package_version=${{ env.assembly_version }}${{ env.package_suffix }}" >> $GITHUB_ENV
+
+    - name: Show Configuration
+      id: show_configuration
+      run: env
 
     outputs:
       assembly_version: ${{ env.assembly_version }}
@@ -174,7 +194,7 @@ jobs:
   ## Generate a Release and Tag in git
   release:
     name: Create GitHub Release
-    if: github.ref == 'refs/heads/main' && success()
+    if: needs.setup.outputs.should_release == 'true' && success()
 
     needs:
       - setup
@@ -218,7 +238,7 @@ jobs:
   ## Publish to NuGet
   publish:
     name: Publish to NuGet
-    if: needs.setup.outputs.should_publish == 'true'
+    if: needs.setup.outputs.should_publish == 'true' && success()
 
     needs:
       - setup
