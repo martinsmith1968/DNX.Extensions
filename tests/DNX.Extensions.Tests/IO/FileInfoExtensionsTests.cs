@@ -78,52 +78,50 @@ namespace DNX.Extensions.Tests.IO
             fileInfo.Delete();
         }
 
-        public static IEnumerable<object[]> FileSizeData()
+        public static TheoryData<long, string> FileSizeData()
         {
-            var data = new List<object[]>
+            return new TheoryData<long, string>
             {
-                new object[] { 0, "0B" },
-                new object[] { 1000, "1000B" },
-                new object[] { 1023, "1023B" },
-                new object[] { 1024, "1KB" },
-                new object[] { 1536, "1.5KB" },
-                new object[] { 1792, "1.8KB" },
-                new object[] { 2048, "2KB" },
-                new object[] { 10240, "10KB" },
-                new object[] { 102400, "100KB" },
-                new object[] { 1024000, "1000KB" },
-                new object[] { 1048500, "1023.9KB" },
-                new object[] { 1048575, "1024KB" },
-                new object[] { 1048576, "1MB" },
-                new object[] { 2097152, "2MB" },
-                new object[] { 10485760, "10MB" },
-            };
-
-            return data;
-        }
-
-        public static IEnumerable<object[]> GetRelativeFileName_Data()
-        {
-            return new List<object[]>()
-            {
-                new object[] { Path.Combine("C:", "Temp", "abcdefg", "file.txt"), Path.Combine("C:", "Temp", "abcdefg"), "file.txt" },
-                new object[] { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg"), Path.Combine("dir3", "file1.tf") },
-                new object[] { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg", "dir3"), "file1.tf" },
-                new object[] { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg", "dir3"), "file1.tf" },
-                new object[] { Path.Combine("C:", "Temp", "folder1", "file.txt"), Path.Combine("D:", "folder2"), Path.Combine("C:", "Temp", "folder1", "file.txt") },
-                new object[] { Path.Combine("C:", "Temp", "folder1", "file.txt"), Path.Combine("C:", "Temp", "folder2"), Path.Combine("..", "folder1", "file.txt") },
+                { 0, "0B" },
+                { 1000, "1000B" },
+                { 1023, "1023B" },
+                { 1024, "1KB" },
+                { 1536, "1.5KB" },
+                { 1792, "1.8KB" },
+                { 2048, "2KB" },
+                { 10240, "10KB" },
+                { 102400, "100KB" },
+                { 1024000, "1000KB" },
+                { 1048500, "1023.9KB" },
+                { 1048575, "1024KB" },
+                { 1048576, "1MB" },
+                { 2097152, "2MB" },
+                { 10485760, "10MB" },
             };
         }
 
-        public static IEnumerable<object[]> GetRelativeFilePath_Data()
+        public static TheoryData<string, string, string> GetRelativeFileName_Data()
         {
-            return new List<object[]>()
+            return new TheoryData<string, string, string>
             {
-                new object[] { Path.Combine("C:", "Temp", "abcdefg", "file.txt"), Path.Combine("C:", "Temp", "abcdefg"), "" },
-                new object[] { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg"), "dir3" },
-                new object[] { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg", "dir3"), "" },
-                new object[] { Path.Combine("C:", "Temp", "folder1", "file.txt"), Path.Combine("C:", "Temp", "folder2"), Path.Combine("..", "folder1") },
-                new object[] { Path.Combine("C:", "Temp", "folder1", "file.txt"), Path.Combine("D:", "folder2"), Path.Combine("C:", "Temp", "folder1") },
+                { Path.Combine("C:", "Temp", "abcdefg", "file.txt"), Path.Combine("C:", "Temp", "abcdefg"), "file.txt" },
+                { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg"), Path.Combine("dir3", "file1.tf") },
+                { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg", "dir3"), "file1.tf" },
+                { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg", "dir3"), "file1.tf" },
+                { Path.Combine("C:", "Temp", "folder1", "file.txt"), Path.Combine("D:", "folder2"), Path.Combine("C:", "Temp", "folder1", "file.txt") },
+                { Path.Combine("C:", "Temp", "folder1", "file.txt"), Path.Combine("C:", "Temp", "folder2"), Path.Combine("..", "folder1", "file.txt") },
+            };
+        }
+
+        public static TheoryData<string, string, string> GetRelativeFilePath_Data()
+        {
+            return new TheoryData<string, string, string>
+            {
+                { Path.Combine("C:", "Temp", "abcdefg", "file.txt"), Path.Combine("C:", "Temp", "abcdefg"), "" },
+                { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg"), "dir3" },
+                { Path.Combine("C:", "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine("C:", "Temp", "abcdefg", "dir3"), "" },
+                { Path.Combine("C:", "Temp", "folder1", "file.txt"), Path.Combine("C:", "Temp", "folder2"), Path.Combine("..", "folder1") },
+                { Path.Combine("C:", "Temp", "folder1", "file.txt"), Path.Combine("D:", "folder2"), Path.Combine("C:", "Temp", "folder1") },
             };
         }
     }

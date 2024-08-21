@@ -133,18 +133,18 @@ namespace DNX.Extensions.Tests.DateTimes
             result.Millisecond.Should().Be(value);
         }
 
-        public static IEnumerable<object[]> ResetDateTime_Data()
+        public static TheoryData<DateTime> ResetDateTime_Data()
         {
-            return new List<object[]>()
+            return new TheoryData<DateTime>
             {
-                new object[] { DateTime.UtcNow },
-                new object[] { DateTime.Now },
-                new object[] { DateTime.UnixEpoch },
-                new object[] { DateTime.Parse("2021-11-05 20:53:44.12345") },
-                new object[] { DateTime.Parse("2021-11-05 20:53:44") },
-                new object[] { DateTime.Parse("2021-11-05 20:53") },
-                new object[] { DateTime.Parse("2021-11-05 00:00") },
-                new object[] { DateTime.Parse("2021-11-05") },
+                { DateTime.UtcNow },
+                { DateTime.Now },
+                { DateTime.UnixEpoch },
+                { DateTime.Parse("2021-11-05 20:53:44.12345") },
+                { DateTime.Parse("2021-11-05 20:53:44") },
+                { DateTime.Parse("2021-11-05 20:53") },
+                { DateTime.Parse("2021-11-05 00:00") },
+                { DateTime.Parse("2021-11-05") },
             };
         }
     }

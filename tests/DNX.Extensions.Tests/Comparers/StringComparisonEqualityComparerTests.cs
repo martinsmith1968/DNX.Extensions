@@ -57,45 +57,46 @@ namespace DNX.Extensions.Tests.Comparers
 
         #region TestData
 
-        public static IEnumerable<object[]> StringComparisonValues_Data()
+        public static TheoryData<StringComparison> StringComparisonValues_Data()
         {
-            return Enum.GetValues(typeof(StringComparison))
+            return new TheoryData<StringComparison>(
+                Enum.GetValues(typeof(StringComparison))
                     .Cast<StringComparison>()
-                    .Select(x => new object[] { x });
+            );
         }
 
-        public static IEnumerable<object[]> Equals_Data()
+        public static TheoryData<string, string, StringComparison, bool> Equals_Data()
         {
-            return new List<object[]>()
+            return new TheoryData<string, string, StringComparison, bool>
             {
-                new object[] { null, null, StringComparison.CurrentCulture, true },
-                new object[] { "", "", StringComparison.CurrentCulture, true },
-                new object[] { "ClearBank", "", StringComparison.CurrentCulture, false },
-                new object[] { "ClearBank", "", StringComparison.CurrentCulture, false },
-                new object[] { "", "ClearBank", StringComparison.CurrentCulture, false },
-                new object[] { "ClearBank", null, StringComparison.CurrentCulture, false },
-                new object[] { null, "ClearBank", StringComparison.CurrentCulture, false },
+                { null, null, StringComparison.CurrentCulture, true },
+                { "", "", StringComparison.CurrentCulture, true },
+                { "ClearBank", "", StringComparison.CurrentCulture, false },
+                { "ClearBank", "", StringComparison.CurrentCulture, false },
+                { "", "ClearBank", StringComparison.CurrentCulture, false },
+                { "ClearBank", null, StringComparison.CurrentCulture, false },
+                { null, "ClearBank", StringComparison.CurrentCulture, false },
 
-                new object[] { "Clear", "Bank", StringComparison.CurrentCulture, false },
-                new object[] { "Clear", "Bank", StringComparison.CurrentCultureIgnoreCase, false },
-                new object[] { "Clear", "Bank", StringComparison.InvariantCulture, false },
-                new object[] { "Clear", "Bank", StringComparison.InvariantCultureIgnoreCase, false },
-                new object[] { "Clear", "Bank", StringComparison.Ordinal, false },
-                new object[] { "Clear", "Bank", StringComparison.OrdinalIgnoreCase, false },
+                { "Clear", "Bank", StringComparison.CurrentCulture, false },
+                { "Clear", "Bank", StringComparison.CurrentCultureIgnoreCase, false },
+                { "Clear", "Bank", StringComparison.InvariantCulture, false },
+                { "Clear", "Bank", StringComparison.InvariantCultureIgnoreCase, false },
+                { "Clear", "Bank", StringComparison.Ordinal, false },
+                { "Clear", "Bank", StringComparison.OrdinalIgnoreCase, false },
 
-                new object[] { "ClearBank", "ClearBank", StringComparison.CurrentCulture, true },
-                new object[] { "ClearBank", "ClearBank", StringComparison.CurrentCultureIgnoreCase, true },
-                new object[] { "ClearBank", "ClearBank", StringComparison.InvariantCulture, true },
-                new object[] { "ClearBank", "ClearBank", StringComparison.InvariantCultureIgnoreCase, true },
-                new object[] { "ClearBank", "ClearBank", StringComparison.Ordinal, true },
-                new object[] { "ClearBank", "ClearBank", StringComparison.OrdinalIgnoreCase, true },
+                { "ClearBank", "ClearBank", StringComparison.CurrentCulture, true },
+                { "ClearBank", "ClearBank", StringComparison.CurrentCultureIgnoreCase, true },
+                { "ClearBank", "ClearBank", StringComparison.InvariantCulture, true },
+                { "ClearBank", "ClearBank", StringComparison.InvariantCultureIgnoreCase, true },
+                { "ClearBank", "ClearBank", StringComparison.Ordinal, true },
+                { "ClearBank", "ClearBank", StringComparison.OrdinalIgnoreCase, true },
 
-                new object[] { "ClearBank", "CLEARBANK", StringComparison.CurrentCulture, false },
-                new object[] { "ClearBank", "CLEARBANK", StringComparison.CurrentCultureIgnoreCase, true },
-                new object[] { "ClearBank", "CLEARBANK", StringComparison.InvariantCulture, false },
-                new object[] { "ClearBank", "CLEARBANK", StringComparison.InvariantCultureIgnoreCase, true },
-                new object[] { "ClearBank", "CLEARBANK", StringComparison.Ordinal, false },
-                new object[] { "ClearBank", "CLEARBANK", StringComparison.OrdinalIgnoreCase, true },
+                { "ClearBank", "CLEARBANK", StringComparison.CurrentCulture, false },
+                { "ClearBank", "CLEARBANK", StringComparison.CurrentCultureIgnoreCase, true },
+                { "ClearBank", "CLEARBANK", StringComparison.InvariantCulture, false },
+                { "ClearBank", "CLEARBANK", StringComparison.InvariantCultureIgnoreCase, true },
+                { "ClearBank", "CLEARBANK", StringComparison.Ordinal, false },
+                { "ClearBank", "CLEARBANK", StringComparison.OrdinalIgnoreCase, true },
             };
         }
 

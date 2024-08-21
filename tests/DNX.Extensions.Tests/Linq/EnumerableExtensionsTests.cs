@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using DNX.Extensions.Linq;
 using FluentAssertions;
 using Xunit;
@@ -86,7 +88,7 @@ namespace DNX.Extensions.Tests.Linq
         {
             [Theory]
             [MemberData(nameof(IsOneOf_string_Data))]
-            public void IsOneOf_with_string_data_can_operate_as_expected(IEnumerable<string> list, string candidate, bool expectedResult)
+            public void IsOneOf_with_string_data_can_operate_as_expected(string[] list, string candidate, bool expectedResult)
             {
                 var result = candidate.IsOneOf(list);
 
@@ -95,7 +97,7 @@ namespace DNX.Extensions.Tests.Linq
 
             [Theory]
             [MemberData(nameof(IsOneOf_string_comparer_Data))]
-            public void IsOneOf_with_string_data_and_comparer_can_operate_as_expected(IEnumerable<string> list, string candidate, IEqualityComparer<string> comparer, bool expectedResult)
+            public void IsOneOf_with_string_data_and_comparer_can_operate_as_expected(string[] list, string candidate, IEqualityComparer<string> comparer, bool expectedResult)
             {
                 var result = candidate.IsOneOf(list, comparer);
 
@@ -166,77 +168,77 @@ namespace DNX.Extensions.Tests.Linq
 
             #region Test Data
 
-            public static IEnumerable<object[]> IsOneOf_string_Data()
+            public static TheoryData<string[], string, bool> IsOneOf_string_Data()
             {
-                return new List<object[]>()
+                return new TheoryData<string[], string, bool>
                 {
-                    new object[] { null, "3", false },
-                    new object[] { Enumerable.Empty<string>().ToArray(), "3", false },
-                    new object[] { "1,2,3,4,5".Split(','), "3", true },
-                    new object[] { "1,2,3,4,5".Split(','), "6", false },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "One", true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Two", true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Three", true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Four", true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Five", true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "five", false },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Six", false },
+                    { null, "3", false },
+                    { Enumerable.Empty<string>().ToArray(), "3", false },
+                    { "1,2,3,4,5".Split(','), "3", true },
+                    { "1,2,3,4,5".Split(','), "6", false },
+                    { "One,Two,Three,Four,Five".Split(','), "One", true },
+                    { "One,Two,Three,Four,Five".Split(','), "Two", true },
+                    { "One,Two,Three,Four,Five".Split(','), "Three", true },
+                    { "One,Two,Three,Four,Five".Split(','), "Four", true },
+                    { "One,Two,Three,Four,Five".Split(','), "Five", true },
+                    { "One,Two,Three,Four,Five".Split(','), "five", false },
+                    { "One,Two,Three,Four,Five".Split(','), "Six", false },
                 };
             }
 
-            public static IEnumerable<object[]> IsOneOf_string_comparer_Data()
+            public static TheoryData<string[], string, IEqualityComparer<string>, bool> IsOneOf_string_comparer_Data()
             {
-                return new List<object[]>()
+                return new TheoryData<string[], string, IEqualityComparer<string>, bool>
                 {
-                    new object[] { "1,2,3,4,5".Split(','), "3", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
-                    new object[] { "1,2,3,4,5".Split(','), "6", StringComparer.FromComparison(StringComparison.CurrentCulture), false },
-                    new object[] { "1,2,3,4,5".Split(','), "3", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
-                    new object[] { "1,2,3,4,5".Split(','), "6", StringComparer.FromComparison(StringComparison.CurrentCulture), false },
+                    { "1,2,3,4,5".Split(','), "3", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
+                    { "1,2,3,4,5".Split(','), "6", StringComparer.FromComparison(StringComparison.CurrentCulture), false },
+                    { "1,2,3,4,5".Split(','), "3", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
+                    { "1,2,3,4,5".Split(','), "6", StringComparer.FromComparison(StringComparison.CurrentCulture), false },
 
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "One", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Two", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Three", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Four", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Five", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "five", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Six", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), false },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "One", StringComparer.FromComparison(StringComparison.CurrentCulture), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Two", StringComparer.FromComparison(StringComparison.CurrentCulture), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Three", StringComparer.FromComparison(StringComparison.CurrentCulture), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Four", StringComparer.FromComparison(StringComparison.CurrentCulture), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Five", StringComparer.FromComparison(StringComparison.CurrentCulture), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "five", StringComparer.FromComparison(StringComparison.CurrentCulture), false },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Six", StringComparer.FromComparison(StringComparison.CurrentCulture), false },
+                    { "One,Two,Three,Four,Five".Split(','), "One", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Two", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Three", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Four", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Five", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "five", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Six", StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase), false },
+                    { "One,Two,Three,Four,Five".Split(','), "One", StringComparer.FromComparison(StringComparison.CurrentCulture), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Two", StringComparer.FromComparison(StringComparison.CurrentCulture), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Three", StringComparer.FromComparison(StringComparison.CurrentCulture), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Four", StringComparer.FromComparison(StringComparison.CurrentCulture), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Five", StringComparer.FromComparison(StringComparison.CurrentCulture), true },
+                    { "One,Two,Three,Four,Five".Split(','), "five", StringComparer.FromComparison(StringComparison.CurrentCulture), false },
+                    { "One,Two,Three,Four,Five".Split(','), "Six", StringComparer.FromComparison(StringComparison.CurrentCulture), false },
 
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "One", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Two", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Three", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Four", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Five", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "five", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Six", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), false },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "One", StringComparer.FromComparison(StringComparison.Ordinal), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Two", StringComparer.FromComparison(StringComparison.Ordinal), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Three", StringComparer.FromComparison(StringComparison.Ordinal), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Four", StringComparer.FromComparison(StringComparison.Ordinal), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Five", StringComparer.FromComparison(StringComparison.Ordinal), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "five", StringComparer.FromComparison(StringComparison.Ordinal), false },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Six", StringComparer.FromComparison(StringComparison.Ordinal), false },
+                    { "One,Two,Three,Four,Five".Split(','), "One", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Two", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Three", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Four", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Five", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "five", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Six", StringComparer.FromComparison(StringComparison.OrdinalIgnoreCase), false },
+                    { "One,Two,Three,Four,Five".Split(','), "One", StringComparer.FromComparison(StringComparison.Ordinal), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Two", StringComparer.FromComparison(StringComparison.Ordinal), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Three", StringComparer.FromComparison(StringComparison.Ordinal), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Four", StringComparer.FromComparison(StringComparison.Ordinal), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Five", StringComparer.FromComparison(StringComparison.Ordinal), true },
+                    { "One,Two,Three,Four,Five".Split(','), "five", StringComparer.FromComparison(StringComparison.Ordinal), false },
+                    { "One,Two,Three,Four,Five".Split(','), "Six", StringComparer.FromComparison(StringComparison.Ordinal), false },
 
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "One", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Two", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Three", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Four", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Five", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "five", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Six", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), false },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "One", StringComparer.FromComparison(StringComparison.InvariantCulture), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Two", StringComparer.FromComparison(StringComparison.InvariantCulture), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Three", StringComparer.FromComparison(StringComparison.InvariantCulture), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Four", StringComparer.FromComparison(StringComparison.InvariantCulture), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Five", StringComparer.FromComparison(StringComparison.InvariantCulture), true },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "five", StringComparer.FromComparison(StringComparison.InvariantCulture), false },
-                    new object[] { "One,Two,Three,Four,Five".Split(','), "Six", StringComparer.FromComparison(StringComparison.InvariantCulture), false },
+                    { "One,Two,Three,Four,Five".Split(','), "One", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Two", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Three", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Four", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Five", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "five", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Six", StringComparer.FromComparison(StringComparison.InvariantCultureIgnoreCase), false },
+                    { "One,Two,Three,Four,Five".Split(','), "One", StringComparer.FromComparison(StringComparison.InvariantCulture), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Two", StringComparer.FromComparison(StringComparison.InvariantCulture), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Three", StringComparer.FromComparison(StringComparison.InvariantCulture), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Four", StringComparer.FromComparison(StringComparison.InvariantCulture), true },
+                    { "One,Two,Three,Four,Five".Split(','), "Five", StringComparer.FromComparison(StringComparison.InvariantCulture), true },
+                    { "One,Two,Three,Four,Five".Split(','), "five", StringComparer.FromComparison(StringComparison.InvariantCulture), false },
+                    { "One,Two,Three,Four,Five".Split(','), "Six", StringComparer.FromComparison(StringComparison.InvariantCulture), false },
                 };
             }
 
@@ -332,10 +334,8 @@ namespace DNX.Extensions.Tests.Linq
             }
         }
 
-        public class GetAt(ITestOutputHelper testOutputHelper)
+        public class GetAt
         {
-            private readonly ITestOutputHelper _testOutputHelper = testOutputHelper;
-
             [Theory]
             [InlineData("1,2,3,4,5", 0, "1")]
             [InlineData("1,2,3,4,5", 2, "3")]

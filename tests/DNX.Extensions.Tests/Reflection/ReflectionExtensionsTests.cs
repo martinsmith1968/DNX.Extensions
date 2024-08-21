@@ -3,6 +3,9 @@ using DNX.Extensions.Reflection;
 using FluentAssertions;
 using Xunit;
 
+#pragma warning disable CA1822 // Members can be static
+#pragma warning disable IDE0051 // Unused private member
+
 // ReSharper disable UnusedMember.Local
 
 namespace DNX.Extensions.Tests.Reflection;
@@ -20,20 +23,20 @@ public class TestClass
 
 public class ReflectionExtensionsTests
 {
-    public static IEnumerable<object[]> GetPrivatePropertyValue_Private_Data()
+    public static TheoryData<string, string> GetPrivatePropertyValue_Private_Data()
     {
-        return new List<object[]>()
+        return new TheoryData<string, string>
         {
-            new [] { "UserDomainName", Environment.UserDomainName },
+            { "UserDomainName", Environment.UserDomainName },
         };
     }
 
-    public static IEnumerable<object[]> GetPrivatePropertyValue_Public_Data()
+    public static TheoryData<string, string> GetPrivatePropertyValue_Public_Data()
     {
-        return new List<object[]>()
+        return new TheoryData<string, string>
         {
-            new [] { nameof(TestClass.MachineName), Environment.MachineName },
-            new [] { nameof(TestClass.UserName), Environment.UserName },
+            { nameof(TestClass.MachineName), Environment.MachineName },
+            { nameof(TestClass.UserName), Environment.UserName },
         };
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -90,12 +91,49 @@ public static class DirectoryInfoExtensions
     {
         var relativePath = owningDirectoryInfo == null || directoryInfo == null
             ? null
-            : ""; //Path.GetRelativePath(owningDirectoryInfo.FullName, directoryInfo.FullName)
-                //.RemoveStartsWith($".{Path.DirectorySeparatorChar}");
+            : GetRelativePath(directoryInfo.FullName, owningDirectoryInfo.FullName)
+                .RemoveStartsWith($".{Path.DirectorySeparatorChar}");
 
         if (relativePath == ".")
+        {
             relativePath = string.Empty;
+        }
 
         return relativePath;
+    }
+    /// <summary>
+    /// Returns a relative path string from a full path based on a base path
+    /// provided.
+    /// </summary>
+    /// <param name="fullPath">The path to convert. Can be either a file or a directory</param>
+    /// <param name="basePath">The base path on which relative processing is based. Should be a directory.</param>
+    /// <returns>
+    /// String of the relative path.
+    ///
+    /// Examples of returned values:
+    ///  test.txt, ..\test.txt, ..\..\..\test.txt, ., .., subdir\test.txt
+    /// </returns>
+    /// <remarks>
+    /// From : http://stackoverflow.com/questions/275689/how-to-get-relative-path-from-absolute-path
+    /// </remarks>
+    private static string GetRelativePath(string fullPath, string basePath)
+    {
+#if NETSTANDARD2_1_OR_GREATER
+        return Path.GetRelativePath(basePath, fullPath);
+#else
+        // Require trailing path separator for path
+        fullPath = fullPath.EnsureEndsWith(Path.DirectorySeparatorChar.ToString());
+        basePath = basePath.EnsureEndsWith(Path.DirectorySeparatorChar.ToString());
+
+        var baseUri = new Uri(basePath);
+        var fullUri = new Uri(fullPath);
+
+        var relativeUri = baseUri.MakeRelativeUri(fullUri);
+
+        // Uri's use forward slashes so convert back to OS slashes
+        return relativeUri.ToString()
+            .Replace("/", Path.DirectorySeparatorChar.ToString())
+            .RemoveEndsWith(Path.DirectorySeparatorChar.ToString());
+#endif
     }
 }

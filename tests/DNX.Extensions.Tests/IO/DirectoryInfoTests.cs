@@ -2,6 +2,8 @@ using DNX.Extensions.IO;
 using FluentAssertions;
 using Xunit;
 
+// ReSharper disable StringLiteralTypo
+
 namespace DNX.Extensions.Tests.IO
 {
     public class DirectoryInfoExtensionsTests : IDisposable
@@ -20,6 +22,7 @@ namespace DNX.Extensions.Tests.IO
         public void Dispose()
         {
             _directoryInfo.Delete(true);
+            GC.SuppressFinalize(this);
         }
 
         internal static void CreateFile(DirectoryInfo directoryInfo, string fileName)
@@ -218,31 +221,31 @@ namespace DNX.Extensions.Tests.IO
         [MemberData(nameof(GetRelativePath_Data))]
         public void GetRelativePath_can_extract_relative_path_correctly(string dirName, string relativeToDirName, string expected)
         {
-            var dirInfo = dirName == null ? null :  new DirectoryInfo(dirName);
+            var dirInfo = dirName == null ? null : new DirectoryInfo(dirName);
             var relativeToDirInfo = relativeToDirName == null ? null : new DirectoryInfo(relativeToDirName);
 
             var result = dirInfo.GetRelativePath(relativeToDirInfo);
 
-            result.Should().Be(expected);
+            result.Should().Be(expected, $"{nameof(dirName)}: {dirName} - {nameof(relativeToDirInfo)}: {relativeToDirInfo}");
         }
 
-        public static IEnumerable<object[]> GetRelativePath_Data()
+        public static TheoryData<string, string, string> GetRelativePath_Data()
         {
             var guid1 = Guid.NewGuid().ToString();
             var guid2 = Guid.NewGuid().ToString();
             var guid3 = Guid.NewGuid().ToString();
 
-            return new List<object[]>()
+            return new TheoryData<string, string, string>()
             {
-                new object[] { Path.Combine(Path.GetTempPath(), guid1), null, null },
-                new object[] { null, Path.Combine(Path.GetTempPath(), guid1), null },
-                new object[] { Path.Combine(Path.GetTempPath(), guid1), Path.Combine(Path.GetTempPath(), "abcdefg"), Path.Join("..", guid1) },
-                new object[] { Path.Combine(Path.GetTempPath(), guid2), Path.Combine(Path.GetTempPath(), guid3), Path.Join("..", guid2) },
-                new object[] { Path.Combine(Path.GetTempPath(), "abcdefg"), Path.Combine(Path.GetTempPath(), "abcdefg"), "" },
-                new object[] { Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"), Path.Combine(Path.GetTempPath(), "abcdefg"), "dir3" },
-                new object[] { Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"), Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"), "" },
-                new object[] { Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine(Path.GetTempPath(), "folder2"), Path.Combine("..", "folder1") },
-                new object[] { Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("D:", "folder2"), Path.Combine(Path.GetTempPath(), "folder1") },
+                { Path.Combine(Path.GetTempPath(), guid1), null, null },
+                { null, Path.Combine(Path.GetTempPath(), guid1), null },
+                { Path.Combine(Path.GetTempPath(), guid1), Path.Combine(Path.GetTempPath(), "abcdefg"), Path.Join("..", guid1) },
+                { Path.Combine(Path.GetTempPath(), guid2), Path.Combine(Path.GetTempPath(), guid3), Path.Join("..", guid2) },
+                { Path.Combine(Path.GetTempPath(), "abcdefg"), Path.Combine(Path.GetTempPath(), "abcdefg"), "" },
+                { Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"), Path.Combine(Path.GetTempPath(), "abcdefg"), "dir3" },
+                { Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"), Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"), "" },
+                { Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine(Path.GetTempPath(), "folder2"), Path.Combine("..", "folder1") },
+                { Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("D:", "folder2"), Path.Combine(Path.GetTempPath(), "folder1") },
             };
         }
     }
