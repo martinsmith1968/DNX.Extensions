@@ -66,7 +66,7 @@ jobs:
             should_release=true
         elif [[ "${{ github.ref }}" == refs/heads/${{ env.BRANCH_PREFIX_RELEASE_CANDIDATE }}* ]]
         then
-            should_publish=true
+            should_release=true
         fi
 
         echo "should_release=${should_release}" >> $GITHUB_ENV
@@ -103,7 +103,7 @@ jobs:
 
     - name: Show Configuration
       id: show_configuration
-      run: env
+      run: env | sort
 
     outputs:
       assembly_version: ${{ env.assembly_version }}
