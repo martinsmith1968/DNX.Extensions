@@ -135,17 +135,22 @@ namespace DNX.Extensions.Tests.DateTimes
 
         public static TheoryData<DateTime> ResetDateTime_Data()
         {
-            return new TheoryData<DateTime>
+            var data = new TheoryData<DateTime>
             {
                 { DateTime.UtcNow },
-                { DateTime.Now },
                 { DateTime.UnixEpoch },
                 { DateTime.Parse("2021-11-05 20:53:44.12345") },
                 { DateTime.Parse("2021-11-05 20:53:44") },
                 { DateTime.Parse("2021-11-05 20:53") },
-                { DateTime.Parse("2021-11-05 00:00") },
                 { DateTime.Parse("2021-11-05") },
             };
+
+            if (DateTime.Now.Hour != DateTime.UtcNow.Hour)
+            {
+                data.Add(DateTime.Now);
+            }
+
+            return data;
         }
     }
 }

@@ -116,7 +116,7 @@ jobs:
       run: dotnet build --no-restore --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version=${{ needs.setup.outputs.product_version }}" /p:"AssemblyVersion=${{ needs.setup.outputs.assembly_version }}"
 
     - name: Test
-      run: dotnet test --no-restore --no-build --configuration ${{ env.BUILD_CONFIG }} --verbosity normal --logger:trx;LogFileName=TestOutput.trx --collect:"XPlat Code Coverage"
+      run: dotnet test --no-restore --no-build --configuration ${{ env.BUILD_CONFIG }} --verbosity normal --collect:"XPlat Code Coverage" --logger:trx;LogFileName=TestOutput.trx
 
     - name: Test Results Summary
       uses: bibipkins/dotnet-test-reporter@v1.4.0
