@@ -248,13 +248,13 @@ namespace DNX.Extensions.Tests.IO
                 { Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine(Path.GetTempPath(), "folder2"), Path.Combine("..", "folder1") },
             };
 
-            if (Environment.OSVersion.Platform.ToString().StartsWith("Win"))
+            if (Configuration.EnvironmentConfig.IsWindowsStyleFileSystem)
             {
                 data.Add(Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("D:", "folder2"), Path.Combine(Path.GetTempPath(), "folder1"));
             }
-            else if (Environment.OSVersion.Platform.IsOneOf(PlatformID.Unix, PlatformID.MacOSX))
+            else if (Configuration.EnvironmentConfig.IsLinuxStyleFileSystem)
             {
-                data.Add(Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("/etc", "folder2"), Path.Combine(Path.GetTempPath(), "folder1"));
+                data.Add(Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("/etc", "folder2"), Path.Combine("..", "..", Path.GetTempPath(), "folder1"));
             }
 
             return data;

@@ -12,7 +12,7 @@ namespace DNX.Extensions.Tests.IO
         {
             get
             {
-                return Environment.OSVersion.Platform.IsOneOf(PlatformID.Unix, PlatformID.MacOSX)
+                return Configuration.EnvironmentConfig.IsLinuxStyleFileSystem
                     ? "/root1"
                     : "C:";
             }
@@ -22,7 +22,7 @@ namespace DNX.Extensions.Tests.IO
         {
             get
             {
-                return Environment.OSVersion.Platform.IsOneOf(PlatformID.Unix, PlatformID.MacOSX)
+                return Configuration.EnvironmentConfig.IsLinuxStyleFileSystem
                     ? "/root2"
                     : "D:";
             }
@@ -142,7 +142,11 @@ namespace DNX.Extensions.Tests.IO
                 { Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine(DriveRoot1, "Temp", "abcdefg"), "dir3" },
                 { Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3", "file1.tf"), Path.Combine(DriveRoot1, "Temp", "abcdefg", "dir3"), "" },
                 { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot1, "Temp", "folder2"), Path.Combine("..", "folder1") },
-                { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot2, "folder2"), Path.Combine(DriveRoot1, "Temp", "folder1") },
+                { Path.Combine(DriveRoot1, "Temp", "folder1", "file.txt"), Path.Combine(DriveRoot2, "folder2"),
+                    Configuration.EnvironmentConfig.IsLinuxStyleFileSystem
+                        ? Path.Combine("..", "..", DriveRoot1, "Temp", "folder1")
+                        : Path.Combine(DriveRoot1, "Temp", "folder1")
+                },
             };
         }
     }
