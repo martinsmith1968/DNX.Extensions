@@ -9,6 +9,8 @@ env:
   BUILD_CONFIG: Release
   BUILD_PLATFORM: Any CPU
   PACK_PARAMETERS: ''
+  COVERAGE_WARNING_THRESHOLD: 60
+  COVERAGE_ERROR_THRESHOLD: 80
   NUGET_OUTPUT_FOLDER: nupkgs
   BRANCH_RELEASE_CANDIDATE: rc/**
 
@@ -127,7 +129,17 @@ jobs:
         hide_complexity: false
         indicators: true
         output: both
-        thresholds: '60 80'
+        thresholds: '${{ env.COVERAGE_ERROR_THRESHOLD }} ${{ env.COVERAGE_WARNING_THRESHOLD }}'
+
+    - name: Test Results Summary
+      uses: bibipkins/dotnet-test-reporter@v1.4.0
+      if: success() || failure()
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        comment-title: 'Unit Test Results'
+        results-path: ./TestResults/*.trx
+        coverage-path: "**/coverage.cobertura.xml"
+        coverage-threshold: ${{ env.COVERAGE_WARNING_THRESHOLD }}
 
     - name: Pull Request - Add Coverage Comment
       uses: marocchino/sticky-pull-request-comment@v2
