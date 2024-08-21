@@ -194,7 +194,7 @@ jobs:
   ## Generate a Release and Tag in git
   release:
     name: Create GitHub Release
-    if: (needs.setup.outputs.should_release == 'true') && success()
+    if: needs.setup.outputs.should_release == 'true'
 
     needs:
       - setup
@@ -238,7 +238,7 @@ jobs:
   ## Publish to NuGet
   publish:
     name: Publish to NuGet
-    if: (needs.setup.outputs.should_publish == 'true') && success()
+    if: needs.setup.outputs.should_publish == 'true'
 
     needs:
       - setup
