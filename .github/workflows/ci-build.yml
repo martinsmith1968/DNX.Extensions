@@ -60,6 +60,8 @@ jobs:
       id: should_release
       run: |
         should_release=false
+        release_is_draft=false
+        release_is_prerelease=false
 
         if [ "${{ github.ref }}" == 'refs/heads/main' ]
         then
@@ -67,9 +69,18 @@ jobs:
         elif [[ "${{ github.ref }}" == refs/heads/${{ env.BRANCH_PREFIX_RELEASE_CANDIDATE }}* ]]
         then
             should_release=true
+            release_is_draft=true
+
+            if [ "${{ github.event_name }}" == "pull_request" ]
+            then
+              release_is_draft=false
+              release_is_prerelease=true
+            fi
         fi
 
         echo "should_release=${should_release}" >> $GITHUB_ENV
+        echo "release_is_draft=${release_is_draft}" >> $GITHUB_ENV
+        echo "release_is_prerelease=${release_is_prerelease}" >> $GITHUB_ENV
 
     - name: Determine package publishing
       id: should_publish
@@ -110,6 +121,9 @@ jobs:
       product_version: ${{ env.product_version }}
       package_version: ${{ env.package_version }}
       should_publish: ${{ env.should_publish }}
+      should_release: ${{ env.should_release }}
+      release_is_draft: ${{ env.release_is_draft }}
+      release_is_prerelease: ${{ env.release_is_prerelease }}
 
   ##########################################################
   ## Build DotNet projects
@@ -223,6 +237,9 @@ jobs:
         tag: v${{ needs.setup.outputs.assembly_version }}
         name: Release ${{ needs.setup.outputs.assembly_version }}
         body: ${{ steps.build_changelog.outputs.changelog }}
+        draft: ${{ needs.setup.outputs.release_is_draft }}
+        prerelease: ${{ needs.setup.outputs.release_is_prerelease }}
+        removeArtifacts: true
         artifacts: '**/*.nupkg'
 
     - name: Tag git
@@ -243,7 +260,6 @@ jobs:
     needs:
       - setup
       - build
-      - release
 
     runs-on: ubuntu-latest
 
