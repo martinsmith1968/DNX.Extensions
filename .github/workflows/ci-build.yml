@@ -260,7 +260,6 @@ jobs:
     needs:
       - setup
       - build
-      - release
 
     runs-on: ubuntu-latest
 
