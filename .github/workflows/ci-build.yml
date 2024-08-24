@@ -43,19 +43,7 @@ jobs:
     - name: Get Current Build Date
       run: echo "build_date=$(date +'%y%j')" >> $GITHUB_ENV
 
-    - name: Set Package Suffix
-      run: |
-        branch="${{ github.ref }}"
-        package_suffix=''
-
-        if [ "$branch" != "refs/heads/main" ]
-        then
-            package_suffix='-beta'
-        fi
-
-        echo "package_suffix=${package_suffix}" >> $GITHUB_ENV
-
-    - name: Evaluate conditions
+    - name: Evaluate pipeline conditions
       run: |
         is_primary_branch=false
         is_pull_request_build=false
@@ -93,22 +81,50 @@ jobs:
           is_benchmark_candidate_branch=true
         fi
 
-    - name: Determing GitHub Releasing
+        # Set for later steps
+        echo "is_primary_branch=${is_primary_branch}" >> $GITHUB_ENV
+        echo "is_pull_request_build=${is_pull_request_build}" >> $GITHUB_ENV
+        echo "is_release_candidate_branch=${is_release_candidate_branch}" >> $GITHUB_ENV
+        echo "is_publish_candidate_branch=${is_publish_candidate_branch}" >> $GITHUB_ENV
+        echo "is_benchmark_candidate_branch=${is_benchmark_candidate_branch}" >> $GITHUB_ENV
+
+    - name: Set Package Suffix
+      run: |
+        package_suffix=''
+
+        if $is_primary_branch
+        then
+            package_suffix='-beta'
+        fi
+
+        echo "package_suffix=${package_suffix}" >> $GITHUB_ENV
+
+    - name: Determine Tagging
+      run: |
+        should_tag=false
+
+        if $is_primary_branch
+        then
+            should_tag=true
+        fi
+
+        echo "should_tag=${should_tag}" >> $GITHUB_ENV
+
+    - name: Determine GitHub Releasing
       run: |
         should_release=false
         release_is_draft=false
         release_is_prerelease=false
 
-        if [ "${{ github.ref }}" == 'refs/heads/main' ]
+        if $is_primary_branch
         then
             should_release=true
-        elif [[ "${{ github.ref }}" == refs/heads/${{ env.BRANCH_PREFIX_RELEASE_CANDIDATE }}* ]]
+        elif $is_release_candidate_branch
         then
             should_release=true
             release_is_draft=true
 
-            if [ "${{ github.event_name }}" == "pull_request" ]
-            then
+            if $is_pull_request_build; then
               release_is_draft=false
               release_is_prerelease=true
             fi
@@ -118,17 +134,17 @@ jobs:
         echo "release_is_draft=${release_is_draft}" >> $GITHUB_ENV
         echo "release_is_prerelease=${release_is_prerelease}" >> $GITHUB_ENV
 
-    - name: Determing Benchmarking
+    - name: Determine Benchmarking
       run: |
         should_benchmark=false
 
-        if [ $should_release ]
+        if $should_release
         then
             should_benchmark=true
-        elif [ "${{ github.event_name }}" == "pull_request" ]
+        elif $is_pull_request_build
         then
             should_benchmark=true
-        elif [[ "${{ github.ref }}" == *${{ env.BRANCH_NAME_BENCHMARK_CANDIDATE }}* ]]
+        elif $is_benchmark_candidate_branch
         then
             should_benchmark=true
         fi
@@ -139,13 +155,13 @@ jobs:
       run: |
         should_publish=false
 
-        if [ "${{ github.event_name }}" == "pull_request" ]
+        if $is_primary_branch
         then
             should_publish=true
-        elif [ "${{ github.ref }}" == "refs/heads/main" ]
+        elif $is_pull_request_build
         then
             should_publish=true
-        elif [[ "${{ github.ref }}" == refs/heads/${{ env.BRANCH_PREFIX_PUBLISH_CANDIDATE }}* ]]
+        elif $is_publish_candidate_branch
         then
             should_publish=true
         fi
@@ -168,6 +184,7 @@ jobs:
       assembly_version: ${{ env.assembly_version }}
       product_version: ${{ env.product_version }}
       package_version: ${{ env.package_version }}
+      should_tag: ${{ env.should_tag }}
       should_publish: ${{ env.should_publish }}
       should_release: ${{ env.should_release }}
       should_benchmark: ${{ env.should_benchmark }}
@@ -254,7 +271,30 @@ jobs:
 
 
   ##########################################################
-  ## Generate a Release and Tag in git
+  ## Tag in git
+  tag:
+    name: Tag in GitHub
+    if: needs.setup.outputs.should_tag == 'true'
+
+    needs:
+      - setup
+      - build
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Tag git
+      uses: pkgdeps/git-tag-action@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_repo: ${{ github.repository }}
+        git_commit_sha: ${{ github.sha }}
+        git_tag_prefix: "v"
+        version: ${{ needs.setup.outputs.assembly_version }}
+
+
+  ##########################################################
+  ## Generate a GitHub Release
   release:
     name: Create GitHub Release
     if: needs.setup.outputs.should_release == 'true'
@@ -289,15 +329,6 @@ jobs:
         prerelease: ${{ needs.setup.outputs.release_is_prerelease }}
         removeArtifacts: true
         artifacts: '**/*.nupkg'
-
-    - name: Tag git
-      uses: pkgdeps/git-tag-action@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        github_repo: ${{ github.repository }}
-        git_commit_sha: ${{ github.sha }}
-        git_tag_prefix: "v"
-        version: ${{ needs.setup.outputs.assembly_version }}
 
 
   ##########################################################
