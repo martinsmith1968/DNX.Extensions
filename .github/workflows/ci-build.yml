@@ -362,7 +362,6 @@ jobs:
 
     - name: Publish Benchmark output
       run: |
-        ls -la -R
         cat BenchmarkDotNet.Artifacts/results/*Benchmarks-report-github.md >> $GITHUB_STEP_SUMMARY
 
 
