@@ -1,7 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Exporters;
 
 namespace DNX.Extensions.Benchmarks;
+
+[ExcludeFromCodeCoverage]
 internal class DevelopmentConfig : ManualConfig
 {
     public DevelopmentConfig()

@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using BenchmarkDotNet.Attributes;
 using DNX.Extensions.Strings;
 
 namespace DNX.Extensions.Benchmarks.Strings;
 
+[ExcludeFromCodeCoverage]
 [MemoryDiagnoser]
 [MarkdownExporterAttribute.GitHub]
 public class StringExtensionBenchmarks

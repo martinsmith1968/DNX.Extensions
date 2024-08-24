@@ -246,6 +246,7 @@ namespace DNX.Extensions.Tests.IO
             {
                 { Path.Combine(Path.GetTempPath(), guid1), null, null },
                 { null, Path.Combine(Path.GetTempPath(), guid1), null },
+                { Path.Combine(Path.GetTempPath(), guid1), Path.Combine(Path.GetTempPath(), guid1), "" },
                 { Path.Combine(Path.GetTempPath(), guid1), Path.Combine(Path.GetTempPath(), "abcdefg"), Path.Join("..", guid1) },
                 { Path.Combine(Path.GetTempPath(), guid2), Path.Combine(Path.GetTempPath(), guid3), Path.Join("..", guid2) },
                 { Path.Combine(Path.GetTempPath(), "abcdefg"), Path.Combine(Path.GetTempPath(), "abcdefg"), "" },
