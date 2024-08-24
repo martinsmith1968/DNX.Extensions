@@ -5,6 +5,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Nullable>disable</Nullable>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -18,11 +19,15 @@
     <PackageIcon>favicon-32x32.png</PackageIcon>
     <PackageIconUrl>https://raw.githubusercontent.com/martinsmith1968/DNX.Extensions/main/images/favicon-32x32.png</PackageIconUrl>
     <PackageReleaseNotes>
-      Interpolation to a working version and some preparation for moving to .NET Standard
+      Migration from DNX.Helpers
     </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="../../README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="../../LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>

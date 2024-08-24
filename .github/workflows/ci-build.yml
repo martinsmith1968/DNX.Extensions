@@ -362,7 +362,6 @@ jobs:
 
     - name: Publish Benchmark output
       run: |
-        ls -la -R
         cat BenchmarkDotNet.Artifacts/results/*Benchmarks-report-github.md >> $GITHUB_STEP_SUMMARY
 
 
@@ -392,7 +391,4 @@ jobs:
         path: ${{ env.NUGET_OUTPUT_FOLDER }}
 
     - name: Publish
-      run: dotnet nuget push "**/*.nupkg" -k ${{ secrets.NUGET_API_KEY }} -s https://nuget.org
-#
-#    - name: Publish
-#      run: nuget push "**/*.nupkg" -Source 'https://api.nuget.org/v3/index.json' -ApiKey
+      run: nuget push "**/*.nupkg" -Source 'https://api.nuget.org/v3/index.json'
