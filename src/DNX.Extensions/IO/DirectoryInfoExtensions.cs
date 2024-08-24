@@ -94,10 +94,12 @@ public static class DirectoryInfoExtensions
             : GetRelativePath(directoryInfo.FullName, owningDirectoryInfo.FullName)
                 .RemoveStartsWith($".{Path.DirectorySeparatorChar}");
 
+#if NETSTANDARD2_1_OR_GREATER
         if (relativePath == ".")
         {
             relativePath = string.Empty;
         }
+#endif
 
         return relativePath;
     }

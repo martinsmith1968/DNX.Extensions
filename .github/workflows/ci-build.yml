@@ -2,18 +2,19 @@ name: CI Build
 run-name: CIBuild_${{ github.event_name }}_${{ github.ref_name }}_${{ github.run_number }}.${{ github.run_attempt }}
 
 env:
-  PKG_MAJOR_VERSION: 1.2
+  PKG_MAJOR_VERSION: 1.3
   PROJECT_NAME: DNX.Extensions
   DOTNET_VERSION: 8.0.x
   NUGET_VERSION: 5.x
   BUILD_CONFIG: Release
   BUILD_PLATFORM: Any CPU
   PACK_PARAMETERS: ''
-  COVERAGE_WARNING_THRESHOLD: 60
-  COVERAGE_ERROR_THRESHOLD: 80
+  COVERAGE_WARNING_THRESHOLD: 95
+  COVERAGE_ERROR_THRESHOLD: 85
   NUGET_OUTPUT_FOLDER: nupkgs
   BRANCH_PREFIX_RELEASE_CANDIDATE: rc/
   BRANCH_PREFIX_PUBLISH_CANDIDATE: beta/
+  BRANCH_NAME_BENCHMARK_CANDIDATE: benchmark
 
 on:
   push:
@@ -40,39 +41,79 @@ jobs:
 
     steps:
     - name: Get Current Build Date
-      id: build_date
       run: echo "build_date=$(date +'%y%j')" >> $GITHUB_ENV
 
-    - name: Set Package Suffix
-      id: package_suffix
+    - name: Evaluate pipeline conditions
       run: |
-        branch="${{ github.ref }}"
-        package_suffix=''
+        is_primary_branch=false
+        is_pull_request_build=false
+        is_release_candidate_branch=false
+        is_publish_candidate_branch=false
+        is_benchmark_candidate_branch=false
 
-        if [ "$branch" != "refs/heads/main" ]
+        # Primary Branch ?
+        if [ "${{ github.ref }}" == 'refs/heads/main' ]
         then
-            package_suffix='-beta'
+          is_primary_branch=true
         fi
 
-        echo "package_suffix=${package_suffix}" >> $GITHUB_ENV
+        # Pull Request ?
+        if [ "${{ github.event_name }}" == "pull_request" ]
+        then
+          is_pull_request_build=true
+        fi
 
-    - name: Determing GitHub Releasing
-      id: should_release
+        # If Release Candidate branch ?
+        if [[ "${{ github.ref }}" == refs/heads/${{ env.BRANCH_PREFIX_RELEASE_CANDIDATE }}* ]]
+        then
+          is_release_candidate_branch=true
+        fi
+
+        # Is Publish Candidate branch ?
+        if [[ "${{ github.ref }}" == refs/heads/${{ env.BRANCH_PREFIX_PUBLISH_CANDIDATE }}* ]]
+        then
+          is_publish_candidate_branch=true
+        fi
+
+        # Is Benchmark Candidate branch ?
+        if [[ "${{ github.ref }}" == *${{ env.BRANCH_NAME_BENCHMARK_CANDIDATE }}* ]]
+        then
+          is_benchmark_candidate_branch=true
+        fi
+
+        # Set for later steps
+        echo "is_primary_branch=${is_primary_branch}" >> $GITHUB_ENV
+        echo "is_pull_request_build=${is_pull_request_build}" >> $GITHUB_ENV
+        echo "is_release_candidate_branch=${is_release_candidate_branch}" >> $GITHUB_ENV
+        echo "is_publish_candidate_branch=${is_publish_candidate_branch}" >> $GITHUB_ENV
+        echo "is_benchmark_candidate_branch=${is_benchmark_candidate_branch}" >> $GITHUB_ENV
+
+    - name: Determine Tagging
+      run: |
+        should_tag=false
+
+        if $is_primary_branch
+        then
+            should_tag=true
+        fi
+
+        echo "should_tag=${should_tag}" >> $GITHUB_ENV
+
+    - name: Determine GitHub Releasing
       run: |
         should_release=false
         release_is_draft=false
         release_is_prerelease=false
 
-        if [ "${{ github.ref }}" == 'refs/heads/main' ]
+        if $is_primary_branch
         then
             should_release=true
-        elif [[ "${{ github.ref }}" == refs/heads/${{ env.BRANCH_PREFIX_RELEASE_CANDIDATE }}* ]]
+        elif $is_release_candidate_branch
         then
             should_release=true
             release_is_draft=true
 
-            if [ "${{ github.event_name }}" == "pull_request" ]
-            then
+            if $is_pull_request_build; then
               release_is_draft=false
               release_is_prerelease=true
             fi
@@ -82,48 +123,79 @@ jobs:
         echo "release_is_draft=${release_is_draft}" >> $GITHUB_ENV
         echo "release_is_prerelease=${release_is_prerelease}" >> $GITHUB_ENV
 
+    - name: Determine Benchmarking
+      run: |
+        should_benchmark=false
+
+        if $should_release
+        then
+            should_benchmark=true
+        elif $is_pull_request_build
+        then
+            should_benchmark=true
+        elif $is_benchmark_candidate_branch
+        then
+            should_benchmark=true
+        fi
+
+        echo "should_benchmark=${should_benchmark}" >> $GITHUB_ENV
+
     - name: Determine package publishing
-      id: should_publish
       run: |
         should_publish=false
 
-        if [ "${{ github.event_name }}" == "pull_request" ]
+        if $is_primary_branch
         then
             should_publish=true
-        elif [ "${{ github.ref }}" == "refs/heads/main" ]
+        elif $is_pull_request_build
         then
             should_publish=true
-        elif [[ "${{ github.ref }}" == refs/heads/${{ env.BRANCH_PREFIX_PUBLISH_CANDIDATE }}* ]]
+        elif $is_publish_candidate_branch
         then
             should_publish=true
         fi
 
         echo "should_publish=${should_publish}" >> $GITHUB_ENV
 
+    - name: Set Package Suffix
+      run: |
+        package_suffix=''
+
+        if !($is_primary_branch)
+        then
+            package_suffix='-beta'
+
+            if $should_release
+            then
+              package_suffix='-rc'
+            fi
+        fi
+
+        echo "package_suffix=${package_suffix}" >> $GITHUB_ENV
+
     - name: Set Product Version
-      id: product_version
       run: echo "product_version=${{ env.PKG_MAJOR_VERSION }}" >> $GITHUB_ENV
 
     - name: Set Assembly Version
-      id: assembly_version
       run: echo "assembly_version=${{ env.PKG_MAJOR_VERSION }}.${{ env.build_date }}.${{ github.run_number }}${{ github.run_attempt }}" >> $GITHUB_ENV
 
     - name: Set Package Version
-      id: package_version
       run: echo "package_version=${{ env.assembly_version }}${{ env.package_suffix }}" >> $GITHUB_ENV
 
     - name: Show Configuration
-      id: show_configuration
       run: env | sort
 
     outputs:
       assembly_version: ${{ env.assembly_version }}
       product_version: ${{ env.product_version }}
       package_version: ${{ env.package_version }}
+      should_tag: ${{ env.should_tag }}
       should_publish: ${{ env.should_publish }}
       should_release: ${{ env.should_release }}
+      should_benchmark: ${{ env.should_benchmark }}
       release_is_draft: ${{ env.release_is_draft }}
       release_is_prerelease: ${{ env.release_is_prerelease }}
+
 
   ##########################################################
   ## Build DotNet projects
@@ -160,8 +232,6 @@ jobs:
         comment-title: 'Unit Test Results'
         results-path: "**/*.trx"
         coverage-type: cobertura
-        #coverage-path: "**/coverage.cobertura.xml"
-        #coverage-threshold: ${{ env.COVERAGE_WARNING_THRESHOLD }}
 
     - name: Code Coverage Report
       uses: irongut/CodeCoverageSummary@v1.3.0
@@ -204,8 +274,32 @@ jobs:
         path: "${{ env.NUGET_OUTPUT_FOLDER }}/**"
         if-no-files-found: error
 
+
   ##########################################################
-  ## Generate a Release and Tag in git
+  ## Tag in git
+  tag:
+    name: Tag in GitHub
+    if: needs.setup.outputs.should_tag == 'true'
+
+    needs:
+      - setup
+      - build
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Tag git
+      uses: pkgdeps/git-tag-action@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_repo: ${{ github.repository }}
+        git_commit_sha: ${{ github.sha }}
+        git_tag_prefix: "v"
+        version: ${{ needs.setup.outputs.assembly_version }}
+
+
+  ##########################################################
+  ## Generate a GitHub Release
   release:
     name: Create GitHub Release
     if: needs.setup.outputs.should_release == 'true'
@@ -226,7 +320,6 @@ jobs:
         path: nuget
 
     - name: Build Changelog
-      id: build_changelog
       uses: mikepenz/release-changelog-builder-action@v5
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -242,14 +335,36 @@ jobs:
         removeArtifacts: true
         artifacts: '**/*.nupkg'
 
-    - name: Tag git
-      uses: pkgdeps/git-tag-action@v3
+
+  ##########################################################
+  ## Benchmark Performance
+  benchmark:
+    name: Benchmark Performance
+    if: needs.setup.outputs.should_benchmark == 'true'
+
+    needs:
+      - setup
+      - build
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install .NET SDK
+      uses: actions/setup-dotnet@v4
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        github_repo: ${{ github.repository }}
-        git_commit_sha: ${{ github.sha }}
-        git_tag_prefix: "v"
-        version: ${{ needs.setup.outputs.assembly_version }}
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Run Benchmarks
+      run: dotnet run --configuration ${{ env.BUILD_CONFIG }} --project tests/DNX.Extensions.Benchmarks
+
+    - name: Publish Benchmark output
+      run: |
+        ls -la -R
+        cat BenchmarkDotNet.Artifacts/results/*Benchmarks-report-github.md >> $GITHUB_STEP_SUMMARY
+
 
   ##########################################################
   ## Publish to NuGet
@@ -271,11 +386,13 @@ jobs:
         nuget-version: ${{ env.NUGET_VERSION }}
 
     - name: Download NuGet Output
-      id: download_nuget
       uses: actions/download-artifact@v4
       with:
         name: nuget_output
         path: ${{ env.NUGET_OUTPUT_FOLDER }}
 
     - name: Publish
-      run: nuget push "**/*.nupkg" -Source 'https://api.nuget.org/v3/index.json'
+      run: dotnet nuget push "**/*.nupkg" -k ${{ secrets.NUGET_API_KEY }} -s https://nuget.org
+#
+#    - name: Publish
+#      run: nuget push "**/*.nupkg" -Source 'https://api.nuget.org/v3/index.json' -ApiKey
