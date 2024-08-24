@@ -294,7 +294,9 @@ jobs:
       run: dotnet run --configuration ${{ env.BUILD_CONFIG }} --project tests/DNX.Extensions.Benchmarks
 
     - name: Publish Benchmark output
-      run: cat **/*Benchmarks-report-github.md >> $GITHUB_STEP_SUMMARY
+      run: |
+        ls -la -R
+        cat BenchmarkDotNet.Artifacts/results/*Benchmarks-report-github.md >> $GITHUB_STEP_SUMMARY
 
 
   ##########################################################
