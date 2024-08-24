@@ -9,8 +9,8 @@ env:
   BUILD_CONFIG: Release
   BUILD_PLATFORM: Any CPU
   PACK_PARAMETERS: ''
-  COVERAGE_WARNING_THRESHOLD: 60
-  COVERAGE_ERROR_THRESHOLD: 80
+  COVERAGE_WARNING_THRESHOLD: 95
+  COVERAGE_ERROR_THRESHOLD: 85
   NUGET_OUTPUT_FOLDER: nupkgs
   BRANCH_PREFIX_RELEASE_CANDIDATE: rc/
   BRANCH_PREFIX_PUBLISH_CANDIDATE: beta/
@@ -41,11 +41,9 @@ jobs:
 
     steps:
     - name: Get Current Build Date
-      id: build_date
       run: echo "build_date=$(date +'%y%j')" >> $GITHUB_ENV
 
     - name: Set Package Suffix
-      id: package_suffix
       run: |
         branch="${{ github.ref }}"
         package_suffix=''
@@ -57,8 +55,45 @@ jobs:
 
         echo "package_suffix=${package_suffix}" >> $GITHUB_ENV
 
+    - name: Evaluate conditions
+      run: |
+        is_primary_branch=false
+        is_pull_request_build=false
+        is_release_candidate_branch=false
+        is_publish_candidate_branch=false
+        is_benchmark_candidate_branch=false
+
+        # Primary Branch ?
+        if [ "${{ github.ref }}" == 'refs/heads/main' ]
+        then
+          is_primary_branch=true
+        fi
+
+        # Pull Request ?
+        if [ "${{ github.event_name }}" == "pull_request" ]
+        then
+          is_pull_request_build=true
+        fi
+
+        # If Release Candidate branch ?
+        if [[ "${{ github.ref }}" == refs/heads/${{ env.BRANCH_PREFIX_RELEASE_CANDIDATE }}* ]]
+        then
+          is_release_candidate_branch=true
+        fi
+
+        # Is Publish Candidate branch ?
+        if [[ "${{ github.ref }}" == refs/heads/${{ env.BRANCH_PREFIX_PUBLISH_CANDIDATE }}* ]]
+        then
+          is_publish_candidate_branch=true
+        fi
+
+        # Is Benchmark Candidate branch ?
+        if [[ "${{ github.ref }}" == *${{ env.BRANCH_NAME_BENCHMARK_CANDIDATE }}* ]]
+        then
+          is_benchmark_candidate_branch=true
+        fi
+
     - name: Determing GitHub Releasing
-      id: should_release
       run: |
         should_release=false
         release_is_draft=false
@@ -84,11 +119,13 @@ jobs:
         echo "release_is_prerelease=${release_is_prerelease}" >> $GITHUB_ENV
 
     - name: Determing Benchmarking
-      id: should_benchmark
       run: |
         should_benchmark=false
 
         if [ $should_release ]
+        then
+            should_benchmark=true
+        elif [ "${{ github.event_name }}" == "pull_request" ]
         then
             should_benchmark=true
         elif [[ "${{ github.ref }}" == *${{ env.BRANCH_NAME_BENCHMARK_CANDIDATE }}* ]]
@@ -99,7 +136,6 @@ jobs:
         echo "should_benchmark=${should_benchmark}" >> $GITHUB_ENV
 
     - name: Determine package publishing
-      id: should_publish
       run: |
         should_publish=false
 
@@ -117,19 +153,15 @@ jobs:
         echo "should_publish=${should_publish}" >> $GITHUB_ENV
 
     - name: Set Product Version
-      id: product_version
       run: echo "product_version=${{ env.PKG_MAJOR_VERSION }}" >> $GITHUB_ENV
 
     - name: Set Assembly Version
-      id: assembly_version
       run: echo "assembly_version=${{ env.PKG_MAJOR_VERSION }}.${{ env.build_date }}.${{ github.run_number }}${{ github.run_attempt }}" >> $GITHUB_ENV
 
     - name: Set Package Version
-      id: package_version
       run: echo "package_version=${{ env.assembly_version }}${{ env.package_suffix }}" >> $GITHUB_ENV
 
     - name: Show Configuration
-      id: show_configuration
       run: env | sort
 
     outputs:
@@ -243,7 +275,6 @@ jobs:
         path: nuget
 
     - name: Build Changelog
-      id: build_changelog
       uses: mikepenz/release-changelog-builder-action@v5
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -319,7 +350,6 @@ jobs:
         nuget-version: ${{ env.NUGET_VERSION }}
 
     - name: Download NuGet Output
-      id: download_nuget
       uses: actions/download-artifact@v4
       with:
         name: nuget_output
