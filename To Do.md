@@ -1,12 +1,5 @@
 # TO DO
 
-## Benchmarking
-
-- https://github.com/dotnet/BenchmarkDotNet?tab=readme-ov-file
-- https://benchmarkdotnet.org/articles/guides/getting-started.html
-- https://github.com/dotnet/BenchmarkDotNet/issues/1378
-- https://github.com/evilguest/linq2d/blob/master/.github/workflows/dotnet-core.yml#L31
-
 ## Variables with multiple values
 
 - https://github.com/orgs/community/discussions/46785

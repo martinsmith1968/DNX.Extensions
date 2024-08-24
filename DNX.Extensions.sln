@@ -24,9 +24,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docs", ".docs", "{8700E3D9-9248-4679-A0E8-8AB3E0B3B09D}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
+		README.md = README.md
+		To Do.md = To Do.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNX.Extensions.Benchmarks", "tests\DNX.Extensions.Benchmarks\DNX.Extensions.Benchmarks.csproj", "{D9664527-B415-498F-B8A9-9AF016D7D91F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNX.Extensions.Benchmarks", "tests\DNX.Extensions.Benchmarks\DNX.Extensions.Benchmarks.csproj", "{D9664527-B415-498F-B8A9-9AF016D7D91F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
