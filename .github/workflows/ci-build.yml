@@ -88,17 +88,6 @@ jobs:
         echo "is_publish_candidate_branch=${is_publish_candidate_branch}" >> $GITHUB_ENV
         echo "is_benchmark_candidate_branch=${is_benchmark_candidate_branch}" >> $GITHUB_ENV
 
-    - name: Set Package Suffix
-      run: |
-        package_suffix=''
-
-        if $is_primary_branch
-        then
-            package_suffix='-beta'
-        fi
-
-        echo "package_suffix=${package_suffix}" >> $GITHUB_ENV
-
     - name: Determine Tagging
       run: |
         should_tag=false
@@ -167,6 +156,22 @@ jobs:
         fi
 
         echo "should_publish=${should_publish}" >> $GITHUB_ENV
+
+    - name: Set Package Suffix
+      run: |
+        package_suffix=''
+
+        if !($is_primary_branch)
+        then
+            package_suffix='-beta'
+
+            if $should_release
+            then
+              package_suffix='-rc'
+            fi
+        fi
+
+        echo "package_suffix=${package_suffix}" >> $GITHUB_ENV
 
     - name: Set Product Version
       run: echo "product_version=${{ env.PKG_MAJOR_VERSION }}" >> $GITHUB_ENV
@@ -387,4 +392,7 @@ jobs:
         path: ${{ env.NUGET_OUTPUT_FOLDER }}
 
     - name: Publish
-      run: nuget push "**/*.nupkg" -Source 'https://api.nuget.org/v3/index.json'
+      run: dotnet nuget push nupkg\*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://nuget.org
+#
+#    - name: Publish
+#      run: nuget push "**/*.nupkg" -Source 'https://api.nuget.org/v3/index.json' -ApiKey
