@@ -14,6 +14,7 @@ env:
   NUGET_OUTPUT_FOLDER: nupkgs
   BRANCH_PREFIX_RELEASE_CANDIDATE: rc/
   BRANCH_PREFIX_PUBLISH_CANDIDATE: beta/
+  BRANCH_NAME_BENCHMARK_CANDIDATE: benchmark
 
 on:
   push:
@@ -82,6 +83,21 @@ jobs:
         echo "release_is_draft=${release_is_draft}" >> $GITHUB_ENV
         echo "release_is_prerelease=${release_is_prerelease}" >> $GITHUB_ENV
 
+    - name: Determing Benchmarking
+      id: should_benchmark
+      run: |
+        should_benchmark=false
+
+        if [ $should_release ]
+        then
+            should_benchmark=true
+        elif [[ "${{ github.ref }}" == *${{ env.BRANCH_NAME_BENCHMARK_CANDIDATE }}* ]]
+        then
+            should_benchmark=true
+        fi
+
+        echo "should_benchmark=${should_benchmark}" >> $GITHUB_ENV
+
     - name: Determine package publishing
       id: should_publish
       run: |
@@ -122,8 +138,10 @@ jobs:
       package_version: ${{ env.package_version }}
       should_publish: ${{ env.should_publish }}
       should_release: ${{ env.should_release }}
+      should_benchmark: ${{ env.should_benchmark }}
       release_is_draft: ${{ env.release_is_draft }}
       release_is_prerelease: ${{ env.release_is_prerelease }}
+
 
   ##########################################################
   ## Build DotNet projects
@@ -160,8 +178,6 @@ jobs:
         comment-title: 'Unit Test Results'
         results-path: "**/*.trx"
         coverage-type: cobertura
-        #coverage-path: "**/coverage.cobertura.xml"
-        #coverage-threshold: ${{ env.COVERAGE_WARNING_THRESHOLD }}
 
     - name: Code Coverage Report
       uses: irongut/CodeCoverageSummary@v1.3.0
@@ -203,6 +219,7 @@ jobs:
         name: nuget_output
         path: "${{ env.NUGET_OUTPUT_FOLDER }}/**"
         if-no-files-found: error
+
 
   ##########################################################
   ## Generate a Release and Tag in git
@@ -250,6 +267,42 @@ jobs:
         git_commit_sha: ${{ github.sha }}
         git_tag_prefix: "v"
         version: ${{ needs.setup.outputs.assembly_version }}
+
+
+  ##########################################################
+  ## Benchmark Performance
+  benchmark:
+    name: Benchmark Performance
+    if: needs.setup.outputs.should_release == 'true'
+
+    needs:
+      - setup
+      - build
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Download BuildGet Output
+      id: download_build
+      uses: actions/download-artifact@v4
+      with:
+        name: build_output
+        path: benchmark
+
+    - name: Run Benchmarks
+      run: dotnet run --no-restore --no-build --configuration ${{ env.BUILD_CONFIG }} --project tests\DNX.Extensions.Benchmarks
+
+    - name: Publish Benchmark output
+      run: cat **/*Benchmarks-report-github.md >> $GITHUB_STEP_SUMMARY
+
 
   ##########################################################
   ## Publish to NuGet
