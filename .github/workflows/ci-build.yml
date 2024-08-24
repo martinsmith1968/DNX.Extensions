@@ -273,7 +273,7 @@ jobs:
   ## Benchmark Performance
   benchmark:
     name: Benchmark Performance
-    if: needs.setup.outputs.should_release == 'true'
+    if: needs.setup.outputs.should_benchmark == 'true'
 
     needs:
       - setup
