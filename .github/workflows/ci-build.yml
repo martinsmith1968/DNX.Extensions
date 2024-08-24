@@ -298,7 +298,9 @@ jobs:
         path: benchmark
 
     - name: Run Benchmarks
-      run: dotnet run --no-restore --no-build --configuration ${{ env.BUILD_CONFIG }} --project tests\DNX.Extensions.Benchmarks
+      run: |
+        cd benchmark
+        dotnet run --no-restore --no-build --configuration ${{ env.BUILD_CONFIG }} --project tests\DNX.Extensions.Benchmarks
 
     - name: Publish Benchmark output
       run: cat **/*Benchmarks-report-github.md >> $GITHUB_STEP_SUMMARY
