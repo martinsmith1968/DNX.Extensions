@@ -290,17 +290,8 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Download BuildGet Output
-      id: download_build
-      uses: actions/download-artifact@v4
-      with:
-        name: build_output
-        path: benchmark
-
     - name: Run Benchmarks
-      run: |
-        cd benchmark
-        dotnet run --no-restore --no-build --configuration ${{ env.BUILD_CONFIG }} --project tests\DNX.Extensions.Benchmarks
+      run: dotnet run --configuration ${{ env.BUILD_CONFIG }} --project tests/DNX.Extensions.Benchmarks
 
     - name: Publish Benchmark output
       run: cat **/*Benchmarks-report-github.md >> $GITHUB_STEP_SUMMARY
