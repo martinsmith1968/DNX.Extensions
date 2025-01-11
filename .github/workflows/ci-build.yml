@@ -215,6 +215,20 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
+    - name: Install .NET Tools
+      run: |
+        dotnet tool install -g snitch
+        dotnet tool install -g dotnet-consolidate
+
+    - name: Verify Package Consolidation
+      run: dotnet consolidate -s "${{ env.PROJECT_NAME }}.sln"
+
+    - name: Verify Package Consolidation
+      run: dotnet-consolidate -s "${{ env.PROJECT_NAME }}.sln"
+
+    - name: Verify Package Transitive Dependencies
+      run: snitch "${{ env.PROJECT_NAME }}.sln"
+
     - name: Restore NuGet packages
       run: dotnet restore
 
