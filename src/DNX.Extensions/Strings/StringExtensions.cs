@@ -390,7 +390,7 @@ public static class StringExtensions
             return null;
         }
 
-        var endTextLength = endText?.Length ?? 0;
+        var endTextLength = endText.Length;
 
         var endIndex = text.IndexOf(endText, comparison);
 
@@ -415,7 +415,7 @@ public static class StringExtensions
             return null;
         }
 
-        var endTextLength = endText?.Length ?? 0;
+        var endTextLength = endText.Length;
 
         var endIndex = text.LastIndexOf(endText, comparison);
 
@@ -841,9 +841,9 @@ public static class StringExtensions
     }
 
     /// <summary>
-    /// Truncates a string to the given length if it is longer than the given length, otherwise returns the original string.
+    /// Truncates a string to the given length of the leftmost characters if it is longer than the given length, otherwise returns the original string.
     /// </summary>
-    public static string Truncate(this string input, int length)
+    public static string Left(this string input, int length)
     {
         return input != null && input.Length > length
             ? input.Substring(0, length)
@@ -851,9 +851,20 @@ public static class StringExtensions
     }
 
     /// <summary>
+    /// Truncates a string to the given length of the rightmost characters if it is longer than the given length, otherwise returns the original string.
+    /// </summary>
+    public static string Right(this string input, int length)
+    {
+        return input != null && input.Length > length
+            ? input.Substring(input.Length - length, length)
+            : input;
+    }
+
+    /// <summary>
     /// Converts an ASCII encoded string to Hexadecimal
     /// </summary>
     /// <param name="input">ASCII Encoded Input</param>
+    /// <param name="format">The format to use to generate the Hex value</param>
     /// <returns>Input as Hexadecimal</returns>
     public static string ToHexString(this string input, string format = "X2")
     {

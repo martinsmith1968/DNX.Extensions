@@ -34,7 +34,7 @@ public static class ArrayExtensions
     {
         if (input == null)
         {
-            return new T[0];
+            return [];
         }
 
         var shiftedArray = new T[input.Length];

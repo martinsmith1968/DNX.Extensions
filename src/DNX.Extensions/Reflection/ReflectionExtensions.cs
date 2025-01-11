@@ -16,7 +16,7 @@ public static class ReflectionExtensions
     /// <param name="flags">The flags.</param>
     /// <param name="defaultValue">The default value.</param>
     /// <returns>System.Object.</returns>
-    public static object GetPropertyValueByName<T>(this T instance, string propertyName, BindingFlags flags, object defaultValue = default)
+    public static object GetPropertyValueByName<T>(this T instance, string propertyName, BindingFlags flags, object defaultValue = null)
     {
         var pi = typeof(T).GetProperty(propertyName, flags);
         if (pi == null)
@@ -41,7 +41,7 @@ public static class ReflectionExtensions
     /// <param name="propertyName">Name of the property.</param>
     /// <param name="defaultValue">The default value.</param>
     /// <returns>System.Object.</returns>
-    public static object GetPrivatePropertyValue<T>(this T instance, string propertyName, object defaultValue = default)
+    public static object GetPrivatePropertyValue<T>(this T instance, string propertyName, object defaultValue = null)
     {
         return instance.GetPropertyValueByName(propertyName, BindingFlags.Instance | BindingFlags.NonPublic, defaultValue);
     }
