@@ -221,9 +221,6 @@ jobs:
         dotnet tool install -g dotnet-consolidate
 
     - name: Verify Package Consolidation
-      run: dotnet consolidate -s "${{ env.PROJECT_NAME }}.sln"
-
-    - name: Verify Package Consolidation
       run: dotnet-consolidate -s "${{ env.PROJECT_NAME }}.sln"
 
     - name: Verify Package Transitive Dependencies
