@@ -30,15 +30,9 @@ public static class AssemblyExtensions
 
             var resourceName = $"{nameSpace}.{relativeResourceName}";
 
-            using (var stream = assembly.GetManifestResourceStream(resourceName))
-            {
-                using (var reader = new StreamReader(stream))
-                {
-                    var result = reader.ReadToEnd();
-
-                    return result;
-                }
-            }
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
         }
         catch (Exception e)
         {

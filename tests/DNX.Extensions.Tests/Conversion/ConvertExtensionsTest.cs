@@ -47,71 +47,71 @@ namespace DNX.Extensions.Tests.Conversion
             }
         }
 
-        public class ToBoolean
-        {
-            [Theory]
-            [InlineData("true", true)]
-            [InlineData("TRUE", true)]
-            [InlineData("TrUe", true)]
-            [InlineData("false", false)]
-            [InlineData("FALSE", false)]
-            [InlineData("FaLsE", false)]
-            [InlineData("NotABoolean", false)]
-            public void ToBoolean_without_override_can_convert_successfully(string text, bool expected)
-            {
-                var result = text.ToBoolean();
+        //public class ToBoolean
+        //{
+        //    [Theory]
+        //    [InlineData("true", true)]
+        //    [InlineData("TRUE", true)]
+        //    [InlineData("TrUe", true)]
+        //    [InlineData("false", false)]
+        //    [InlineData("FALSE", false)]
+        //    [InlineData("FaLsE", false)]
+        //    [InlineData("NotABoolean", false)]
+        //    public void ToBoolean_without_override_can_convert_successfully(string text, bool expected)
+        //    {
+        //        var result = text.ToBoolean();
+        //
+        //        result.Should().Be(expected);
+        //    }
+        //
+        //    [Theory]
+        //    [InlineData("true", false, true)]
+        //    [InlineData("TRUE", false, true)]
+        //    [InlineData("TrUe", false, true)]
+        //    [InlineData("false", true, false)]
+        //    [InlineData("FALSE", true, false)]
+        //    [InlineData("FaLsE", true, false)]
+        //    [InlineData("NotABoolean", false, false)]
+        //    [InlineData("NotABoolean", true, true)]
+        //    public void ToBoolean_with_override_can_convert_successfully(string text, bool defaultValue, bool expected)
+        //    {
+        //        var result = text.ToBoolean(defaultValue);
+        //
+        //        result.Should().Be(expected);
+        //    }
+        //}
 
-                result.Should().Be(expected);
-            }
-
-            [Theory]
-            [InlineData("true", false, true)]
-            [InlineData("TRUE", false, true)]
-            [InlineData("TrUe", false, true)]
-            [InlineData("false", true, false)]
-            [InlineData("FALSE", true, false)]
-            [InlineData("FaLsE", true, false)]
-            [InlineData("NotABoolean", false, false)]
-            [InlineData("NotABoolean", true, true)]
-            public void ToBoolean_with_override_can_convert_successfully(string text, bool defaultValue, bool expected)
-            {
-                var result = text.ToBoolean(defaultValue);
-
-                result.Should().Be(expected);
-            }
-        }
-
-        public class ToInt32
-        {
-            [Theory]
-            [InlineData("160", 160)]
-            [InlineData("0", 0)]
-            [InlineData("-1", -1)]
-            [InlineData("2147483647", 2147483647)]
-            [InlineData("2147483648", 0)]
-            [InlineData("NotAnInt32", 0)]
-            public void ToInt32_without_override_can_convert_successfully(string text, int expected)
-            {
-                var result = text.ToInt32();
-
-                result.Should().Be(expected);
-            }
-
-            [Theory]
-            [InlineData("160", 42, 160)]
-            [InlineData("0", 57, 0)]
-            [InlineData("-1", 5, -1)]
-            [InlineData("2147483647", 12345, 2147483647)]
-            [InlineData("2147483648", 12345, 12345)]
-            [InlineData("NotAnInt32", 0, 0)]
-            [InlineData("NotAnInt32", 222, 222)]
-            public void ToInt32_with_override_can_convert_successfully(string text, int defaultValue, int expected)
-            {
-                var result = text.ToInt32(defaultValue);
-
-                result.Should().Be(expected);
-            }
-        }
+        //public class ToInt32
+        //{
+        //    [Theory]
+        //    [InlineData("160", 160)]
+        //    [InlineData("0", 0)]
+        //    [InlineData("-1", -1)]
+        //    [InlineData("2147483647", 2147483647)]
+        //    [InlineData("2147483648", 0)]
+        //    [InlineData("NotAnInt32", 0)]
+        //    public void ToInt32_without_override_can_convert_successfully(string text, int expected)
+        //    {
+        //        var result = text.ToInt32();
+        //
+        //        result.Should().Be(expected);
+        //    }
+        //
+        //    [Theory]
+        //    [InlineData("160", 42, 160)]
+        //    [InlineData("0", 57, 0)]
+        //    [InlineData("-1", 5, -1)]
+        //    [InlineData("2147483647", 12345, 2147483647)]
+        //    [InlineData("2147483648", 12345, 12345)]
+        //    [InlineData("NotAnInt32", 0, 0)]
+        //    [InlineData("NotAnInt32", 222, 222)]
+        //    public void ToInt32_with_override_can_convert_successfully(string text, int defaultValue, int expected)
+        //    {
+        //        var result = text.ToInt32(defaultValue);
+        //
+        //        result.Should().Be(expected);
+        //    }
+        //}
 
         public class ToEnum
         {

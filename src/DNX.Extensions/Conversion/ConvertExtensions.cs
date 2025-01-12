@@ -19,32 +19,6 @@ public static class ConvertExtensions
     }
 
     /// <summary>
-    /// Converts to boolean.
-    /// </summary>
-    /// <param name="text">The text.</param>
-    /// <param name="defaultValue">The default value.</param>
-    /// <returns><c>true/false</c> if can be converted, <c>defaultValue</c> otherwise.</returns>
-    public static bool ToBoolean(this string text, bool defaultValue = default)
-    {
-        return bool.TryParse(text, out var value)
-            ? value
-            : defaultValue;
-    }
-
-    /// <summary>
-    /// Converts to int32.
-    /// </summary>
-    /// <param name="text">The text.</param>
-    /// <param name="defaultValue">The default value.</param>
-    /// <returns>System.Int32.</returns>
-    public static int ToInt32(this string text, int defaultValue = default)
-    {
-        return int.TryParse(text, out var value)
-            ? value
-            : defaultValue;
-    }
-
-    /// <summary>
     /// Converts to enum.
     /// </summary>
     /// <typeparam name="T"></typeparam>

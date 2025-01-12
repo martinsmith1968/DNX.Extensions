@@ -1,0 +1,91 @@
+using System;
+using DNX.Extensions.Exceptions;
+
+namespace #namespace#;
+
+/// <summary>
+/// Class Convert#Name#Extensions.
+/// </summary>
+/// <remarks>
+/// Extensions for converting #type# values
+/// </remarks>
+public static class Convert#name#Extensions
+{
+    /// <summary>
+    /// Converts the string to a #type#
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <returns>#type#</returns>
+    /// <exception cref=""DNX.Helpers.Exceptions.ConversionException"">Unable to convert value to Type</exception>
+    public static #type# To#name#(this string text)
+    {
+        #type# result;
+
+        if (!#type#.TryParse(text, out result))
+        {
+            throw new ConversionException(text, "Unable to convert value to Type", typeof(#type#));
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Converts the string to a #type#, or returns the default value if the conversion fails
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="defaultValue">The default value.</param>
+    /// <returns>#type#</returns>
+    public static #type# To#name#(this string text, #type# defaultValue)
+    {
+        try
+        {
+            var result = text.To#name#();
+
+            return result;
+        }
+        catch (ConversionException)
+        {
+            return defaultValue;
+        }
+    }
+
+    /// <summary>
+    /// Determines if the string can be converted to a #type# or not
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <returns><c>true</c> if the specified text is a #type; otherwise, <c>false</c>.</returns>
+    public static bool Is#name#(this string text)
+    {
+        try
+        {
+            text.To#name#();
+
+            return true;
+        }
+        catch (ConversionException)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Determines if the string can be converted to a #type# or not
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <returns><c>true</c> if the specified text is a #type; otherwise, <c>false</c>.</returns>
+    public static bool Is#name#(this string text, out #type# value)
+    {
+        value = default;
+
+        try
+        {
+            value = text.To#name#();
+
+            return true;
+        }
+        catch (ConversionException)
+        {
+            return false;
+        }
+    }
+}
