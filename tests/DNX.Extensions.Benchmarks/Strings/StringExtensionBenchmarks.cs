@@ -16,21 +16,20 @@ public class StringExtensionBenchmarks
     private string _text1 = "";
     private string _text2 = "";
 
-    [Params(50)]
-    public int AdditionalTextSize { get; set; }
-
     [GlobalSetup]
     public void GlobalSetup()
     {
+        const int padSize = 50;
+
         _text1 = string.Format(
             "{0}{1}{2}",
-            new string('-', AdditionalTextSize),
+            new string('-', padSize),
             SearchText,
-            new string('-', AdditionalTextSize)
+            new string('-', padSize)
         );
 
         _text2 = SearchText;
-        for (var x = 0; x < AdditionalTextSize; ++x)
+        for (var x = 0; x < padSize; ++x)
             _text2 = "-+" + _text2 + "*-";
     }
 
@@ -48,4 +47,13 @@ public class StringExtensionBenchmarks
 
     [Benchmark]
     public string Reverse() => _text1.Reverse();
+
+    [Benchmark]
+    public string EnsureStartsWith() => _text1.EnsureStartsWith("--");
+
+    [Benchmark]
+    public string EnsureEndsWith() => _text1.EnsureEndsWith("--");
+
+    [Benchmark]
+    public string EnsureStartsAndEndsWith() => _text1.EnsureStartsAndEndsWith("--");
 }
