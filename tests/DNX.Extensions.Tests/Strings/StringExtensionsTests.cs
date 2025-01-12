@@ -1128,7 +1128,9 @@ public class StringExtensionsTests
         [InlineData("BobCarolgeesIsALegend", "FC", "Bob Carolgees Is A Legend")]
         public void Wordify_with_reserved_words_Tests(string text, string reservedWordsText, string expectedResult)
         {
-            var reservedWordsList = reservedWordsText?.Split("|").ToArray();
+            var reservedWordsList = reservedWordsText?
+                .Split("|")
+                .ToArray();
 
             // Act
             var result = text.Wordify(reservedWordsList);

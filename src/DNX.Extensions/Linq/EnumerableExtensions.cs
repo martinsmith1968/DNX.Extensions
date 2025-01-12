@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DNX.Extensions.Comparers;
 
 // ReSharper disable PossibleMultipleEnumeration
 
@@ -93,6 +94,72 @@ public static class EnumerableExtensions
     }
 
     /// <summary>
+    /// Determines whether the specified value is in the list.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value">The value.</param>
+    /// <param name="list">The list.</param>
+    /// <returns><c>true</c> if the list is not null and value is in the list; otherwise, <c>false</c>.</returns>
+    public static bool IsIn<T>(this T value, params T[] list)
+    {
+        return value.IsIn(list?.ToList());
+    }
+
+    /// <summary>
+    /// Determines whether the specified value is in the list.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value">The value.</param>
+    /// <param name="list">The list.</param>
+    /// <param name="comparer">The comparer.</param>
+    /// <param name="treatNullListAs">The value to return if the list is null</param>
+    /// <returns><c>true</c> if the value is in the list; otherwise, <c>false</c>.</returns>
+    public static bool IsIn<T>(this T value, IList<T> list, IEqualityComparer<T> comparer = null, bool treatNullListAs = false)
+    {
+        if (list == null)
+        {
+            return treatNullListAs;
+        }
+
+        return comparer == null
+            ? list.Contains(value)
+            : list.Contains(value, comparer);
+    }
+
+    /// <summary>
+    /// Determines whether the specified value is not in the list.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value">The value.</param>
+    /// <param name="list">The list.</param>
+    /// <returns><c>true</c> if the list is not null and value is not in the list; otherwise, <c>false</c>.</returns>
+    public static bool IsNotIn<T>(this T value, params T[] list)
+    {
+        return value.IsNotIn(list?.ToList());
+    }
+
+    /// <summary>
+    /// Determines whether the specified value is not in the list.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value">The value.</param>
+    /// <param name="list">The list.</param>
+    /// <param name="comparer">The comparer.</param>
+    /// <param name="treatNullListAs">The value to return if the list is null</param>
+    /// <returns><c>true</c> if the value is not in the list; otherwise, <c>false</c>.</returns>
+    public static bool IsNotIn<T>(this T value, IList<T> list, IEqualityComparer<T> comparer = null, bool treatNullListAs = false)
+    {
+        if (list == null)
+        {
+            return treatNullListAs;
+        }
+
+        return comparer == null
+            ? !list.Contains(value)
+            : !list.Contains(value, comparer);
+    }
+
+    /// <summary>
     /// Gets the random item.
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -125,5 +192,46 @@ public static class EnumerableExtensions
         return items != null && index >= 0 && index < items.Count
             ? items[index]
             : default;
+    }
+
+    /// <summary>
+    /// Converts an Enumerable to a List or to an empty list if null
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="enumerable">The enumerable.</param>
+    /// <returns>IList&lt;T&gt;.</returns>
+    public static IList<T> ToConcreteList<T>(this IEnumerable<T> enumerable)
+    {
+        return enumerable == null
+            ? []
+            : enumerable.ToList();
+    }
+
+    /// <summary>
+    /// Appends the specified item instance.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="enumerable">The enumerable.</param>
+    /// <param name="instance">The instance.</param>
+    /// <returns>IEnumerable&lt;T&gt;.</returns>
+    public static IEnumerable<T> AppendItem<T>(this IEnumerable<T> enumerable, T instance)
+    {
+        var falseComparer = EqualityComparerFunc<T>.Create((arg1, arg2) => false);
+
+        return enumerable.AppendItem(instance, falseComparer);
+    }
+
+    /// <summary>
+    /// Appends the specified instance.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="enumerable">The enumerable.</param>
+    /// <param name="instance">The instance.</param>
+    /// <param name="comparer">The comparer.</param>
+    /// <returns>IEnumerable&lt;T&gt;.</returns>
+    public static IEnumerable<T> AppendItem<T>(this IEnumerable<T> enumerable, T instance, IEqualityComparer<T> comparer)
+    {
+        return (enumerable ?? [])
+            .Union([instance], comparer);
     }
 }

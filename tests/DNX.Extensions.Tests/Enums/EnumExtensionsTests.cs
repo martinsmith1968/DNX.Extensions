@@ -1,5 +1,5 @@
 using System.ComponentModel;
-using DNX.Extensions.Enums;
+using DNX.Extensions.Enumerations;
 using FluentAssertions;
 using Xunit;
 
@@ -25,7 +25,7 @@ namespace DNX.Extensions.Tests.Enums
     public class EnumExtensionsTests
     {
         [Theory]
-        [InlineData(MyType.One, "One")]
+        [InlineData(MyType.One, null)]
         [InlineData(MyType.Two, "Number 2")]
         [InlineData(MyType.Three, "")]
         [InlineData(MyType.Four, null)]
@@ -34,6 +34,21 @@ namespace DNX.Extensions.Tests.Enums
         {
             // Act
             var result = myType.GetDescription();
+
+            // Assert
+            result.Should().Be(expectedResult, $"{myType} has description: {result}");
+        }
+
+        [Theory]
+        [InlineData(MyType.One, "One")]
+        [InlineData(MyType.Two, "Number 2")]
+        [InlineData(MyType.Three, "")]
+        [InlineData(MyType.Four, "Four")]
+        [InlineData(MyType.Five, "")]
+        public void GetDescriptionOrName_can_retrieve_value_correctly(MyType myType, string expectedResult)
+        {
+            // Act
+            var result = myType.GetDescriptionOrName();
 
             // Assert
             result.Should().Be(expectedResult, $"{myType} has description: {result}");

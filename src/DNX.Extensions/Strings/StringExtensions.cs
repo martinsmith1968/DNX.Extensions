@@ -820,10 +820,12 @@ public static class StringExtensions
     /// <returns>System.String.</returns>
     public static string Wordify(this string text, IList<string> preservedWords)
     {
-        if (string.IsNullOrEmpty(text))
+        if (string.IsNullOrWhiteSpace(text))
             return text;
 
-        var result = Wordify_Regex.Replace(text, " $0");
+        var result = Wordify_Regex
+            .Replace(text, " $0")
+            .Replace("  ", " ");
 
         if (preservedWords.HasAny())
         {

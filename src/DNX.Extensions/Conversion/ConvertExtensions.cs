@@ -3,97 +3,44 @@ using System;
 namespace DNX.Extensions.Conversion;
 
 /// <summary>
-/// Extensions to simplify type conversion
+/// Conversion Extensions.
 /// </summary>
 public static class ConvertExtensions
 {
     /// <summary>
-    /// Converts to string, or default.
-    /// </summary>
-    /// <param name="obj">The object.</param>
-    /// <param name="defaultValue">The default value.</param>
-    /// <returns>System.String.</returns>
-    public static string ToStringOrDefault(this object obj, string defaultValue = "")
-    {
-        return obj?.ToString() ?? defaultValue;
-    }
-
-    /// <summary>
-    /// Converts to boolean.
-    /// </summary>
-    /// <param name="text">The text.</param>
-    /// <param name="defaultValue">The default value.</param>
-    /// <returns><c>true/false</c> if can be converted, <c>defaultValue</c> otherwise.</returns>
-    public static bool ToBoolean(this string text, bool defaultValue = default)
-    {
-        return bool.TryParse(text, out var value)
-            ? value
-            : defaultValue;
-    }
-
-    /// <summary>
-    /// Converts to int32.
-    /// </summary>
-    /// <param name="text">The text.</param>
-    /// <param name="defaultValue">The default value.</param>
-    /// <returns>System.Int32.</returns>
-    public static int ToInt32(this string text, int defaultValue = default)
-    {
-        return int.TryParse(text, out var value)
-            ? value
-            : defaultValue;
-    }
-
-    /// <summary>
-    /// Converts to enum.
+    /// Changes the value to the specified type
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="text">The text.</param>
-    /// <param name="defaultValue">The default value.</param>
+    /// <param name="value">The value.</param>
     /// <returns>T.</returns>
-    public static T ToEnum<T>(this string text, T defaultValue = default)
-        where T : struct
+    public static T ChangeType<T>(this object value)
     {
-        return Enum.TryParse(text, true, out T value)
-            ? value
-            : defaultValue;
+        return (T)ChangeType(value, typeof(T));
     }
 
     /// <summary>
-    /// Converts to guid.
+    /// Changes the value to the specified type
     /// </summary>
-    /// <param name="text">The text.</param>
-    /// <returns>Guid.</returns>
-    public static Guid ToGuid(this string text)
+    /// <param name="value">The value.</param>
+    /// <param name="type">The type.</param>
+    /// <returns>object</returns>
+    public static object ChangeType(this object value, Type type)
     {
-        return text.ToGuid(Guid.Empty);
+        return Convert.ChangeType(value, type);
     }
 
     /// <summary>
-    /// Converts to guid.
-    /// </summary>
-    /// <param name="text">The text.</param>
-    /// <param name="defaultValue">The default value.</param>
-    /// <returns>Guid.</returns>
-    public static Guid ToGuid(this string text, Guid defaultValue)
-    {
-        return Guid.TryParse(text, out var result)
-            ? result
-            : defaultValue;
-    }
-
-    /// <summary>
-    /// Converts to the specified type.
+    /// Changes the value to the specified type, with a default value if conversion fails
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="obj">The object.</param>
+    /// <param name="value">The value.</param>
     /// <param name="defaultValue">The default value.</param>
     /// <returns>T.</returns>
-    public static T To<T>(this object obj, T defaultValue = default)
+    public static T ChangeType<T>(this object value, T defaultValue)
     {
         try
         {
-            return (T)obj ?? defaultValue;
+            return ChangeType<T>(value);
         }
         catch
         {
