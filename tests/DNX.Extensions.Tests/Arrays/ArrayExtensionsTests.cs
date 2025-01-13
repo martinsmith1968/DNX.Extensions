@@ -3,6 +3,8 @@ using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
+// ReSharper disable UseUtf8StringLiteral
+
 #pragma warning disable IDE0290
 
 namespace DNX.Extensions.Tests.Arrays;
@@ -114,7 +116,6 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
         }
     }
 
-
     public class ShiftRight
     {
         [Fact]
@@ -169,5 +170,93 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
             result.Should().NotBeNull();
             result.Length.Should().Be(0);
         }
+    }
+
+    public class Reduce
+    {
+        [Theory]
+        [MemberData(nameof(Reduce_Data_byte))]
+        public void Reduce_can_produce_an_appropriate_output_for_bytes(byte[] input, int targetSize, Func<byte, byte, byte> method, byte[] expectedResult)
+        {
+            // Act
+            var result = input.Reduce(targetSize, method);
+
+            // Assert
+            result.Length.Should().BeLessThanOrEqualTo(targetSize);
+            result.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Theory]
+        [MemberData(nameof(Reduce_Data_string))]
+        public void Reduce_can_produce_an_appropriate_output_for_strings(string[] input, int targetSize, Func<string, string, string> method, string[] expectedResult)
+        {
+            // Act
+            var result = input.Reduce(targetSize, method);
+
+            // Assert
+            result.Length.Should().BeLessThanOrEqualTo(targetSize);
+            result.Should().BeEquivalentTo(expectedResult);
+        }
+
+        // Useful : https://www.compscilib.com/calculate/binaryxor?variation=default
+        public static TheoryData<byte[], int, Func<byte, byte, byte>, byte[]> Reduce_Data_byte()
+        {
+            var data = new TheoryData<byte[], int, Func<byte, byte, byte>, byte[]>();
+
+            data.Add(
+                [1, 2, 3, 4, 5, 6],
+                6,
+                Or,
+                [1, 2, 3, 4, 5, 6]
+            );
+            data.Add(
+                [1, 2, 3, 4, 5, 6],
+                8,
+                Or,
+                [1, 2, 3, 4, 5, 6]
+            );
+            data.Add(
+                [1, 2, 3, 4, 5, 6],
+                3,
+                Or,
+                [5, 7, 7]
+            );
+            data.Add(
+                [1, 2, 3, 4, 5, 6],
+                3,
+                XOr,
+                [5, 7, 5]
+            );
+            data.Add(
+                [10, 20, 30, 40, 50, 60],
+                3,
+                XOr,
+                [34, 38, 34]
+            );
+
+            return data;
+        }
+
+        public static TheoryData<string[], int, Func<string, string, string>, string[]> Reduce_Data_string()
+        {
+            var data = new TheoryData<string[], int, Func<string, string, string>, string[]>();
+
+            data.Add(
+                ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
+                5,
+                Concat,
+                ["AF", "BG", "CH", "DI", "EJ"]
+            );
+
+            return data;
+        }
+
+        public static byte Or(byte value1, byte value2) => (byte)(value1 | value2);
+        public static byte XOr(byte value1, byte value2) => (byte)(value1 ^ value2);
+        public static byte And(byte value1, byte value2) => (byte)(value1 & value2);
+        public static byte Complement1(byte value1, byte value2) => (byte)(~value1);
+        public static byte Complement2(byte value1, byte value2) => (byte)(~value2);
+
+        public static string Concat(string value1, string value2) => value1 + value2;
     }
 }

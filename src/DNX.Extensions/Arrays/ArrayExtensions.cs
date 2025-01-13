@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 #pragma warning disable 1591
 
@@ -64,5 +66,23 @@ public static class ArrayExtensions
         }
 
         return shiftedArray;
+    }
+
+    public static T[] Reduce<T>(this T[] inputArray, int targetSize, Func<T, T, T> method)
+    {
+        if (inputArray.Length <= targetSize)
+            return inputArray;
+
+        var result = new List<T>(inputArray.Take(targetSize));
+
+        for (var sourceIndex = targetSize; sourceIndex < inputArray.Length; ++sourceIndex)
+        {
+            var targetIndex = sourceIndex % targetSize;
+
+            var value = method(result[targetIndex], inputArray[sourceIndex]);
+            result[targetIndex] = value;
+        }
+
+        return result.ToArray();
     }
 }
