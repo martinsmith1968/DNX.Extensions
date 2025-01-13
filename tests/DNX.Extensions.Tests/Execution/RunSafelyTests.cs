@@ -2,6 +2,7 @@ using DNX.Extensions.Execution;
 using FluentAssertions;
 using Xunit;
 
+// ReSharper disable PreferConcreteValueOverDefault
 // ReSharper disable InconsistentNaming
 
 namespace DNX.Extensions.Tests.Execution;
