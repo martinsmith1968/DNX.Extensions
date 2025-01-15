@@ -393,7 +393,7 @@ jobs:
       uses: NuGet/setup-nuget@v2
       with:
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
-        nuget-version: ${{ env.NUGET_VERSION }}
+        #nuget-version: ${{ env.NUGET_VERSION }}
 
     - name: Download NuGet Output
       uses: actions/download-artifact@v4
