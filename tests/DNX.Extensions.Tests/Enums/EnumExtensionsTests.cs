@@ -1,6 +1,6 @@
 using System.ComponentModel;
 using DNX.Extensions.Enumerations;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 namespace DNX.Extensions.Tests.Enums;
@@ -36,7 +36,7 @@ public class EnumExtensionsTests
         var result = myType.GetDescription();
 
         // Assert
-        result.Should().Be(expectedResult, $"{myType} has description: {result}");
+        result.ShouldBe(expectedResult, $"{myType} has description: {result}");
     }
 
     [Theory]
@@ -51,6 +51,6 @@ public class EnumExtensionsTests
         var result = myType.GetDescriptionOrName();
 
         // Assert
-        result.Should().Be(expectedResult, $"{myType} has description: {result}");
+        result.ShouldBe(expectedResult, $"{myType} has description: {result}");
     }
 }

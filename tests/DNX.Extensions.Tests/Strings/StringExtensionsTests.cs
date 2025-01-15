@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text;
 using DNX.Extensions.Strings;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 #pragma warning disable CA1861 // Arrays in InlineData
@@ -23,7 +23,7 @@ public class StringExtensionsTests
         public void Test_IsNullOrEmpty(string text, bool expectedResult)
         {
             // Assert
-            text.IsNullOrEmpty().Should().Be(expectedResult);
+            text.IsNullOrEmpty().ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -35,7 +35,7 @@ public class StringExtensionsTests
         [InlineData("ABC", false)]
         public void Test_IsNullOrWhiteSpace(string text, bool expectedResult)
         {
-            text.IsNullOrWhiteSpace().Should().Be(expectedResult);
+            text.IsNullOrWhiteSpace().ShouldBe(expectedResult);
         }
     }
 
@@ -51,9 +51,9 @@ public class StringExtensionsTests
             var result = text.NullIfEmpty();
 
             if (isNull)
-                result.Should().BeNull();
+                result.ShouldBeNull();
             else
-                result.Should().NotBeNull();
+                result.ShouldNotBeNull();
         }
 
         [Theory]
@@ -66,9 +66,9 @@ public class StringExtensionsTests
             var result = text.NullIfEmptyOrWhitespace();
 
             if (isNull)
-                result.Should().BeNull();
+                result.ShouldBeNull();
             else
-                result.Should().NotBeNull();
+                result.ShouldNotBeNull();
         }
     }
 
@@ -91,7 +91,7 @@ public class StringExtensionsTests
             var result = text.EnsureStartsWith(prefix);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -111,7 +111,7 @@ public class StringExtensionsTests
             var result = text.EnsureEndsWith(suffix);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -125,7 +125,7 @@ public class StringExtensionsTests
             var result = text.EnsureStartsAndEndsWith(prefixSuffix);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -140,7 +140,7 @@ public class StringExtensionsTests
             var result = text.EnsureStartsAndEndsWith(prefix, suffix);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -158,7 +158,7 @@ public class StringExtensionsTests
             var result = text.RemoveStartsWith(prefix);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -174,7 +174,7 @@ public class StringExtensionsTests
             var result = text.RemoveEndsWith(suffix);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -190,7 +190,7 @@ public class StringExtensionsTests
             var result = text.RemoveStartsAndEndsWith(prefixSuffix);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -206,7 +206,7 @@ public class StringExtensionsTests
             var result = text.RemoveStartsAndEndsWith(prefix, suffix);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -229,7 +229,7 @@ public class StringExtensionsTests
             var result = text.Between(startText, endText);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -250,7 +250,7 @@ public class StringExtensionsTests
             var result = text.BetweenFirstAndLast(startText, endText);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -263,7 +263,7 @@ public class StringExtensionsTests
             var result = text.Between(startText, endText, comparison);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -282,7 +282,7 @@ public class StringExtensionsTests
             var result = text.Before(endText);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -295,7 +295,7 @@ public class StringExtensionsTests
             var result = text.Before(endText, comparison);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -310,7 +310,7 @@ public class StringExtensionsTests
         {
             var result = text.BeforeLast(endText);
 
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -323,7 +323,7 @@ public class StringExtensionsTests
             var result = text.BeforeLast(endText, comparison);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -343,7 +343,7 @@ public class StringExtensionsTests
             var result = text.After(startText);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -357,7 +357,7 @@ public class StringExtensionsTests
             var result = text.After(startText, comparison);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -374,7 +374,7 @@ public class StringExtensionsTests
             var result = text.AfterLast(startText);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -388,7 +388,7 @@ public class StringExtensionsTests
             var result = text.AfterLast(startText, comparison);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -408,7 +408,7 @@ public class StringExtensionsTests
             var result = text.From(searchText);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -425,7 +425,7 @@ public class StringExtensionsTests
             var result = text.From(searchText, comparison);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -442,7 +442,7 @@ public class StringExtensionsTests
             var result = text.FromLast(searchText);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -459,7 +459,7 @@ public class StringExtensionsTests
             var result = text.FromLast(searchText, comparison);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -479,7 +479,7 @@ public class StringExtensionsTests
             var result = text.AsFarAs(searchText);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -496,7 +496,7 @@ public class StringExtensionsTests
             var result = text.AsFarAs(searchText, comparison);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -513,7 +513,7 @@ public class StringExtensionsTests
             var result = text.AsFarAsLast(searchText);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -530,7 +530,7 @@ public class StringExtensionsTests
             var result = text.AsFarAsLast(searchText, comparison);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -550,7 +550,7 @@ public class StringExtensionsTests
             var result = text.ContainsText(searchText, comparison);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -564,7 +564,7 @@ public class StringExtensionsTests
             var result = text.ContainsOnly(characters);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -578,7 +578,7 @@ public class StringExtensionsTests
             var result = text.ContainsOnly(characters);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -592,7 +592,7 @@ public class StringExtensionsTests
             var result = text.RemoveAny(charsToRemove);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -621,7 +621,7 @@ public class StringExtensionsTests
             var result = text.RemoveAny(charsToRemove);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -635,7 +635,7 @@ public class StringExtensionsTests
             var result = text.RemoveAnyExcept(charsToKeep);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -656,7 +656,7 @@ public class StringExtensionsTests
             var result = text.RemoveAnyExcept(charsToKeep);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -695,7 +695,7 @@ public class StringExtensionsTests
                 var result = text.IsValidNumber();
 
                 // Assert
-                result.Should().Be(expectedResult);
+                result.ShouldBe(expectedResult);
             }
             finally
             {
@@ -732,7 +732,7 @@ public class StringExtensionsTests
             var result = text.IsValidNumber(cultureInfo);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -749,7 +749,7 @@ public class StringExtensionsTests
             var result = text.Reverse();
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -766,7 +766,7 @@ public class StringExtensionsTests
             var result = text.SplitText(delimiters, options);
 
             // Assert
-            string.Join(",", result).Should().Be(expectedResult);
+            string.Join(",", result).ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -784,7 +784,7 @@ public class StringExtensionsTests
             var result = text.SplitText(delimiters, options, delimiterType);
 
             // Assert
-            string.Join(",", result).Should().Be(expectedResult);
+            string.Join(",", result).ShouldBe(expectedResult);
         }
 
         [Fact]
@@ -800,9 +800,11 @@ public class StringExtensionsTests
             );
 
             // Assert
-            ex.Should().NotBeNull();
-            ex.ParamName.Should().Be("delimiterType");
-            ex.Message.Should().ContainAll(Enum.GetValues<SplitDelimiterType>().Select(x => x.ToString()));
+            ex.ShouldNotBeNull();
+            ex.ParamName.ShouldBe("delimiterType");
+            Enum.GetValues<SplitDelimiterType>()
+                .ToList()
+                .ForEach(x => ex.Message.ShouldContain(x.ToString()));
         }
 
         [Theory]
@@ -817,7 +819,7 @@ public class StringExtensionsTests
             var result = text.SplitByText(delimiters, options);
 
             // Assert
-            string.Join(",", result).Should().Be(expectedResult);
+            string.Join(",", result).ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -835,7 +837,7 @@ public class StringExtensionsTests
             var lines = adjustedText.SplitByText(delimiters, options, comparison);
 
             // Assert
-            string.Join("/", lines).Should().Be(expectedResult);
+            string.Join("/", lines).ShouldBe(expectedResult);
         }
     }
 
@@ -860,7 +862,7 @@ public class StringExtensionsTests
             var result = text.CoalesceNullWith(a, b, c);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -889,7 +891,7 @@ public class StringExtensionsTests
             var result = text.CoalesceNullWith(list);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -916,7 +918,7 @@ public class StringExtensionsTests
             var result = list.CoalesceNull();
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -941,7 +943,7 @@ public class StringExtensionsTests
             var result = text.CoalesceNullOrEmptyWith(a, b, c);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -970,7 +972,7 @@ public class StringExtensionsTests
             var result = text.CoalesceNullOrEmptyWith(list);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -997,7 +999,7 @@ public class StringExtensionsTests
             var result = list.CoalesceNullOrEmpty();
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -1022,7 +1024,7 @@ public class StringExtensionsTests
             var result = text.CoalesceNullOrWhitespaceWith(a, b, c);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -1051,7 +1053,7 @@ public class StringExtensionsTests
             var result = text.CoalesceNullOrWhitespaceWith(list);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -1078,7 +1080,7 @@ public class StringExtensionsTests
             var result = list.CoalesceNullOrWhitespace();
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -1103,7 +1105,7 @@ public class StringExtensionsTests
             var result = text.Wordify();
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -1136,7 +1138,7 @@ public class StringExtensionsTests
             var result = text.Wordify(reservedWordsList);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -1155,7 +1157,7 @@ public class StringExtensionsTests
             var result = text.Left(length);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -1174,7 +1176,7 @@ public class StringExtensionsTests
             var result = text.Right(length);
 
             // Assert
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -1186,7 +1188,7 @@ public class StringExtensionsTests
         {
             var result = number.ToHexString();
 
-            result.Should().Be(expectedHexString);
+            result.ShouldBe(expectedHexString);
         }
     }
 
@@ -1201,7 +1203,7 @@ public class StringExtensionsTests
 
             var bytesText = string.Join(",", bytes.Select(x => x.ToString()));
 
-            bytesText.Should().Be(expectedBytesText);
+            bytesText.ShouldBe(expectedBytesText);
         }
 
         [Theory]
@@ -1211,7 +1213,7 @@ public class StringExtensionsTests
             // Act
             var result = text.GetBytes(encoding);
 
-            result.Should().BeEquivalentTo(expectedResult);
+            result.ShouldBeEquivalentTo(expectedResult);
         }
 
         public static TheoryData<string, Encoding, byte[]> GetBytes_with_Encoding_Data()

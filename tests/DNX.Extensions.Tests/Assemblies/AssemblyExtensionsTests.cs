@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Resources;
 using DNX.Extensions.Assemblies;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -21,7 +21,7 @@ public class AssemblyExtensionsTests(ITestOutputHelper testOutputHelper)
         testOutputHelper.WriteLine("Result: {0}", result);
 
         // Assert
-        result.Should().NotBeNull();
+        result.ShouldNotBeNull();
     }
 
     [Fact]
@@ -38,8 +38,8 @@ public class AssemblyExtensionsTests(ITestOutputHelper testOutputHelper)
         testOutputHelper.WriteLine("Exception Message: {0}", ex?.Message);
 
         // Assert
-        ex.Should().NotBeNull();
-        ex.Message.Should().Contain(name);
+        ex.ShouldNotBeNull();
+        ex.Message.ShouldContain(name);
     }
 
     [Fact]
@@ -55,6 +55,6 @@ public class AssemblyExtensionsTests(ITestOutputHelper testOutputHelper)
         testOutputHelper.WriteLine("Result: {0}", result);
 
         // Assert
-        result.Should().NotBeNull();
+        result.ShouldNotBeNull();
     }
 }

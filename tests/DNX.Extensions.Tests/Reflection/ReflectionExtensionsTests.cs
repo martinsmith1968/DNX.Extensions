@@ -1,6 +1,6 @@
 using System.Reflection;
 using DNX.Extensions.Reflection;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 #pragma warning disable CA1822 // Members can be static
@@ -51,7 +51,7 @@ public class ReflectionExtensionsTests
         var result = instance.GetPrivatePropertyValue(propertyName);
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     [Theory]
@@ -65,7 +65,7 @@ public class ReflectionExtensionsTests
         var result = instance.GetPrivatePropertyValue(propertyName);
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public class ReflectionExtensionsTests
         var result = instance.GetPropertyValueByName("CurrentDirectory", BindingFlags.Static | BindingFlags.NonPublic);
 
         // Assert
-        result.Should().Be(Environment.CurrentDirectory);
+        result.ShouldBe(Environment.CurrentDirectory);
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class ReflectionExtensionsTests
         var result = instance.GetPropertyValueByName(Guid.NewGuid().ToString(), BindingFlags.Static | BindingFlags.NonPublic);
 
         // Assert
-        result.Should().BeNull();
+        result.ShouldBeNull();
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public class ReflectionExtensionsTests
         var result = instance.GetPropertyValueByName(nameof(TestClass.PublicSetOnly), BindingFlags.Instance | BindingFlags.Public);
 
         // Assert
-        result.Should().BeNull();
+        result.ShouldBeNull();
     }
 
     [Fact]
@@ -117,7 +117,7 @@ public class ReflectionExtensionsTests
         var result = instance.GetPrivatePropertyValue(Guid.NewGuid().ToString());
 
         // Assert
-        result.Should().BeNull();
+        result.ShouldBeNull();
     }
 
     [Fact]
@@ -131,6 +131,6 @@ public class ReflectionExtensionsTests
         var result = instance.GetPrivatePropertyValue(Guid.NewGuid().ToString(), defaultValue);
 
         // Assert
-        result.Should().Be(defaultValue);
+        result.ShouldBe(defaultValue);
     }
 }

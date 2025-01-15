@@ -1,5 +1,5 @@
 using DNX.Extensions.Arrays;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -21,7 +21,7 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
             .Select(x => Convert.ToByte(x))
             .ToArray();
 
-        bytes.IsNullOrEmpty().Should().Be(isEmpty);
+        bytes.IsNullOrEmpty().ShouldBe(isEmpty);
     }
 
     [Fact]
@@ -31,13 +31,13 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
 
         var result = values.PadLeft(8);
 
-        values.Length.Should().Be(6);
-        result.Length.Should().Be(8);
+        values.Length.ShouldBe(6);
+        result.Length.ShouldBe(8);
 
         for (var i = 1; i <= result.Length; ++i)
         {
             outputHelper.WriteLine($"Index: {i}");
-            result[^i].Should().Be(i > values.Length ? default : values[^i]);
+            result[^i].ShouldBe(i > values.Length ? default : values[^i]);
         }
     }
 
@@ -50,13 +50,13 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
         var result = values.PadLeft(4);
 
         // Assert
-        values.Length.Should().Be(6);
-        result.Length.Should().Be(4);
+        values.Length.ShouldBe(6);
+        result.Length.ShouldBe(4);
 
         for (var i = 1; i <= result.Length; ++i)
         {
             outputHelper.WriteLine($"Index: {i}");
-            result[^i].Should().Be(values[^i]);
+            result[^i].ShouldBe(values[^i]);
         }
     }
 
@@ -72,8 +72,8 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
             var result = values.ShiftLeft();
 
             // Assert
-            result.Length.Should().Be(values.Length);
-            result.Should().BeEquivalentTo(expected);
+            result.Length.ShouldBe(values.Length);
+            result.ShouldBeEquivalentTo(expected);
         }
 
         [Fact]
@@ -86,8 +86,8 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
             var result = values.ShiftLeft(by: 3);
 
             // Assert
-            result.Length.Should().Be(values.Length);
-            result.Should().BeEquivalentTo(expected);
+            result.Length.ShouldBe(values.Length);
+            result.ShouldBeEquivalentTo(expected);
         }
 
         [Fact]
@@ -100,8 +100,8 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
             var result = values.ShiftLeft(by: 2, fillValue: "0");
 
             // Assert
-            result.Length.Should().Be(values.Length);
-            result.Should().BeEquivalentTo(expected);
+            result.Length.ShouldBe(values.Length);
+            result.ShouldBeEquivalentTo(expected);
         }
 
         [Fact]
@@ -111,8 +111,8 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
 
             var result = values.ShiftLeft();
 
-            result.Should().NotBeNull();
-            result.Length.Should().Be(0);
+            result.ShouldNotBeNull();
+            result.Length.ShouldBe(0);
         }
     }
 
@@ -128,8 +128,8 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
             var result = values.ShiftRight();
 
             // Assert
-            result.Length.Should().Be(values.Length);
-            result.Should().BeEquivalentTo(expected);
+            result.Length.ShouldBe(values.Length);
+            result.ShouldBeEquivalentTo(expected);
         }
 
         [Fact]
@@ -142,8 +142,8 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
             var result = values.ShiftRight(by: 3);
 
             // Assert
-            result.Length.Should().Be(values.Length);
-            result.Should().BeEquivalentTo(expected);
+            result.Length.ShouldBe(values.Length);
+            result.ShouldBeEquivalentTo(expected);
         }
 
         [Fact]
@@ -156,8 +156,8 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
             var result = values.ShiftRight(by: 2, fillValue: "0");
 
             // Assert
-            result.Length.Should().Be(values.Length);
-            result.Should().BeEquivalentTo(expected);
+            result.Length.ShouldBe(values.Length);
+            result.ShouldBeEquivalentTo(expected);
         }
 
         [Fact]
@@ -167,8 +167,8 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
 
             var result = values.ShiftRight();
 
-            result.Should().NotBeNull();
-            result.Length.Should().Be(0);
+            result.ShouldNotBeNull();
+            result.Length.ShouldBe(0);
         }
     }
 
@@ -182,8 +182,8 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
             var result = input.Reduce(targetSize, method);
 
             // Assert
-            result.Length.Should().BeLessThanOrEqualTo(targetSize);
-            result.Should().BeEquivalentTo(expectedResult);
+            result.Length.ShouldBeLessThanOrEqualTo(targetSize);
+            result.ShouldBeEquivalentTo(expectedResult);
         }
 
         [Theory]
@@ -194,8 +194,8 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
             var result = input.Reduce(targetSize, method);
 
             // Assert
-            result.Length.Should().BeLessThanOrEqualTo(targetSize);
-            result.Should().BeEquivalentTo(expectedResult);
+            result.Length.ShouldBeLessThanOrEqualTo(targetSize);
+            result.ShouldBeEquivalentTo(expectedResult);
         }
 
         // Useful : https://www.compscilib.com/calculate/binaryxor?variation=default

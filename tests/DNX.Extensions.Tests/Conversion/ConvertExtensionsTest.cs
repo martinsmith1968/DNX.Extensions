@@ -1,5 +1,5 @@
 using DNX.Extensions.Conversion;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 namespace DNX.Extensions.Tests.Conversion;
@@ -31,7 +31,7 @@ public class ConvertExtensionsTests
         {
             var result = instance.ToStringOrDefault();
 
-            result.Should().Be(expected);
+            result.ShouldBe(expected);
         }
 
         [Theory]
@@ -43,7 +43,7 @@ public class ConvertExtensionsTests
         {
             var result = instance.ToStringOrDefault(defaultValue);
 
-            result.Should().Be(expected);
+            result.ShouldBe(expected);
         }
     }
 
@@ -61,7 +61,7 @@ public class ConvertExtensionsTests
         {
             var result = text.ToBoolean();
 
-            result.Should().Be(expected);
+            result.ShouldBe(expected);
         }
 
         [Theory]
@@ -77,7 +77,7 @@ public class ConvertExtensionsTests
         {
             var result = text.ToBoolean(defaultValue);
 
-            result.Should().Be(expected);
+            result.ShouldBe(expected);
         }
     }
 
@@ -94,7 +94,7 @@ public class ConvertExtensionsTests
         {
             var result = text.ToInt32();
 
-            result.Should().Be(expected);
+            result.ShouldBe(expected);
         }
 
         [Theory]
@@ -109,7 +109,7 @@ public class ConvertExtensionsTests
         {
             var result = text.ToInt32(defaultValue);
 
-            result.Should().Be(expected);
+            result.ShouldBe(expected);
         }
     }
 
@@ -124,7 +124,7 @@ public class ConvertExtensionsTests
         {
             var result = text.ToEnum<Numbers>();
 
-            result.Should().Be(expected);
+            result.ShouldBe(expected);
             ;
         }
 
@@ -137,7 +137,7 @@ public class ConvertExtensionsTests
         {
             var result = text.ToEnum<Numbers>(defaultValue);
 
-            result.Should().Be(expected);
+            result.ShouldBe(expected);
             ;
         }
     }
@@ -152,7 +152,7 @@ public class ConvertExtensionsTests
         {
             var result = text.ToGuid();
 
-            result.ToString().Should().BeEquivalentTo(expected);
+            result.ToString().ShouldBe(expected, StringCompareShould.IgnoreCase);
         }
 
         [Theory]
@@ -164,7 +164,7 @@ public class ConvertExtensionsTests
         {
             var result = text.ToGuid(Guid.Parse(defaultValue));
 
-            result.ToString().Should().BeEquivalentTo(expected);
+            result.ToString().ShouldBe(expected, StringCompareShould.IgnoreCase);
         }
     }
 
@@ -175,7 +175,7 @@ public class ConvertExtensionsTests
         {
             var instance = (TestClass2)null;
             var result = instance.To<TestClass1>();
-            result.Should().BeNull();
+            result.ShouldBeNull();
         }
 
         [Fact]
@@ -183,8 +183,8 @@ public class ConvertExtensionsTests
         {
             var instance = new TestClass2();
             var result = instance.To<TestClass1>();
-            result.Should().NotBeNull();
-            result.Should().Be(instance);
+            result.ShouldNotBeNull();
+            result.ShouldBe(instance);
         }
 
         [Fact]
@@ -192,7 +192,7 @@ public class ConvertExtensionsTests
         {
             var instance = new TestClass3();
             var result = instance.To<TestClass1>();
-            result.Should().BeNull();
+            result.ShouldBeNull();
         }
 
         [Fact]
@@ -201,8 +201,8 @@ public class ConvertExtensionsTests
             var instance = (TestClass2)null;
             var defaultValue = new TestClass1();
             var result = instance.To<TestClass1>(defaultValue);
-            result.Should().NotBeNull();
-            result.Should().Be(defaultValue);
+            result.ShouldNotBeNull();
+            result.ShouldBe(defaultValue);
         }
 
         [Fact]
@@ -211,8 +211,8 @@ public class ConvertExtensionsTests
             var defaultValue = new TestClass1();
             var instance = new TestClass2();
             var result = instance.To<TestClass1>(defaultValue);
-            result.Should().NotBeNull();
-            result.Should().Be(instance);
+            result.ShouldNotBeNull();
+            result.ShouldBe(instance);
         }
 
         [Fact]
@@ -221,8 +221,8 @@ public class ConvertExtensionsTests
             var defaultValue = new TestClass1();
             var instance = new TestClass3();
             var result = instance.To<TestClass1>(defaultValue);
-            result.Should().NotBeNull();
-            result.Should().Be(defaultValue);
+            result.ShouldNotBeNull();
+            result.ShouldBe(defaultValue);
         }
     }
 }

@@ -1,5 +1,5 @@
 using DNX.Extensions.DateTimes;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 namespace DNX.Extensions.Tests.DateTimes;
@@ -17,14 +17,14 @@ public class DateTimeExtensionsTests
         var epoch = DateTimeExtensions.UnixEpoch;
 
         // Assert
-        epoch.Kind.Should().Be(DateTimeKind.Utc);
-        epoch.Year.Should().Be(1970);
-        epoch.Month.Should().Be(1);
-        epoch.Day.Should().Be(1);
-        epoch.Hour.Should().Be(0);
-        epoch.Minute.Should().Be(0);
-        epoch.Second.Should().Be(0);
-        epoch.Millisecond.Should().Be(0);
+        epoch.Kind.ShouldBe(DateTimeKind.Utc);
+        epoch.Year.ShouldBe(1970);
+        epoch.Month.ShouldBe(1);
+        epoch.Day.ShouldBe(1);
+        epoch.Hour.ShouldBe(0);
+        epoch.Minute.ShouldBe(0);
+        epoch.Second.ShouldBe(0);
+        epoch.Millisecond.ShouldBe(0);
     }
 
     [Fact]
@@ -38,15 +38,15 @@ public class DateTimeExtensionsTests
         var parsedDateTime = dateTimeString.ParseDateAsUtc();
 
         // Assert
-        theDateTime.Kind.Should().Be(DateTimeKind.Local);
-        parsedDateTime.Kind.Should().Be(DateTimeKind.Utc);
-        parsedDateTime.Year.Should().Be(theDateTime.Year);
-        parsedDateTime.Month.Should().Be(theDateTime.Month);
-        parsedDateTime.Day.Should().Be(theDateTime.Day);
-        parsedDateTime.Hour.Should().Be(theDateTime.Hour);
-        parsedDateTime.Minute.Should().Be(theDateTime.Minute);
-        parsedDateTime.Second.Should().Be(theDateTime.Second);
-        parsedDateTime.Millisecond.Should().Be(0);
+        theDateTime.Kind.ShouldBe(DateTimeKind.Local);
+        parsedDateTime.Kind.ShouldBe(DateTimeKind.Utc);
+        parsedDateTime.Year.ShouldBe(theDateTime.Year);
+        parsedDateTime.Month.ShouldBe(theDateTime.Month);
+        parsedDateTime.Day.ShouldBe(theDateTime.Day);
+        parsedDateTime.Hour.ShouldBe(theDateTime.Hour);
+        parsedDateTime.Minute.ShouldBe(theDateTime.Minute);
+        parsedDateTime.Second.ShouldBe(theDateTime.Second);
+        parsedDateTime.Millisecond.ShouldBe(0);
     }
 
     [Fact]
@@ -61,14 +61,14 @@ public class DateTimeExtensionsTests
         var parsedDateTime = dateTimeString.ParseDateAsUtc(defaultDateTime);
 
         // Assert
-        parsedDateTime.Kind.Should().Be(DateTimeKind.Utc);
-        parsedDateTime.Year.Should().Be(theDateTime.Year);
-        parsedDateTime.Month.Should().Be(theDateTime.Month);
-        parsedDateTime.Day.Should().Be(theDateTime.Day);
-        parsedDateTime.Hour.Should().Be(theDateTime.Hour);
-        parsedDateTime.Minute.Should().Be(theDateTime.Minute);
-        parsedDateTime.Second.Should().Be(theDateTime.Second);
-        parsedDateTime.Millisecond.Should().Be(0);
+        parsedDateTime.Kind.ShouldBe(DateTimeKind.Utc);
+        parsedDateTime.Year.ShouldBe(theDateTime.Year);
+        parsedDateTime.Month.ShouldBe(theDateTime.Month);
+        parsedDateTime.Day.ShouldBe(theDateTime.Day);
+        parsedDateTime.Hour.ShouldBe(theDateTime.Hour);
+        parsedDateTime.Minute.ShouldBe(theDateTime.Minute);
+        parsedDateTime.Second.ShouldBe(theDateTime.Second);
+        parsedDateTime.Millisecond.ShouldBe(0);
     }
 
     [Fact]
@@ -82,14 +82,14 @@ public class DateTimeExtensionsTests
         var parsedDateTime = dateTimeString.ParseDateAsUtc(defaultDateTime);
 
         // Assert
-        parsedDateTime.Kind.Should().Be(DateTimeKind.Utc);
-        parsedDateTime.Year.Should().Be(defaultDateTime.Year);
-        parsedDateTime.Month.Should().Be(defaultDateTime.Month);
-        parsedDateTime.Day.Should().Be(defaultDateTime.Day);
-        parsedDateTime.Hour.Should().Be(defaultDateTime.Hour);
-        parsedDateTime.Minute.Should().Be(defaultDateTime.Minute);
-        parsedDateTime.Second.Should().Be(defaultDateTime.Second);
-        parsedDateTime.Millisecond.Should().Be(defaultDateTime.Millisecond);
+        parsedDateTime.Kind.ShouldBe(DateTimeKind.Utc);
+        parsedDateTime.Year.ShouldBe(defaultDateTime.Year);
+        parsedDateTime.Month.ShouldBe(defaultDateTime.Month);
+        parsedDateTime.Day.ShouldBe(defaultDateTime.Day);
+        parsedDateTime.Hour.ShouldBe(defaultDateTime.Hour);
+        parsedDateTime.Minute.ShouldBe(defaultDateTime.Minute);
+        parsedDateTime.Second.ShouldBe(defaultDateTime.Second);
+        parsedDateTime.Millisecond.ShouldBe(defaultDateTime.Millisecond);
     }
 
     [Fact]
@@ -105,15 +105,15 @@ public class DateTimeExtensionsTests
         var parsedDateTime = dateTimeString.ParseDateAsUtc(formatProvider);
 
         // Assert
-        theDateTime.Kind.Should().Be(DateTimeKind.Local);
-        parsedDateTime.Kind.Should().Be(DateTimeKind.Utc);
-        parsedDateTime.Year.Should().Be(theDateTime.Year);
-        parsedDateTime.Month.Should().Be(theDateTime.Month);
-        parsedDateTime.Day.Should().Be(theDateTime.Day);
-        parsedDateTime.Hour.Should().Be(theDateTime.Hour);
-        parsedDateTime.Minute.Should().Be(theDateTime.Minute);
-        parsedDateTime.Second.Should().Be(theDateTime.Second);
-        parsedDateTime.Millisecond.Should().Be(0);
+        theDateTime.Kind.ShouldBe(DateTimeKind.Local);
+        parsedDateTime.Kind.ShouldBe(DateTimeKind.Utc);
+        parsedDateTime.Year.ShouldBe(theDateTime.Year);
+        parsedDateTime.Month.ShouldBe(theDateTime.Month);
+        parsedDateTime.Day.ShouldBe(theDateTime.Day);
+        parsedDateTime.Hour.ShouldBe(theDateTime.Hour);
+        parsedDateTime.Minute.ShouldBe(theDateTime.Minute);
+        parsedDateTime.Second.ShouldBe(theDateTime.Second);
+        parsedDateTime.Millisecond.ShouldBe(0);
     }
 
     [Fact]
@@ -130,14 +130,14 @@ public class DateTimeExtensionsTests
         var parsedDateTime = dateTimeString.ParseDateAsUtc(formatProvider, defaultDateTime);
 
         // Assert
-        parsedDateTime.Kind.Should().Be(DateTimeKind.Utc);
-        parsedDateTime.Year.Should().Be(theDateTime.Year);
-        parsedDateTime.Month.Should().Be(theDateTime.Month);
-        parsedDateTime.Day.Should().Be(theDateTime.Day);
-        parsedDateTime.Hour.Should().Be(theDateTime.Hour);
-        parsedDateTime.Minute.Should().Be(theDateTime.Minute);
-        parsedDateTime.Second.Should().Be(theDateTime.Second);
-        parsedDateTime.Millisecond.Should().Be(0);
+        parsedDateTime.Kind.ShouldBe(DateTimeKind.Utc);
+        parsedDateTime.Year.ShouldBe(theDateTime.Year);
+        parsedDateTime.Month.ShouldBe(theDateTime.Month);
+        parsedDateTime.Day.ShouldBe(theDateTime.Day);
+        parsedDateTime.Hour.ShouldBe(theDateTime.Hour);
+        parsedDateTime.Minute.ShouldBe(theDateTime.Minute);
+        parsedDateTime.Second.ShouldBe(theDateTime.Second);
+        parsedDateTime.Millisecond.ShouldBe(0);
     }
 
     [Fact]
@@ -153,14 +153,14 @@ public class DateTimeExtensionsTests
         var parsedDateTime = dateTimeString.ParseDateAsUtc(formatProvider, defaultDateTime);
 
         // Assert
-        parsedDateTime.Kind.Should().Be(DateTimeKind.Utc);
-        parsedDateTime.Year.Should().Be(defaultDateTime.Year);
-        parsedDateTime.Month.Should().Be(defaultDateTime.Month);
-        parsedDateTime.Day.Should().Be(defaultDateTime.Day);
-        parsedDateTime.Hour.Should().Be(defaultDateTime.Hour);
-        parsedDateTime.Minute.Should().Be(defaultDateTime.Minute);
-        parsedDateTime.Second.Should().Be(defaultDateTime.Second);
-        parsedDateTime.Millisecond.Should().Be(defaultDateTime.Millisecond);
+        parsedDateTime.Kind.ShouldBe(DateTimeKind.Utc);
+        parsedDateTime.Year.ShouldBe(defaultDateTime.Year);
+        parsedDateTime.Month.ShouldBe(defaultDateTime.Month);
+        parsedDateTime.Day.ShouldBe(defaultDateTime.Day);
+        parsedDateTime.Hour.ShouldBe(defaultDateTime.Hour);
+        parsedDateTime.Minute.ShouldBe(defaultDateTime.Minute);
+        parsedDateTime.Second.ShouldBe(defaultDateTime.Second);
+        parsedDateTime.Millisecond.ShouldBe(defaultDateTime.Millisecond);
     }
 
 
@@ -175,9 +175,9 @@ public class DateTimeExtensionsTests
 
         var result = dateTime.SetYear(year);
 
-        result.Year.Should().Be(year);
-        result.Month.Should().Be(month);
-        result.Day.Should().Be(day);
+        result.Year.ShouldBe(year);
+        result.Month.ShouldBe(month);
+        result.Day.ShouldBe(day);
     }
 
     [Theory]
@@ -190,9 +190,9 @@ public class DateTimeExtensionsTests
 
         var result = dateTime.SetMonth(month);
 
-        result.Year.Should().Be(year);
-        result.Month.Should().Be(month);
-        result.Day.Should().Be(day);
+        result.Year.ShouldBe(year);
+        result.Month.ShouldBe(month);
+        result.Day.ShouldBe(day);
     }
 
     [Theory]
@@ -205,9 +205,9 @@ public class DateTimeExtensionsTests
 
         var result = dateTime.SetDay(day);
 
-        result.Year.Should().Be(year);
-        result.Month.Should().Be(month);
-        result.Day.Should().Be(day);
+        result.Year.ShouldBe(year);
+        result.Month.ShouldBe(month);
+        result.Day.ShouldBe(day);
     }
 
     [Theory]
@@ -216,7 +216,7 @@ public class DateTimeExtensionsTests
     {
         var result = dateTime.ResetHours();
 
-        result.Hour.Should().Be(0);
+        result.Hour.ShouldBe(0);
     }
 
     [Theory]
@@ -225,7 +225,7 @@ public class DateTimeExtensionsTests
     {
         var result = dateTime.ResetMinutes();
 
-        result.Minute.Should().Be(0);
+        result.Minute.ShouldBe(0);
     }
 
     [Theory]
@@ -234,7 +234,7 @@ public class DateTimeExtensionsTests
     {
         var result = dateTime.ResetSeconds();
 
-        result.Second.Should().Be(0);
+        result.Second.ShouldBe(0);
     }
 
     [Theory]
@@ -243,7 +243,7 @@ public class DateTimeExtensionsTests
     {
         var result = dateTime.ResetMilliseconds();
 
-        result.Millisecond.Should().Be(0);
+        result.Millisecond.ShouldBe(0);
     }
 
     [Theory]
@@ -254,7 +254,7 @@ public class DateTimeExtensionsTests
 
         var result = dateTime.SetHours(value);
 
-        result.Hour.Should().Be(value);
+        result.Hour.ShouldBe(value);
     }
 
     [Theory]
@@ -265,7 +265,7 @@ public class DateTimeExtensionsTests
 
         var result = dateTime.SetMinutes(value);
 
-        result.Minute.Should().Be(value);
+        result.Minute.ShouldBe(value);
     }
 
     [Theory]
@@ -276,7 +276,7 @@ public class DateTimeExtensionsTests
 
         var result = dateTime.SetSeconds(value);
 
-        result.Second.Should().Be(value);
+        result.Second.ShouldBe(value);
     }
 
     [Theory]
@@ -287,7 +287,7 @@ public class DateTimeExtensionsTests
 
         var result = dateTime.SetMilliseconds(value);
 
-        result.Millisecond.Should().Be(value);
+        result.Millisecond.ShouldBe(value);
     }
 
     public static TheoryData<DateTime> ResetDateTime_Data()

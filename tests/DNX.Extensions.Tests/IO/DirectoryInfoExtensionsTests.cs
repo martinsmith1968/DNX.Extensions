@@ -1,6 +1,6 @@
 using DNX.Extensions.IO;
 using DNX.Extensions.Strings;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -65,8 +65,8 @@ public class DirectoryInfoExtensionsTests : IDisposable
         var result = directoryInfo.FindFiles(pattern, false);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Count().Should().Be(0);
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(0);
     }
 
     [Fact]
@@ -79,9 +79,9 @@ public class DirectoryInfoExtensionsTests : IDisposable
         var result = _directoryInfo.FindFiles(pattern, false);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Count().Should().Be(1);
-        result.Count(x => x.Name == "file.txt").Should().Be(1);
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(1);
+        result.Count(x => x.Name == "file.txt").ShouldBe(1);
     }
 
     [Fact]
@@ -94,11 +94,11 @@ public class DirectoryInfoExtensionsTests : IDisposable
         var result = _directoryInfo.FindFiles(pattern, true);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Count().Should().Be(3);
-        result.Count(x => x.Name == "file.txt").Should().Be(1);
-        result.Count(x => x.Name == "file1.txt").Should().Be(1);
-        result.Count(x => x.Name == "file2.txt").Should().Be(1);
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(3);
+        result.Count(x => x.Name == "file.txt").ShouldBe(1);
+        result.Count(x => x.Name == "file1.txt").ShouldBe(1);
+        result.Count(x => x.Name == "file2.txt").ShouldBe(1);
     }
 
     [Fact]
@@ -112,10 +112,10 @@ public class DirectoryInfoExtensionsTests : IDisposable
         var result = _directoryInfo.FindFiles(patterns, false);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Count().Should().Be(2);
-        result.Count(x => x.Name == "file.txt").Should().Be(1);
-        result.Count(x => x.Name == "file.json").Should().Be(1);
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(2);
+        result.Count(x => x.Name == "file.txt").ShouldBe(1);
+        result.Count(x => x.Name == "file.json").ShouldBe(1);
     }
 
     [Fact]
@@ -129,14 +129,14 @@ public class DirectoryInfoExtensionsTests : IDisposable
         var result = _directoryInfo.FindFiles(patterns, true);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Count().Should().Be(6);
-        result.Count(x => x.Name == "file.txt").Should().Be(1);
-        result.Count(x => x.Name == "file1.txt").Should().Be(1);
-        result.Count(x => x.Name == "file2.txt").Should().Be(1);
-        result.Count(x => x.Name == "file.json").Should().Be(1);
-        result.Count(x => x.Name == "file1.json").Should().Be(1);
-        result.Count(x => x.Name == "file2.json").Should().Be(1);
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(6);
+        result.Count(x => x.Name == "file.txt").ShouldBe(1);
+        result.Count(x => x.Name == "file1.txt").ShouldBe(1);
+        result.Count(x => x.Name == "file2.txt").ShouldBe(1);
+        result.Count(x => x.Name == "file.json").ShouldBe(1);
+        result.Count(x => x.Name == "file1.json").ShouldBe(1);
+        result.Count(x => x.Name == "file2.json").ShouldBe(1);
     }
 
     [Fact]
@@ -150,8 +150,8 @@ public class DirectoryInfoExtensionsTests : IDisposable
         var result = directoryInfo.FindDirectories(pattern, false);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Count().Should().Be(0);
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(0);
     }
 
     [Fact]
@@ -164,10 +164,10 @@ public class DirectoryInfoExtensionsTests : IDisposable
         var result = _directoryInfo.FindDirectories(pattern, false);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Count().Should().Be(2);
-        result.Count(x => x.Name == "dir1").Should().Be(1);
-        result.Count(x => x.Name == "dir2").Should().Be(1);
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(2);
+        result.Count(x => x.Name == "dir1").ShouldBe(1);
+        result.Count(x => x.Name == "dir2").ShouldBe(1);
     }
 
     [Fact]
@@ -180,12 +180,12 @@ public class DirectoryInfoExtensionsTests : IDisposable
         var result = _directoryInfo.FindDirectories(pattern, true);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Count().Should().Be(4);
-        result.Count(x => x.Name == "dir1").Should().Be(1);
-        result.Count(x => x.Name == "dir2").Should().Be(1);
-        result.Count(x => x.Name == "dur3").Should().Be(1);
-        result.Count(x => x.Name == "dur4").Should().Be(1);
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(4);
+        result.Count(x => x.Name == "dir1").ShouldBe(1);
+        result.Count(x => x.Name == "dir2").ShouldBe(1);
+        result.Count(x => x.Name == "dur3").ShouldBe(1);
+        result.Count(x => x.Name == "dur4").ShouldBe(1);
     }
 
     [Fact]
@@ -198,10 +198,10 @@ public class DirectoryInfoExtensionsTests : IDisposable
         var result = _directoryInfo.FindDirectories(patterns, false);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Count().Should().Be(2);
-        result.Count(x => x.Name == "dir1").Should().Be(1);
-        result.Count(x => x.Name == "dir2").Should().Be(1);
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(2);
+        result.Count(x => x.Name == "dir1").ShouldBe(1);
+        result.Count(x => x.Name == "dir2").ShouldBe(1);
     }
 
     [Fact]
@@ -214,12 +214,12 @@ public class DirectoryInfoExtensionsTests : IDisposable
         var result = _directoryInfo.FindDirectories(patterns, true);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Count().Should().Be(4);
-        result.Count(x => x.Name == "dir1").Should().Be(1);
-        result.Count(x => x.Name == "dir2").Should().Be(1);
-        result.Count(x => x.Name == "dur3").Should().Be(1);
-        result.Count(x => x.Name == "dur4").Should().Be(1);
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(4);
+        result.Count(x => x.Name == "dir1").ShouldBe(1);
+        result.Count(x => x.Name == "dir2").ShouldBe(1);
+        result.Count(x => x.Name == "dur3").ShouldBe(1);
+        result.Count(x => x.Name == "dur4").ShouldBe(1);
     }
 
     [Theory]
@@ -233,7 +233,7 @@ public class DirectoryInfoExtensionsTests : IDisposable
 
         var result = dirInfo.GetRelativePath(relativeToDirInfo);
 
-        result.Should().Be(expected, $"{nameof(dirName)}: {dirName} - {nameof(relativeToDirInfo)}: {relativeToDirInfo}");
+        result.ShouldBe(expected, $"{nameof(dirName)}: {dirName} - {nameof(relativeToDirInfo)}: {relativeToDirInfo}");
     }
 
     public static TheoryData<string, string, string> GetRelativePath_Data()

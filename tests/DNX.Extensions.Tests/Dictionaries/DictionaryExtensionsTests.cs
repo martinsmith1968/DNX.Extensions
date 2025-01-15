@@ -1,5 +1,5 @@
 using DNX.Extensions.Dictionaries;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 namespace DNX.Extensions.Tests.Dictionaries;
@@ -25,7 +25,7 @@ public class DictionaryExtensionsTests
         var value = dict.Get(key);
 
         // Assert
-        value.Should().Be(expectedValue);
+        value.ShouldBe(expectedValue);
     }
 
     [Theory]
@@ -46,7 +46,7 @@ public class DictionaryExtensionsTests
         var value = dict.Get(key, defaultValue);
 
         // Assert
-        value.Should().Be(expectedValue);
+        value.ShouldBe(expectedValue);
     }
 
     [Fact]
@@ -59,13 +59,13 @@ public class DictionaryExtensionsTests
         var result = text.ToStringDictionary();
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(Dictionary<string, string>));
-        result.Keys.Count.Should().Be(2);
-        result.ContainsKey("Liverpool").Should().Be(true);
-        result["Liverpool"].Should().Be("1");
-        result.ContainsKey("Southend United").Should().Be(true);
-        result["Southend United"].Should().Be("7");
+        result.ShouldNotBeNull();
+        result.ShouldBeOfType(typeof(Dictionary<string, string>));
+        result.Keys.Count.ShouldBe(2);
+        result.ContainsKey("Liverpool").ShouldBe(true);
+        result["Liverpool"].ShouldBe("1");
+        result.ContainsKey("Southend United").ShouldBe(true);
+        result["Southend United"].ShouldBe("7");
     }
 
     [Fact]
@@ -78,9 +78,9 @@ public class DictionaryExtensionsTests
         var result = text.ToStringDictionary();
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(Dictionary<string, string>));
-        result.Keys.Count.Should().Be(0);
+        result.ShouldNotBeNull();
+        result.ShouldBeOfType(typeof(Dictionary<string, string>));
+        result.Keys.Count.ShouldBe(0);
     }
 
     [Fact]
@@ -93,12 +93,12 @@ public class DictionaryExtensionsTests
         var result = text.ToStringObjectDictionary();
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(Dictionary<string, object>));
-        result.Keys.Count.Should().Be(2);
-        result.ContainsKey("Liverpool").Should().Be(true);
-        result["Liverpool"].Should().Be("1");
-        result.ContainsKey("Southend United").Should().Be(true);
-        result["Southend United"].Should().Be("7");
+        result.ShouldNotBeNull();
+        result.ShouldBeOfType(typeof(Dictionary<string, object>));
+        result.Keys.Count.ShouldBe(2);
+        result.ContainsKey("Liverpool").ShouldBe(true);
+        result["Liverpool"].ShouldBe("1");
+        result.ContainsKey("Southend United").ShouldBe(true);
+        result["Southend United"].ShouldBe("7");
     }
 }

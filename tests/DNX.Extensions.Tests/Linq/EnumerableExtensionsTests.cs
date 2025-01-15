@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DNX.Extensions.Linq;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -34,7 +34,7 @@ public class EnumerableExtensionsTests
             var result = enumerable.HasAny();
 
             // Assert
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -47,7 +47,7 @@ public class EnumerableExtensionsTests
             var result = enumerable.HasAny();
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -60,7 +60,7 @@ public class EnumerableExtensionsTests
             var result = enumerable.HasAny();
 
             // Assert
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
     }
 
@@ -80,7 +80,7 @@ public class EnumerableExtensionsTests
 
             var result = enumerable.HasAny(s => s.EndsWith(suffix));
 
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
     }
 
@@ -92,7 +92,7 @@ public class EnumerableExtensionsTests
         {
             var result = candidate.IsOneOf(list);
 
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Theory]
@@ -101,69 +101,69 @@ public class EnumerableExtensionsTests
         {
             var result = candidate.IsOneOf(list, comparer);
 
-            result.Should().Be(expectedResult);
+            result.ShouldBe(expectedResult);
         }
 
         [Fact]
         public void IsOneOf_with_params_can_operate_as_expected()
         {
-            ((string)null).IsOneOf().Should().Be(false);
-            ((string)null).IsOneOf((string[])null).Should().Be(false);
-            "Hello".IsOneOf((string[])null).Should().BeFalse();
-            "Hello".IsOneOf().Should().Be(false);
-            "3".IsOneOf("1", "2", "3", "4", "5").Should().Be(true);
-            "6".IsOneOf("1", "2", "3", "4", "5").Should().Be(false);
-            "One".IsOneOf("One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "Two".IsOneOf("One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "Three".IsOneOf("One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "Four".IsOneOf("One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "Five".IsOneOf("One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "five".IsOneOf("One", "Two", "Three", "Four", "Five").Should().Be(false);
-            "FIVE".IsOneOf("One", "Two", "Three", "Four", "Five").Should().Be(false);
-            "Six".IsOneOf("One", "Two", "Three", "Four", "Five").Should().Be(false);
-            1.IsOneOf(1, 2, 3, 4, 5).Should().Be(true);
-            3.IsOneOf(1, 2, 3, 4, 5).Should().Be(true);
-            5.IsOneOf(1, 2, 3, 4, 5).Should().Be(true);
-            6.IsOneOf(1, 2, 3, 4, 5).Should().Be(false);
-            OneToFive.One.IsOneOf(OneToFive.One, OneToFive.Three, OneToFive.Five).Should().Be(true);
-            OneToFive.Three.IsOneOf(OneToFive.One, OneToFive.Three, OneToFive.Five).Should().Be(true);
-            OneToFive.Five.IsOneOf(OneToFive.One, OneToFive.Three, OneToFive.Five).Should().Be(true);
-            OneToFive.Two.IsOneOf(OneToFive.One, OneToFive.Three, OneToFive.Five).Should().Be(false);
-            ((OneToFive)100).IsOneOf(OneToFive.One, OneToFive.Three, OneToFive.Five).Should().Be(false);
+            ((string)null).IsOneOf().ShouldBe(false);
+            ((string)null).IsOneOf((string[])null).ShouldBe(false);
+            "Hello".IsOneOf((string[])null).ShouldBeFalse();
+            "Hello".IsOneOf().ShouldBe(false);
+            "3".IsOneOf("1", "2", "3", "4", "5").ShouldBe(true);
+            "6".IsOneOf("1", "2", "3", "4", "5").ShouldBe(false);
+            "One".IsOneOf("One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "Two".IsOneOf("One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "Three".IsOneOf("One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "Four".IsOneOf("One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "Five".IsOneOf("One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "five".IsOneOf("One", "Two", "Three", "Four", "Five").ShouldBe(false);
+            "FIVE".IsOneOf("One", "Two", "Three", "Four", "Five").ShouldBe(false);
+            "Six".IsOneOf("One", "Two", "Three", "Four", "Five").ShouldBe(false);
+            1.IsOneOf(1, 2, 3, 4, 5).ShouldBe(true);
+            3.IsOneOf(1, 2, 3, 4, 5).ShouldBe(true);
+            5.IsOneOf(1, 2, 3, 4, 5).ShouldBe(true);
+            6.IsOneOf(1, 2, 3, 4, 5).ShouldBe(false);
+            OneToFive.One.IsOneOf(OneToFive.One, OneToFive.Three, OneToFive.Five).ShouldBe(true);
+            OneToFive.Three.IsOneOf(OneToFive.One, OneToFive.Three, OneToFive.Five).ShouldBe(true);
+            OneToFive.Five.IsOneOf(OneToFive.One, OneToFive.Three, OneToFive.Five).ShouldBe(true);
+            OneToFive.Two.IsOneOf(OneToFive.One, OneToFive.Three, OneToFive.Five).ShouldBe(false);
+            ((OneToFive)100).IsOneOf(OneToFive.One, OneToFive.Three, OneToFive.Five).ShouldBe(false);
         }
 
         [Fact]
         public void IsOneOf_with_params_and_Comparer_can_operate_as_expected()
         {
             var comparer = StringComparer.FromComparison(StringComparison.CurrentCulture);
-            ((string)null).IsOneOf(comparer).Should().Be(false);
-            ((string)null).IsOneOf(comparer, null).Should().Be(false);
-            "Hello".IsOneOf((string[])null).Should().BeFalse();
-            "Hello".IsOneOf().Should().Be(false);
-            "Hello".IsOneOf(comparer).Should().Be(false);
-            "3".IsOneOf(comparer, "1", "2", "3", "4", "5").Should().Be(true);
-            "6".IsOneOf(comparer, "1", "2", "3", "4", "5").Should().Be(false);
-            "One".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "Two".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "Three".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "Four".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "Five".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "five".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(false);
-            "FIVE".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(false);
-            "Six".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(false);
+            ((string)null).IsOneOf(comparer).ShouldBe(false);
+            ((string)null).IsOneOf(comparer, null).ShouldBe(false);
+            "Hello".IsOneOf((string[])null).ShouldBeFalse();
+            "Hello".IsOneOf().ShouldBe(false);
+            "Hello".IsOneOf(comparer).ShouldBe(false);
+            "3".IsOneOf(comparer, "1", "2", "3", "4", "5").ShouldBe(true);
+            "6".IsOneOf(comparer, "1", "2", "3", "4", "5").ShouldBe(false);
+            "One".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "Two".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "Three".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "Four".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "Five".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "five".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(false);
+            "FIVE".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(false);
+            "Six".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(false);
 
             comparer = StringComparer.FromComparison(StringComparison.CurrentCultureIgnoreCase);
-            "Hello".IsOneOf(comparer).Should().Be(false);
-            "3".IsOneOf(comparer, "1", "2", "3", "4", "5").Should().Be(true);
-            "6".IsOneOf(comparer, "1", "2", "3", "4", "5").Should().Be(false);
-            "One".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "Two".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "Three".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "Four".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "Five".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "five".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "FIVE".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(true);
-            "Six".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").Should().Be(false);
+            "Hello".IsOneOf(comparer).ShouldBe(false);
+            "3".IsOneOf(comparer, "1", "2", "3", "4", "5").ShouldBe(true);
+            "6".IsOneOf(comparer, "1", "2", "3", "4", "5").ShouldBe(false);
+            "One".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "Two".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "Three".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "Four".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "Five".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "five".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "FIVE".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(true);
+            "Six".IsOneOf(comparer, "One", "Two", "Three", "Four", "Five").ShouldBe(false);
         }
 
         #region Test Data
@@ -270,14 +270,14 @@ public class EnumerableExtensionsTests
                     hitCounts[result]++;
 
                     // Assert
-                    result.Should().NotBeNullOrEmpty();
+                    result.ShouldNotBeNullOrEmpty();
                 });
 
             // Assert
             foreach (var kvp in hitCounts)
             {
                 testOutputHelper.WriteLine("HitCount [{0}]: {1}", kvp.Key, kvp.Value);
-                kvp.Value.Should().BeGreaterThan(0);
+                kvp.Value.ShouldBeGreaterThan(0);
             }
         }
 
@@ -291,7 +291,7 @@ public class EnumerableExtensionsTests
             var result = enumerable.GetRandomItem();
 
             // Assert
-            result.Should().BeNull();
+            result.ShouldBeNull();
         }
 
         [Fact]
@@ -304,7 +304,7 @@ public class EnumerableExtensionsTests
             var result = enumerable.GetRandomItem();
 
             // Assert
-            result.Should().BeNull();
+            result.ShouldBeNull();
         }
 
         [Fact]
@@ -317,7 +317,7 @@ public class EnumerableExtensionsTests
             var result = enumerable.GetRandomItem();
 
             // Assert
-            result.Should().Be(default);
+            result.ShouldBe(default);
         }
 
         [Fact]
@@ -330,7 +330,7 @@ public class EnumerableExtensionsTests
             var result = enumerable.GetRandomItem();
 
             // Assert
-            result.Should().Be(default);
+            result.ShouldBe(default);
         }
     }
 
@@ -355,7 +355,7 @@ public class EnumerableExtensionsTests
             var result = items.GetAt(index);
 
             // Assert
-            result.Should().Be(expected);
+            result.ShouldBe(expected);
         }
 
         [Theory]
@@ -377,7 +377,7 @@ public class EnumerableExtensionsTests
             var result = items.GetAt(index);
 
             // Assert
-            result.Should().Be(expected);
+            result.ShouldBe(expected);
         }
 
         [Fact]
@@ -391,7 +391,7 @@ public class EnumerableExtensionsTests
             var result = items.GetAt(0);
 
             // Assert
-            result.Should().BeNull();
+            result.ShouldBeNull();
         }
 
         [Fact]
@@ -404,7 +404,7 @@ public class EnumerableExtensionsTests
             var result = items.GetAt(0);
 
             // Assert
-            result.Should().BeNull();
+            result.ShouldBeNull();
         }
 
         [Fact]
@@ -417,7 +417,7 @@ public class EnumerableExtensionsTests
             var result = items.GetAt(0);
 
             // Assert
-            result.Should().BeNull();
+            result.ShouldBeNull();
         }
 
         [Fact]
@@ -430,7 +430,7 @@ public class EnumerableExtensionsTests
             var result = items.GetAt(0);
 
             // Assert
-            result.Should().BeNull();
+            result.ShouldBeNull();
         }
     }
 }

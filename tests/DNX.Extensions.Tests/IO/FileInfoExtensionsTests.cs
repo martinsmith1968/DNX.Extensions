@@ -1,6 +1,6 @@
 using DNX.Extensions.IO;
 using DNX.Extensions.Strings;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -39,7 +39,7 @@ public class FileInfoExtensionsTests(ITestOutputHelper outputHelper)
 
         var result = fileInfo.GetRelativeFileName(dirInfo);
 
-        result.Should().Be(expected, $"{nameof(dirName)}: {dirName} - {nameof(fileName)}: {fileName}");
+        result.ShouldBe(expected, $"{nameof(dirName)}: {dirName} - {nameof(fileName)}: {fileName}");
     }
 
     [Theory]
@@ -53,7 +53,7 @@ public class FileInfoExtensionsTests(ITestOutputHelper outputHelper)
 
         var result = fileInfo.GetRelativeFilePath(dirInfo);
 
-        result.Should().Be(expected, $"{nameof(dirName)}: {dirName} - {nameof(fileName)}: {fileName}");
+        result.ShouldBe(expected, $"{nameof(dirName)}: {dirName} - {nameof(fileName)}: {fileName}");
     }
 
     [Theory]
@@ -62,7 +62,7 @@ public class FileInfoExtensionsTests(ITestOutputHelper outputHelper)
     {
         var result = FileInfoExtensions.GetFriendlyFileSize(fileSize);
 
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class FileInfoExtensionsTests(ITestOutputHelper outputHelper)
         var result = FileInfoExtensions.GetFriendlyFileSize(fileInfo);
 
         // Assert
-        result.Should().Be("0B");
+        result.ShouldBe("0B");
     }
 
     [Theory]
@@ -93,7 +93,7 @@ public class FileInfoExtensionsTests(ITestOutputHelper outputHelper)
         var result = FileInfoExtensions.GetFriendlyFileSize(fileInfo);
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
 
         // Cleanup
         fileInfo.Delete();

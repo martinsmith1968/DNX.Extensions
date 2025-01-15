@@ -1,5 +1,5 @@
 using DNX.Extensions.Execution;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 // ReSharper disable PreferConcreteValueOverDefault
@@ -22,7 +22,7 @@ public class RunSafelyTests
             RunSafely.Execute(() => value = guid);
 
             // Assert
-            value.Should().Be(guid);
+            value.ShouldBe(guid);
         }
 
         [Fact]
@@ -44,9 +44,9 @@ public class RunSafelyTests
             RunSafely.Execute(() => throw new Exception(guid.ToString()), ex => message = ex.Message);
 
             // Assert
-            value.Should().Be(int.MaxValue);
-            message.Should().NotBeNull();
-            message.Should().NotBeNull(guid.ToString());
+            value.ShouldBe(int.MaxValue);
+            message.ShouldNotBeNull();
+            message.ShouldNotBeNull(guid.ToString());
         }
 
         [Fact]
@@ -61,7 +61,7 @@ public class RunSafelyTests
             RunSafely.Execute(() => value = dividend / divisor);
 
             // Assert
-            value.Should().Be(0);
+            value.ShouldBe(0);
         }
 
         [Fact]
@@ -77,9 +77,9 @@ public class RunSafelyTests
             RunSafely.Execute(() => value = dividend / divisor, ex => message = ex.Message);
 
             // Assert
-            value.Should().Be(0);
-            message.Should().NotBeNullOrEmpty();
-            message.Should().Contain("divide by zero");
+            value.ShouldBe(0);
+            message.ShouldNotBeNullOrEmpty();
+            message.ShouldContain("divide by zero");
         }
     }
 
@@ -95,7 +95,7 @@ public class RunSafelyTests
             var value = RunSafely.Execute(() => guid);
 
             // Assert
-            value.Should().Be(guid);
+            value.ShouldBe(guid);
         }
 
         [Fact]
@@ -109,7 +109,7 @@ public class RunSafelyTests
             var value = RunSafely.Execute(() => dividend / divisor);
 
             // Assert
-            value.Should().Be(default);
+            value.ShouldBe(default);
         }
 
         [Fact]
@@ -124,7 +124,7 @@ public class RunSafelyTests
             var value = RunSafely.Execute(() => dividend / divisor, defaultResult);
 
             // Assert
-            value.Should().Be(defaultResult);
+            value.ShouldBe(defaultResult);
         }
 
         [Fact]
@@ -139,9 +139,9 @@ public class RunSafelyTests
             var value = RunSafely.Execute(() => dividend / divisor, ex => message = ex.Message);
 
             // Assert
-            value.Should().Be(default);
-            message.Should().NotBeNullOrEmpty();
-            message.Should().Contain("divide by zero");
+            value.ShouldBe(default);
+            message.ShouldNotBeNullOrEmpty();
+            message.ShouldContain("divide by zero");
         }
 
         [Fact]
@@ -157,9 +157,9 @@ public class RunSafelyTests
             var value = RunSafely.Execute(() => dividend / divisor, defaultResult, ex => message = ex.Message);
 
             // Assert
-            value.Should().Be(defaultResult);
-            message.Should().NotBeNullOrEmpty();
-            message.Should().Contain("divide by zero");
+            value.ShouldBe(defaultResult);
+            message.ShouldNotBeNullOrEmpty();
+            message.ShouldContain("divide by zero");
         }
     }
 
@@ -180,7 +180,7 @@ public class RunSafelyTests
             await RunSafely.ExecuteAsync(task);
 
             // Assert
-            value.Should().Be(dividend / divisor);
+            value.ShouldBe(dividend / divisor);
         }
 
         [Fact]
@@ -198,7 +198,7 @@ public class RunSafelyTests
             await RunSafely.ExecuteAsync(task);
 
             // Assert
-            value.Should().Be(0);
+            value.ShouldBe(0);
         }
 
         [Fact]
@@ -217,9 +217,9 @@ public class RunSafelyTests
             await RunSafely.ExecuteAsync(task, ex => message = ex.Message);
 
             // Assert
-            value.Should().Be(0);
-            message.Should().NotBeNullOrEmpty();
-            message.Should().Contain("divide by zero");
+            value.ShouldBe(0);
+            message.ShouldNotBeNullOrEmpty();
+            message.ShouldContain("divide by zero");
         }
     }
 
@@ -243,7 +243,7 @@ public class RunSafelyTests
             var value = await RunSafely.ExecuteAsync(DivideAsync(dividend, divisor));
 
             // Assert
-            value.Should().Be(dividend / divisor);
+            value.ShouldBe(dividend / divisor);
         }
 
         [Fact]
@@ -258,7 +258,7 @@ public class RunSafelyTests
             value = await RunSafely.ExecuteAsync(DivideAsync(dividend, divisor));
 
             // Assert
-            value.Should().Be(default);
+            value.ShouldBe(default);
         }
 
         [Fact]
@@ -274,7 +274,7 @@ public class RunSafelyTests
             value = await RunSafely.ExecuteAsync(DivideAsync(dividend, divisor), defaultResult);
 
             // Assert
-            value.Should().Be(defaultResult);
+            value.ShouldBe(defaultResult);
         }
 
         [Fact]
@@ -290,9 +290,9 @@ public class RunSafelyTests
             value = await RunSafely.ExecuteAsync(DivideAsync(dividend, divisor), ex => message = ex.Message);
 
             // Assert
-            value.Should().Be(default);
-            message.Should().NotBeNull();
-            message.Should().NotBeNull("divide by zero");
+            value.ShouldBe(default);
+            message.ShouldNotBeNull();
+            message.ShouldNotBeNull("divide by zero");
         }
 
         [Fact]
@@ -310,9 +310,9 @@ public class RunSafelyTests
                 ex => message = ex.Message);
 
             // Assert
-            value.Should().Be(defaultResult);
-            message.Should().NotBeNull();
-            message.Should().Contain("divide by zero");
+            value.ShouldBe(defaultResult);
+            message.ShouldNotBeNull();
+            message.ShouldContain("divide by zero");
         }
     }
 }

@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 using DNX.Extensions.Conversion;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -21,8 +21,8 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
         outputHelper.WriteLine($"Text: {text} = {result}");
 
         // Assert
-        result.Should().NotBe(Guid.Empty);
-        result.ToString().Should().NotBe(text);
+        result.ShouldNotBe(Guid.Empty);
+        result.ToString().ShouldNotBe(text);
     }
 
     [Theory]
@@ -34,8 +34,8 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
         outputHelper.WriteLine($"Text: {text} = {result}");
 
         // Assert
-        result.Should().NotBe(Guid.Empty);
-        result.ToString().Should().NotBe(text);
+        result.ShouldNotBe(Guid.Empty);
+        result.ToString().ShouldNotBe(text);
     }
 
     [Theory]
@@ -53,10 +53,10 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
         outputHelper.WriteLine($"Text: {text} = {result}");
 
         // Assert
-        result.Should().NotBe(Guid.Empty);
-        result.ToString().Should().NotBe(text);
-        result.Should().Be(result2);
-        result.ToString().Should().Be(expected);
+        result.ShouldNotBe(Guid.Empty);
+        result.ToString().ShouldNotBe(text);
+        result.ShouldBe(result2);
+        result.ToString().ShouldBe(expected);
     }
 
     // Useful : https://www.compscilib.com/calculate/binaryxor?variation=default

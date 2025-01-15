@@ -1,5 +1,5 @@
 using DNX.Extensions.Arrays;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 namespace DNX.Extensions.Tests.Arrays;
@@ -19,7 +19,7 @@ public class ByteArrayExtensionsTests
 
         var result = bytes.GetAsciiString();
 
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -34,6 +34,6 @@ public class ByteArrayExtensionsTests
 
         var result = bytes.ToHexString();
 
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 }

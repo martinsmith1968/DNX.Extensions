@@ -1,5 +1,5 @@
 using DNX.Extensions.Comparers;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 namespace DNX.Extensions.Tests.Comparers;
@@ -14,7 +14,7 @@ public class StringComparisonEqualityComparerTests
     {
         var sut = new StringComparisonEqualityComparer();
 
-        sut.StringComparisonMethod.Should().Be(StringComparison.CurrentCulture);
+        sut.StringComparisonMethod.ShouldBe(StringComparison.CurrentCulture);
     }
 
     [Theory]
@@ -23,7 +23,7 @@ public class StringComparisonEqualityComparerTests
     {
         var sut = new StringComparisonEqualityComparer(stringComparison);
 
-        sut.StringComparisonMethod.Should().Be(stringComparison);
+        sut.StringComparisonMethod.ShouldBe(stringComparison);
     }
 
     [Theory]
@@ -37,7 +37,7 @@ public class StringComparisonEqualityComparerTests
         var result = Sut.Equals(x, y);
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -52,7 +52,7 @@ public class StringComparisonEqualityComparerTests
         var resultY = Sut.GetHashCode(y);
 
         // Assert
-        (resultX == resultY).Should().Be(expectedResult);
+        (resultX == resultY).ShouldBe(expectedResult);
     }
 
     #region TestData
