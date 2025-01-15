@@ -5,7 +5,7 @@ env:
   PKG_MAJOR_VERSION: 1.3
   PROJECT_NAME: DNX.Extensions
   DOTNET_VERSION: 8.0.x
-  NUGET_VERSION: 5.x
+  NUGET_VERSION: 6.x
   BUILD_CONFIG: Release
   BUILD_PLATFORM: Any CPU
   PACK_PARAMETERS: ''
@@ -393,7 +393,7 @@ jobs:
       uses: NuGet/setup-nuget@v2
       with:
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
-        #nuget-version: ${{ env.NUGET_VERSION }}
+        nuget-version: ${{ env.NUGET_VERSION }}
 
     - name: Download NuGet Output
       uses: actions/download-artifact@v4
