@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DNX.Extensions.Maths;
 using DNX.Extensions.Validation;
 
 namespace DNX.Extensions.Assemblies;
@@ -18,8 +19,7 @@ public static class VersionExtensions
     /// <returns>System.String.</returns>
     public static string Simplify(this Version version, int minimumPositions = 1)
     {
-        // TODO: Restore when available
-        //Guard.IsBetween(() => minimumPositions, 1, 4, IsBetweenBoundsType.IncludeLowerAndUpper);
+        Guard.IsBetween(() => minimumPositions, 1, 4, IsBetweenBoundsType.IncludeLowerAndUpper);
 
         if (version == null)
         {

@@ -51,7 +51,7 @@ public static class MutexManager
     /// Acquires a named Mutex or returns null immediately if unable
     /// </summary>
     /// <param name="name">The name.</param>
-    /// <returns>DNX.Helpers.Threading.Mutexes.Mutex.</returns>
+    /// <returns>DNX.Extensions.Threading.Mutexes.Mutex.</returns>
     public static Mutex AcquireNoWait(string name)
     {
         lock (MutexManagerLocker)

@@ -4,6 +4,12 @@
     <LangVersion>Latest</LangVersion>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
+    <Authors>Martin Smith</Authors>
+    <Description>Tests for DNX.Extensions</Description>
+    <Copyright>Copyright © 2016-2019 DNX Solutions Ltd</Copyright>
+    <Version>2.1.0</Version>
+    <FileVersion>2.1.0</FileVersion>
+    <AssemblyVersion>2.1.0</AssemblyVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <IsPackable>false</IsPackable>

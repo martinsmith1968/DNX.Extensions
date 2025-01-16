@@ -16,7 +16,7 @@ public class ArgumentParserExtensionsTests
     public void When_called_with_a_valid_simple_string_of_values(string text, int parameterCount, string resultsByPipe)
     {
         // Act
-        var result = text.ParseArguments();
+        var result = text.ParseToIndividualArguments();
 
         // Assert
         result.ShouldNotBeNull();
