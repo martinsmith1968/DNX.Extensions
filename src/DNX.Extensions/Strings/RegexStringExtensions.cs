@@ -12,7 +12,7 @@ namespace DNX.Extensions.Strings;
 public static class RegexStringExtensions
 {
     /// <summary>
-    /// Parses to key value pair.
+    /// Parses regex results to key value pair.
     /// </summary>
     /// <param name="input">The input.</param>
     /// <param name="regExpression">The reg expression.</param>
@@ -25,7 +25,7 @@ public static class RegexStringExtensions
 
         if (values == null)
         {
-            return default(KeyValuePair<string, string>);
+            return default;
         }
 
         var result = new KeyValuePair<string, string>(
@@ -37,7 +37,7 @@ public static class RegexStringExtensions
     }
 
     /// <summary>
-    /// Parses to dictionary.
+    /// Parses regex results to dictionary.
     /// </summary>
     /// <param name="input">The input.</param>
     /// <param name="regExpression">The reg expression.</param>
@@ -58,7 +58,7 @@ public static class RegexStringExtensions
     }
 
     /// <summary>
-    /// Parses to a list of dictionaries.
+    /// Parses regex results to a list of dictionaries.
     /// </summary>
     /// <param name="input">The input.</param>
     /// <param name="regExpression">The reg expression.</param>
@@ -88,7 +88,7 @@ public static class RegexStringExtensions
     }
 
     /// <summary>
-    /// Parses the first match to dictionary.
+    /// Parses the regex results first match to dictionary.
     /// </summary>
     /// <param name="input">The input.</param>
     /// <param name="regExpression">The regular expression.</param>
@@ -101,7 +101,7 @@ public static class RegexStringExtensions
     }
 
     /// <summary>
-    /// Gets the name of the group.
+    /// Gets the name of the group at the specified index
     /// </summary>
     /// <param name="regex">The regex.</param>
     /// <param name="index">The index.</param>

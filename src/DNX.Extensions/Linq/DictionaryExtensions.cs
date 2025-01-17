@@ -53,7 +53,7 @@ public static class DictionaryExtensions
     /// <param name="defaultValue">The default value.</param>
     /// <returns>TV.</returns>
     /// <exception cref="System.ArgumentNullException">dictionary or keyName</exception>
-    public static TV GetValue<TK, TV>(this IDictionary<TK, TV> dictionary, TK keyName, TV defaultValue = default(TV))
+    public static TV GetValue<TK, TV>(this IDictionary<TK, TV> dictionary, TK keyName, TV defaultValue = default)
     {
         Guard.IsNotNull(() => dictionary);
 

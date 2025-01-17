@@ -234,7 +234,7 @@ public class AssemblyDetails : IAssemblyDetails
     }
 
     /// <summary>
-    /// Creates an AssemblyDetails fors the assembly containing the specified Type
+    /// Creates an AssemblyDetails for the assembly containing the specified Type
     /// </summary>
     /// <param name="type">The type.</param>
     /// <returns>IAssemblyDetails.</returns>
@@ -244,7 +244,7 @@ public class AssemblyDetails : IAssemblyDetails
     }
 
     /// <summary>
-    /// Creates an AssemblyDetails fors the assembly containing the specified Type
+    /// Creates an AssemblyDetails for the assembly containing the specified Type
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns>IAssemblyDetails.</returns>

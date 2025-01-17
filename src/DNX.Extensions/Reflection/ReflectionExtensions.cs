@@ -349,7 +349,7 @@ public static class ReflectionExtensions
     {
         if (dict == null)
         {
-            return default(T);
+            return default;
         }
 
         var instance = new T();

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DNX.Extensions.Comparers;
 using DNX.Extensions.Linq;
 using Shouldly;
 using Xunit;
@@ -431,6 +432,48 @@ public class EnumerableExtensionsTests
 
             // Assert
             result.ShouldBeNull();
+        }
+    }
+
+    public class AppendItem
+    {
+        [Theory]
+        [InlineData("a,b,c", "d", "a,b,c,d")]
+        [InlineData("a,b,c", "a", "a,b,c,a")]
+        [InlineData(null, "a", "a")]
+        [InlineData("", "a", "a")]
+        public void Test_AppendItem(string commaDelimitedArray, string value, string expectedResult)
+        {
+            var enumerable = commaDelimitedArray?
+                .Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            // Act
+            var result = enumerable.AppendItem(value);
+
+            // Assert
+            string.Join(",", result).ShouldBe(expectedResult);
+        }
+
+        [Theory]
+        [InlineData("a,b,c", "d", "a,b,c,d")]
+        [InlineData("a,b,c,d", "D", "a,b,c,d")]
+        [InlineData("a,b,c", "a", "a,b,c")]
+        [InlineData(null, "a", "a")]
+        [InlineData("", "a", "a")]
+        public void Test_Append_CaseInsensitiveComparer(string commaDelimitedArray, string value, string expectedResult)
+        {
+            var comparer = EqualityComparerFunc<string>.Create(
+                (s1, s2) => string.Equals(s1, s2, StringComparison.OrdinalIgnoreCase)
+            );
+
+            var enumerable = commaDelimitedArray?
+                .Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            // Act
+            var result = enumerable.AppendItem(value, comparer);
+
+            // Assert
+            string.Join(",", result).ShouldBe(expectedResult);
         }
     }
 }

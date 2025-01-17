@@ -49,7 +49,7 @@ public static class ListExtensions
     /// <param name="index">The index.</param>
     /// <param name="defaultValue">The default value.</param>
     /// <returns>T.</returns>
-    public static T GetAt<T>(this IList<T> list, int index, T defaultValue = default(T))
+    public static T GetAt<T>(this IList<T> list, int index, T defaultValue = default)
     {
         index = list.GetAbsoluteIndex(index);
 
