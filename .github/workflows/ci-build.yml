@@ -229,13 +229,7 @@ jobs:
 
     - name: Run all pre-build Scripts
       shell: pwsh
-      run: |
-        foreach ($script in $scripts) {
-          Write-Host
-          Write-Host "--------------------------------------------------------------------------------"
-          Write-Host "-- Executing: $($script.FullName)"
-          . $script.FullName
-        }
+      run: BuildAll.ps1
 
     - name: Restore NuGet packages
       run: dotnet restore
