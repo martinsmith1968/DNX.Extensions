@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
 using DNX.Extensions.Arrays;
@@ -65,4 +66,68 @@ public static class GuidExtensions
 
         return hashGuid;
     }
+
+    /// <summary>
+    /// Converts the value to a Guid.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>A Guid equivalent of the value</returns>
+    public static Guid ToGuid(this short value)
+        => new BigInteger(value).ToGuid();
+
+    /// <summary>
+    /// Converts the value to a Guid.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>A Guid equivalent of the value</returns>
+    public static Guid ToGuid(this int value)
+        => new BigInteger(value).ToGuid();
+
+    /// <summary>
+    /// Converts the value to a Guid.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>A Guid equivalent of the value</returns>
+    public static Guid ToGuid(this uint value)
+        => new BigInteger(value).ToGuid();
+
+    /// <summary>
+    /// Converts the value to a Guid.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>A Guid equivalent of the value</returns>
+    public static Guid ToGuid(this long value)
+        => new BigInteger(value).ToGuid();
+
+    /// <summary>
+    /// Converts the value to a Guid.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>A Guid equivalent of the value</returns>
+    public static Guid ToGuid(this ulong value)
+        => new BigInteger(value).ToGuid();
+
+    /// <summary>
+    /// Converts the value to a Guid.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>A Guid equivalent of the value</returns>
+    public static Guid ToGuid(this float value)
+        => new BigInteger(value).ToGuid();
+
+    /// <summary>
+    /// Converts the value to a Guid.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>A Guid equivalent of the value</returns>
+    public static Guid ToGuid(this decimal value)
+        => new BigInteger(value).ToGuid();
+
+    /// <summary>
+    /// Converts the value to a Guid.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>A Guid equivalent of the value</returns>
+    public static Guid ToGuid(this double value)
+        => new BigInteger(value).ToGuid();
 }

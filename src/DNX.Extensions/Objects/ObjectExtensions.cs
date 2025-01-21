@@ -12,6 +12,17 @@ namespace DNX.Extensions.Objects;
 public static class ObjectExtensions
 {
     /// <summary>
+    /// Converts to string, or default.
+    /// </summary>
+    /// <param name="obj">The object.</param>
+    /// <param name="defaultValue">The default value.</param>
+    /// <returns>System.String.</returns>
+    public static string ToStringOrDefault(this object obj, string defaultValue = "")
+    {
+        return obj?.ToString() ?? defaultValue;
+    }
+
+    /// <summary>
     /// Gets the unique instance identifier.
     /// </summary>
     /// <param name="obj">The object.</param>

@@ -12,6 +12,21 @@ namespace DNX.Extensions.Strings;
 public static class RegexStringExtensions
 {
     /// <summary>
+    /// Determines whether the specified text matches the regex pattern.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="pattern">The pattern.</param>
+    /// <returns>
+    ///   <c>true</c> if the specified text is a match; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool IsMatch(this string text, string pattern)
+    {
+        var match = Regex.Match(text, pattern);
+
+        return match.Success;
+    }
+
+    /// <summary>
     /// Parses regex results to key value pair.
     /// </summary>
     /// <param name="input">The input.</param>

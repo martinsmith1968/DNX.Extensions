@@ -1,18 +1,14 @@
 using System.Text;
 using Bogus;
+using DNX.Extensions.Streams;
+using Shouldly;
+using Xunit;
 
 namespace DNX.Extensions.Tests.Streams;
 
-[TestFixture]
 public class StreamExtensionsTests
 {
-    private Faker _faker;
-
-    [SetUp]
-    public void TestSetup()
-    {
-        _faker = new Faker();
-    }
+    private static Faker _faker = new();
 
     [Fact]
     public void ReadAllText_should_read_text_successfully()

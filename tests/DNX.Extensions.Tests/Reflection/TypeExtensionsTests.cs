@@ -1,3 +1,8 @@
+using DNX.Extensions.Reflection;
+using DNX.Extensions.Tests.Linq;
+using Shouldly;
+using Xunit;
+
 namespace DNX.Extensions.Tests.Reflection;
 
 internal class MyTestClass2
@@ -19,9 +24,9 @@ internal class C1A : I1A { }
 internal class C2 : I2 { }
 internal class C1AI2 : I1A, I2 { }
 
-[TestFixture]
 public class TypeExtensionsTests
 {
+    [Theory]
     [InlineData(typeof(object), true)]
     [InlineData(typeof(TypeExtensionsTests), true)]
     [InlineData(typeof(MyTestClass1), true)]
@@ -29,26 +34,30 @@ public class TypeExtensionsTests
     [InlineData(typeof(int?), true)]
     [InlineData(typeof(DateTime), false)]
     [InlineData(typeof(DateTime?), true)]
-    public bool IsNullableTest(Type type)
+    public void IsNullableTest(Type type, bool expectedResult)
     {
-        return type.IsNullable();
+        type.IsNullable().ShouldBe(expectedResult);
     }
 
+    [Fact]
     public void IsNullableTest_Throws()
     {
+        Type type = null;
+
         try
         {
-            Type type = null;
-
             var result = type.IsNullable();
 
             Assert.Fail("Unexpected result");
         }
-        catch (ArgumentNullException)
+        catch (ArgumentNullException ex)
         {
+            ex.ShouldNotBeNull();
+            ex.ParamName.ShouldBe(nameof(type));
         }
     }
 
+    [Theory]
     [InlineData(typeof(I1), true)]
     [InlineData(typeof(I1A), true)]
     [InlineData(typeof(I2), false)]
@@ -56,11 +65,12 @@ public class TypeExtensionsTests
     [InlineData(typeof(C1A), true)]
     [InlineData(typeof(C2), false)]
     [InlineData(typeof(C1AI2), true)]
-    public bool IsA_I1_Test(Type type)
+    public void IsA_I1_Test(Type type, bool expectedResult)
     {
-        return type.IsA<I1>();
+        type.IsA<I1>().ShouldBe(expectedResult);
     }
 
+    [Theory]
     [InlineData(typeof(I1), typeof(I1), true)]
     [InlineData(typeof(I1A), typeof(I1), true)]
     [InlineData(typeof(I2), typeof(I1), false)]
@@ -70,20 +80,21 @@ public class TypeExtensionsTests
     [InlineData(typeof(C1AI2), typeof(I1), true)]
     [InlineData(typeof(C1AI2), typeof(I2), true)]
     [InlineData(typeof(C1AI2), typeof(I1A), true)]
-    public bool IsA_Test(Type type, Type baseType)
+    public void IsA_Test(Type type, Type baseType, bool expectedResult)
     {
-        return type.IsA(baseType);
+        type.IsA(baseType).ShouldBe(expectedResult);
     }
 
+    [Theory]
     [InlineData(typeof(object), null)]
     [InlineData(typeof(TypeExtensionsTests), null)]
     [InlineData(typeof(MyTestClass2), null)]
     [InlineData(typeof(int), 0)]
     [InlineData(typeof(int?), null)]
     [InlineData(typeof(DateTime?), null)]
-    public object GetDefaultValueTest(Type type)
+    public void GetDefaultValueTest(Type type, object expectedResult)
     {
-        return type.GetDefaultValue();
+        type.GetDefaultValue().ShouldBe(expectedResult);
     }
 
     [Fact]
@@ -97,12 +108,12 @@ public class TypeExtensionsTests
         var instance3 = TypeExtensions.CreateDefaultInstance<int>();
 
         // Assert
-        Assert.IsNotNull(instance1);
+        instance1.ShouldNotBeNull();
 
-        Assert.IsNotNull(instance2);
-        Assert.AreEqual(123, instance2.Number);
+        instance2.ShouldNotBeNull();
+        instance2.Number.ShouldBe(123);
 
-        Assert.AreEqual(0, instance3);
+        instance3.ShouldBe(0);
     }
 
     [Fact]
@@ -115,9 +126,9 @@ public class TypeExtensionsTests
         var instance2 = typeof(MyTestClass2).CreateDefaultInstance() as MyTestClass2;
 
         // Assert
-        Assert.IsNotNull(instance1);
+        instance1.ShouldNotBeNull();
 
-        Assert.IsNotNull(instance2);
-        Assert.AreEqual(123, instance2.Number);
+        instance2.ShouldNotBeNull();
+        instance2.Number.ShouldBe(123);
     }
 }

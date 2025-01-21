@@ -168,12 +168,10 @@ public static class EnumerableExtensions
     /// <returns></returns>
     public static T GetRandomItem<T>(this IEnumerable<T> items, Random randomizer = null)
     {
-        // ReSharper disable PossibleMultipleEnumeration
         if (!items.HasAny())
             return default;
 
         var list = items.ToArray();
-        // ReSharper restore PossibleMultipleEnumeration
 
         var index = (randomizer ?? Randomizer).Next(list.Length);
 
@@ -189,6 +187,9 @@ public static class EnumerableExtensions
     /// <returns></returns>
     public static T GetAt<T>(this IList<T> items, int index)
     {
+        if (index < 0)
+            index = items.Count + index;
+
         return items != null && index >= 0 && index < items.Count
             ? items[index]
             : default;

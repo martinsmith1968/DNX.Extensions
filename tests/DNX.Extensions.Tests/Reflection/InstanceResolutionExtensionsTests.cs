@@ -1,4 +1,8 @@
 using System.Reflection;
+using DNX.Extensions.Assemblies;
+using DNX.Extensions.Reflection;
+using Shouldly;
+using Xunit;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable ArrangeTypeMemberModifiers
@@ -34,7 +38,6 @@ internal class CTypeAB : ITypeA, ITypeB { }
 internal class CTypeAC : ITypeA, ITypeC { }
 internal class CTypeCA : CTypeC, ITypeA { }
 
-[TestFixture]
 public class InstanceResolutionExtensionsTests
 {
     [Fact]

@@ -59,7 +59,7 @@ public class ListExtensionsTests
     [InlineData("a,b,c,d,e,f,g,h,i,j", 9, "j")]
     [InlineData("a,b,c,d,e,f,g,h,i,j", 10, null)]
     [InlineData("a,b,c,d,e,f,g,h,i,j", -1, "j")]
-    [InlineData("a,b,c,d,e,f,g,h,i,j", -15, "f")]
+    [InlineData("a,b,c,d,e,f,g,h,i,j", -15, null)]
     [InlineData("", 5, null)]
     [InlineData(null, 5, null)]
     public void Test_GetAt(string commaDelimitedArray, int index, string expectedResult)
