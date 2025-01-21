@@ -2,6 +2,8 @@ using DNX.Extensions.Maths;
 using Shouldly;
 using Xunit;
 
+#pragma warning disable xUnit1025
+
 namespace DNX.Extensions.Tests.Maths;
 
 public class IsBetweenTypeExtensionsTests

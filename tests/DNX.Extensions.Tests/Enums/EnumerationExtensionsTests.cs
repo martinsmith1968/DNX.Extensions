@@ -265,19 +265,23 @@ public class EnumerationExtensionsTests
         dict[MyTestEnum2.Flag5.ToString()].ShouldBe(MyTestEnum2.Flag5);
     }
 
+    [Theory]
     [InlineData(MyTestEnum1.One, "First")]
     [InlineData(MyTestEnum1.Two, "Second")]
     [InlineData(MyTestEnum1.Three, "Third")]
     [InlineData(MyTestEnum1.Four, "Fourth")]
     [InlineData(MyTestEnum1.Five, "Fifth")]
     [InlineData(MyTestEnum2.Flag2, null)]
-    public string GetDescriptionTest(Enum value)
+    public void GetDescriptionTest(Enum value, string expectedResult)
     {
+        // Act
         var result = value.GetDescription();
 
-        return result;
+        // Assert
+        result.ShouldBe(expectedResult);
     }
 
+    [Theory]
     [InlineData(MyTestEnum3.Ten, 10)]
     [InlineData(MyTestEnum3.Twenty, null)]
     [InlineData(MyTestEnum3.Thirty, 15)]

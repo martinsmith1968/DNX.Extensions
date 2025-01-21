@@ -47,8 +47,8 @@ public class ObjectExtensionsTests
             : instance1;
 
         // Act
-        var uniqueId1 = instance1.GetUniqueInstanceId(string.Format("{0}.{1}", instance1.Id, instance1.Name));
-        var uniqueId2 = instance2.GetUniqueInstanceId(string.Format("{0}.{1}", instance2.Id, instance2.Name));
+        var uniqueId1 = instance1.GetUniqueInstanceId($"{instance1.Id}.{instance1.Name}");
+        var uniqueId2 = instance2.GetUniqueInstanceId($"{instance2.Id}.{instance2.Name}");
 
         // Assert
         (uniqueId1 == uniqueId2).ShouldBe(expectedResult);
@@ -60,7 +60,6 @@ public class ObjectExtensionsTests
     [InlineData(null, "b", "c", "b")]
     [InlineData(null, null, "c", "c")]
     [InlineData(null, null, null, null)]
-    [InlineData("a", "b", "c", "a")]
     [InlineData("a", "", "", "a")]
     [InlineData("", "b", "c", "")]
     [InlineData("", "", "c", "")]
