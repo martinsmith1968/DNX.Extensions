@@ -1,30 +1,32 @@
 {
   "commands": {
-    "Conversion-BulitInTypes-Generate": {
+    "Source:Conversion-BuiltInTypes-Build": {
       "fileName": "powershell.exe",
       "workingDirectory": ".",
-      "arguments": "-ExecutionPolicy Bypass -NonInteractive -File src\\DNX.Extensions\\Conversion\\BuiltInTypes\\Generate.ps1"
+      "arguments": "-ExecutionPolicy Bypass -NonInteractive -File src\\DNX.Extensions\\Conversion\\BuiltInTypes\\Build.ps1"
     },
-    "Maths-BuiltInTypes-Generate": {
+    "Source:Maths-BuiltInTypes-Build": {
       "fileName": "powershell.exe",
       "workingDirectory": ".",
-      "arguments": "-ExecutionPolicy Bypass -NonInteractive -File src\\DNX.Extensions\\Maths\\BuiltInTypes\\Generate.ps1"
+      "arguments": "-ExecutionPolicy Bypass -NonInteractive -File src\\DNX.Extensions\\Maths\\BuiltInTypes\\Build.ps1"
     },
-    "Maths-BuildInTypes-Tests-Generate": {
+    "Tests:Maths-BuiltInTypes-Build": {
       "fileName": "powershell.exe",
       "workingDirectory": ".",
-      "arguments": "-ExecutionPolicy Bypass -NonInteractive -File tests\\DNX.Extensions.Tests\\Maths\\BuiltInTypes\\Generate.ps1"
+      "arguments": "-ExecutionPolicy Bypass -NonInteractive -File tests\\DNX.Extensions.Tests\\Maths\\BuiltInTypes\\Build.ps1"
     },
-    "Maths-BuiltInTypes-TestsDataSource-Generate": {
+    "Tests:Maths-BuiltInTypes-TestsDataSource-Build": {
       "fileName": "powershell.exe",
       "workingDirectory": ".",
-      "arguments": "-ExecutionPolicy Bypass -NonInteractive -File tests\\DNX.Extensions.Tests\\Maths\\BuiltInTypes\\TestsDataSource\\Generate.ps1"
+      "arguments": "-ExecutionPolicy Bypass -NonInteractive -File tests\\DNX.Extensions.Tests\\Maths\\BuiltInTypes\\TestsDataSource\\Build.ps1"
     }
-  },
-  "-vs-binding": {
-    "BeforeBuild": [
-      "Conversion-BulitInTypes-Generate",
-      "Maths-BuiltInTypes-Generate"
-    ]
   }
+
+
+
+
+
+
+
+
 }

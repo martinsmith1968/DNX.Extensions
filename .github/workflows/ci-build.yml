@@ -227,6 +227,15 @@ jobs:
     - name: Verify Package Transitive Dependencies
       run: snitch "${{ env.PROJECT_NAME }}.sln"
 
+    - name: Run all pre-build Scripts
+      shell: pwsh
+      run: |
+        foreach ($script in $scripts) {
+          Write-Host "--------------------------------------------------------------------------------"
+          Write-Host "-- Executing: $($script.FullName)"
+          # . $script.FullName
+        }
+
     - name: Restore NuGet packages
       run: dotnet restore
 
