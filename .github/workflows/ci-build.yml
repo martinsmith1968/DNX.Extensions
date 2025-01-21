@@ -231,9 +231,10 @@ jobs:
       shell: pwsh
       run: |
         foreach ($script in $scripts) {
+          Write-Host
           Write-Host "--------------------------------------------------------------------------------"
           Write-Host "-- Executing: $($script.FullName)"
-          # . $script.FullName
+          . $script.FullName
         }
 
     - name: Restore NuGet packages
