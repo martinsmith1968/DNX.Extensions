@@ -229,7 +229,7 @@ jobs:
 
     - name: Run all pre-build Scripts
       shell: pwsh
-      run: BuildAll.ps1
+      run: ./BuildAll.ps1
 
     - name: Restore NuGet packages
       run: dotnet restore
