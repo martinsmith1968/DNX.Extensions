@@ -17,14 +17,14 @@ public static class ConvertInt16Extensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>short</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Int16</exception>
     public static short ToInt16(this string text)
     {
         short result;
 
         if (!short.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(short));
+            throw new ConversionException(text, "Unable to convert value to Int16", typeof(short));
         }
 
         return result;

@@ -17,14 +17,14 @@ public static class ConvertFloatExtensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>float</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Float</exception>
     public static float ToFloat(this string text)
     {
         float result;
 
         if (!float.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(float));
+            throw new ConversionException(text, "Unable to convert value to Float", typeof(float));
         }
 
         return result;

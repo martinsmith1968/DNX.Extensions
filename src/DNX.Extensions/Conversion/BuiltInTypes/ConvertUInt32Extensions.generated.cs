@@ -17,14 +17,14 @@ public static class ConvertUInt32Extensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>uint</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to UInt32</exception>
     public static uint ToUInt32(this string text)
     {
         uint result;
 
         if (!uint.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(uint));
+            throw new ConversionException(text, "Unable to convert value to UInt32", typeof(uint));
         }
 
         return result;

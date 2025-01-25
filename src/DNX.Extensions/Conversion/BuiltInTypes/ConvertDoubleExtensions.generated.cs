@@ -17,14 +17,14 @@ public static class ConvertDoubleExtensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>double</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Double</exception>
     public static double ToDouble(this string text)
     {
         double result;
 
         if (!double.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(double));
+            throw new ConversionException(text, "Unable to convert value to Double", typeof(double));
         }
 
         return result;

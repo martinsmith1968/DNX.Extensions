@@ -17,14 +17,14 @@ public static class ConvertInt32Extensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>int</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Int32</exception>
     public static int ToInt32(this string text)
     {
         int result;
 
         if (!int.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(int));
+            throw new ConversionException(text, "Unable to convert value to Int32", typeof(int));
         }
 
         return result;

@@ -17,14 +17,14 @@ public static class ConvertGuidExtensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>Guid</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Guid</exception>
     public static Guid ToGuid(this string text)
     {
         Guid result;
 
         if (!Guid.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(Guid));
+            throw new ConversionException(text, "Unable to convert value to Guid", typeof(Guid));
         }
 
         return result;

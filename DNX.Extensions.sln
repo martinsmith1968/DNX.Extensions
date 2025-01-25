@@ -11,6 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNX.Extensions", "src\DNX.E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{9E70C755-0A39-46EA-8063-0A3B594B7271}"
 	ProjectSection(SolutionItems) = preProject
+		BuildAll.ps1 = BuildAll.ps1
 		.github\workflows\ci-build.yml = .github\workflows\ci-build.yml
 		commands.json = commands.json
 	EndProjectSection

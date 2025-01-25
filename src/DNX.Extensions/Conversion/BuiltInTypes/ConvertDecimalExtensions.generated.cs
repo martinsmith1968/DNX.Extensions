@@ -17,14 +17,14 @@ public static class ConvertDecimalExtensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>decimal</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Decimal</exception>
     public static decimal ToDecimal(this string text)
     {
         decimal result;
 
         if (!decimal.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(decimal));
+            throw new ConversionException(text, "Unable to convert value to Decimal", typeof(decimal));
         }
 
         return result;

@@ -2,14 +2,15 @@ Write-Host "Executing in ${PSScriptRoot}"
 
 $output_suffix = ".generated.cs"
 
-$template_filename = Join-Path $PSScriptRoot "MathsExtensions.cs.template"
-$output_filename = "Maths#name#Extensions" + $output_suffix
+$template_filename = Join-Path $PSScriptRoot "ConversionExtensionsTests.cs.template"
+$output_filename = "Conversion#name#ExtensionsTests" + $output_suffix
 
 $hash = @{
+    'Bool' = 'bool'
+
     'Byte' = 'byte'
     'SByte' = 'sbyte'
 
-    'DateTime' = 'DateTime'
     'Guid' = 'Guid'
 
     'Int16' = 'short'

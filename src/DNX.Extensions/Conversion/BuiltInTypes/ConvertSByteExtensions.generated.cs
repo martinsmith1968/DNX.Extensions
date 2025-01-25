@@ -17,14 +17,14 @@ public static class ConvertSByteExtensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>sbyte</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to SByte</exception>
     public static sbyte ToSByte(this string text)
     {
         sbyte result;
 
         if (!sbyte.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(sbyte));
+            throw new ConversionException(text, "Unable to convert value to SByte", typeof(sbyte));
         }
 
         return result;

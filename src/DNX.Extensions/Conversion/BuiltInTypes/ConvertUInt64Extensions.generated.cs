@@ -17,14 +17,14 @@ public static class ConvertUInt64Extensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>ulong</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to UInt64</exception>
     public static ulong ToUInt64(this string text)
     {
         ulong result;
 
         if (!ulong.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(ulong));
+            throw new ConversionException(text, "Unable to convert value to UInt64", typeof(ulong));
         }
 
         return result;

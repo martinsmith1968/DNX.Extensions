@@ -17,14 +17,14 @@ public static class Convert#name#Extensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>#type#</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to #name#</exception>
     public static #type# To#name#(this string text)
     {
         #type# result;
 
         if (!#type#.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(#type#));
+            throw new ConversionException(text, "Unable to convert value to #name#", typeof(#type#));
         }
 
         return result;

@@ -17,14 +17,14 @@ public static class ConvertByteExtensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>byte</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Byte</exception>
     public static byte ToByte(this string text)
     {
         byte result;
 
         if (!byte.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(byte));
+            throw new ConversionException(text, "Unable to convert value to Byte", typeof(byte));
         }
 
         return result;

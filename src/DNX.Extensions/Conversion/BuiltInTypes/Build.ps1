@@ -11,7 +11,6 @@ $hash = @{
     'Byte' = 'byte'
     'SByte' = 'sbyte'
 
-    'DateTime' = 'DateTime'
     'Guid' = 'Guid'
 
     'Int16' = 'short'
@@ -45,3 +44,6 @@ foreach($entry in $hash.GetEnumerator())
     $generated_code = Substitute $source_code $entry.Value $entry.Key
     Set-Content -Path $target_filename -Value $generated_code
 }
+
+Write-Host
+Write-Host "$($hash.Count) definitions generated"

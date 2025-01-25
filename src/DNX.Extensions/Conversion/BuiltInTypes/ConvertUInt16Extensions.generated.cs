@@ -17,14 +17,14 @@ public static class ConvertUInt16Extensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>ushort</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to UInt16</exception>
     public static ushort ToUInt16(this string text)
     {
         ushort result;
 
         if (!ushort.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(ushort));
+            throw new ConversionException(text, "Unable to convert value to UInt16", typeof(ushort));
         }
 
         return result;

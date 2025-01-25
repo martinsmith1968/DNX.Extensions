@@ -17,14 +17,14 @@ public static class ConvertInt64Extensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>long</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Int64</exception>
     public static long ToInt64(this string text)
     {
         long result;
 
         if (!long.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(long));
+            throw new ConversionException(text, "Unable to convert value to Int64", typeof(long));
         }
 
         return result;

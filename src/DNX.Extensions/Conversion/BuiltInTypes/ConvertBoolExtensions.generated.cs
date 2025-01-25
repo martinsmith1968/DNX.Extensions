@@ -17,14 +17,14 @@ public static class ConvertBoolExtensions
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>bool</returns>
-    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Type</exception>
+    /// <exception cref="DNX.Extensions.Exceptions.ConversionException">Unable to convert value to Bool</exception>
     public static bool ToBool(this string text)
     {
         bool result;
 
         if (!bool.TryParse(text, out result))
         {
-            throw new ConversionException(text, "Unable to convert value to Type", typeof(bool));
+            throw new ConversionException(text, "Unable to convert value to Bool", typeof(bool));
         }
 
         return result;
