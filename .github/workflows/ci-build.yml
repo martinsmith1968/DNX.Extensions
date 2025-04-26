@@ -2,7 +2,7 @@ name: CI Build
 run-name: CIBuild_${{ github.event_name }}_${{ github.ref_name }}_${{ github.run_number }}.${{ github.run_attempt }}
 
 env:
-  PKG_MAJOR_VERSION: 1.3
+  PKG_MAJOR_VERSION: 1.4
   PROJECT_NAME: DNX.Extensions
   DOTNET_VERSION: 8.0.x
   NUGET_VERSION: 6.x
