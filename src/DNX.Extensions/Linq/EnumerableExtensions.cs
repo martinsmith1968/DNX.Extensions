@@ -90,7 +90,9 @@ public static class EnumerableExtensions
     /// </returns>
     public static bool IsOneOf<T>(this T input, IEnumerable<T> candidates, IEqualityComparer<T> comparer)
     {
-        return candidates != null && candidates.Any() && candidates.Contains(input, comparer);
+        return candidates != null
+               && candidates.Any()
+               && candidates.Contains(input, comparer);
     }
 
     /// <summary>
@@ -147,7 +149,7 @@ public static class EnumerableExtensions
     /// <param name="comparer">The comparer.</param>
     /// <param name="treatNullListAs">The value to return if the list is null</param>
     /// <returns><c>true</c> if the value is not in the list; otherwise, <c>false</c>.</returns>
-    public static bool IsNotIn<T>(this T value, IList<T> list, IEqualityComparer<T> comparer = null, bool treatNullListAs = false)
+    public static bool IsNotIn<T>(this T value, IList<T> list, IEqualityComparer<T> comparer = null, bool treatNullListAs = true)
     {
         if (list == null)
         {

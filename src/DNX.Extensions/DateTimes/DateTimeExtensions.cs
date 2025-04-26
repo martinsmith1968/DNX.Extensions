@@ -1,4 +1,6 @@
 using System;
+using DNX.Extensions.Linq;
+using System.Linq;
 
 namespace DNX.Extensions.DateTimes;
 
@@ -7,6 +9,9 @@ namespace DNX.Extensions.DateTimes;
 /// </summary>
 public static class DateTimeExtensions
 {
+    public static readonly DateTime CalendarMinValue = new(1953, 1, 1);
+    public static readonly DateTime CalendarMaxValue = new(9998, 12, 31);
+
     /// <summary>
     /// Gets the unix epoch.
     /// </summary>
@@ -84,6 +89,47 @@ public static class DateTimeExtensions
         {
             return DateTime.SpecifyKind(defaultDateTime, DateTimeKind.Utc);
         }
+    }
+
+    /// <summary>
+    /// Returns the minimum of the given dates.
+    /// </summary>
+    /// <param name="values">The values.</param>
+    /// <returns></returns>
+    public static DateTime MinOf(params DateTime[] values)
+    {
+        return values.HasAny()
+            ? values.Min()
+            : DateTime.MinValue;
+    }
+
+    /// <summary>
+    /// Returns the maximum of the given dates.
+    /// </summary>
+    /// <param name="values">The values.</param>
+    /// <returns></returns>
+    public static DateTime MaxOf(params DateTime[] values)
+    {
+        return values.HasAny()
+            ? values.Max()
+            : DateTime.MaxValue;
+    }
+
+    /// <summary>
+    /// Gets the number of months spanned by the two dates.
+    /// </summary>
+    /// <param name="dateTime">The date time.</param>
+    /// <param name="other">The other.</param>
+    /// <returns></returns>
+    public static int GetMonthsSpan(this DateTime dateTime, DateTime other)
+    {
+        var startDate = MinOf(dateTime, other);
+        var endDate = MaxOf(dateTime, other);
+
+        var startNumber = (startDate.Year * 100) + startDate.Month;
+        var endNumber = (endDate.Year * 100) + endDate.Month;
+
+        return (endNumber - startNumber) + 1;
     }
 
     /// <summary>

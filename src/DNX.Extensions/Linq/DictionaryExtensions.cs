@@ -204,7 +204,7 @@ public static class DictionaryExtensions
                     }
                 case ICollection valueCollection:
                     {
-                        // iterate through the collection and convert any strin-object dictionaries
+                        // iterate through the collection and convert any string-object dictionaries
                         // along the way into expando objects
                         var itemList = new List<object>();
                         foreach (var item in valueCollection)
