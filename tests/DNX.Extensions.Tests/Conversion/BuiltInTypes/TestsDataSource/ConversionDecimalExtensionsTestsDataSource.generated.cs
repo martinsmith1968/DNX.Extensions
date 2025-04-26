@@ -131,7 +131,9 @@ public class ConversionDecimalExtensionsTestsDataSource
             { "Affirmative", false, false },
             { "false", true, false },
 #elif ConversionExtensionsTestsDataSource_Guid
+            { "", Guid2, Guid2 },
             { "abcdef", Guid1, Guid1 },
+            { "0", Guid1, Guid1 },
             { Max_Guid.ToString(), Min_Guid, Max_Guid },
 #else
             { "abcdef", (decimal)25, 25 },
