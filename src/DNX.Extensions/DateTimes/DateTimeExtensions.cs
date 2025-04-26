@@ -1,4 +1,6 @@
 using System;
+using DNX.Extensions.Linq;
+using System.Linq;
 
 namespace DNX.Extensions.DateTimes;
 
@@ -7,6 +9,129 @@ namespace DNX.Extensions.DateTimes;
 /// </summary>
 public static class DateTimeExtensions
 {
+    public static readonly DateTime CalendarMinValue = new(1953, 1, 1);
+    public static readonly DateTime CalendarMaxValue = new(9998, 12, 31);
+
+    /// <summary>
+    /// Gets the unix epoch.
+    /// </summary>
+    /// <value>The unix epoch.</value>
+    public static DateTime UnixEpoch
+    {
+        get { return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc); }
+    }
+
+    /// <summary>
+    /// Parses the date as UTC.
+    /// </summary>
+    /// <param name="dateString">The date string.</param>
+    /// <returns>DateTime.</returns>
+    public static DateTime ParseDateAsUtc(this string dateString)
+    {
+        var dateTime = DateTime.Parse(dateString);
+
+        var dateTimeUtc = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+
+        return dateTimeUtc;
+    }
+
+    /// <summary>
+    /// Parses the date as UTC.
+    /// </summary>
+    /// <param name="dateString">The date string.</param>
+    /// <param name="formatProvider">The format provider.</param>
+    /// <returns>DateTime.</returns>
+    public static DateTime ParseDateAsUtc(this string dateString, IFormatProvider formatProvider)
+    {
+        var dateTime = DateTime.Parse(dateString, formatProvider);
+
+        var dateTimeUtc = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+
+        return dateTimeUtc;
+    }
+
+    /// <summary>
+    /// Parses the date as UTC.
+    /// </summary>
+    /// <param name="dateString">The date string.</param>
+    /// <param name="defaultDateTime">The default date time.</param>
+    /// <returns>DateTime.</returns>
+    public static DateTime ParseDateAsUtc(this string dateString, DateTime defaultDateTime)
+    {
+        try
+        {
+            var dateTime = ParseDateAsUtc(dateString);
+
+            return dateTime;
+        }
+        catch
+        {
+            return DateTime.SpecifyKind(defaultDateTime, DateTimeKind.Utc);
+        }
+    }
+
+    /// <summary>
+    /// Parses the date as UTC.
+    /// </summary>
+    /// <param name="dateString">The date string.</param>
+    /// <param name="formatProvider">The format provider.</param>
+    /// <param name="defaultDateTime">The default date time.</param>
+    /// <returns>System.DateTime.</returns>
+    public static DateTime ParseDateAsUtc(this string dateString, IFormatProvider formatProvider, DateTime defaultDateTime)
+    {
+        try
+        {
+            var dateTime = ParseDateAsUtc(dateString, formatProvider);
+
+            return dateTime;
+        }
+        catch
+        {
+            return DateTime.SpecifyKind(defaultDateTime, DateTimeKind.Utc);
+        }
+    }
+
+    /// <summary>
+    /// Returns the minimum of the given dates.
+    /// </summary>
+    /// <param name="values">The values.</param>
+    /// <returns></returns>
+    public static DateTime MinOf(params DateTime[] values)
+    {
+        return values.HasAny()
+            ? values.Min()
+            : DateTime.MinValue;
+    }
+
+    /// <summary>
+    /// Returns the maximum of the given dates.
+    /// </summary>
+    /// <param name="values">The values.</param>
+    /// <returns></returns>
+    public static DateTime MaxOf(params DateTime[] values)
+    {
+        return values.HasAny()
+            ? values.Max()
+            : DateTime.MaxValue;
+    }
+
+    /// <summary>
+    /// Gets the number of months spanned by the two dates.
+    /// </summary>
+    /// <param name="dateTime">The date time.</param>
+    /// <param name="other">The other.</param>
+    /// <returns></returns>
+    public static int GetMonthsSpan(this DateTime dateTime, DateTime other)
+    {
+        var startDate = MinOf(dateTime, other);
+        var endDate = MaxOf(dateTime, other);
+
+        var startNumber = (startDate.Year * 100) + startDate.Month;
+        var endNumber = (endDate.Year * 100) + endDate.Month;
+
+        return (endNumber - startNumber) + 1;
+    }
+
     /// <summary>
     /// Sets the year.
     /// </summary>

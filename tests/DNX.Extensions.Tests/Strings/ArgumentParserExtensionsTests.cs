@@ -1,5 +1,5 @@
 using DNX.Extensions.Strings;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 namespace DNX.Extensions.Tests.Strings;
@@ -16,19 +16,19 @@ public class ArgumentParserExtensionsTests
     public void When_called_with_a_valid_simple_string_of_values(string text, int parameterCount, string resultsByPipe)
     {
         // Act
-        var result = text.ParseArguments();
+        var result = text.ParseToIndividualArguments();
 
         // Assert
-        result.Should().NotBeNull();
-        result.Count.Should().Be(parameterCount);
+        result.ShouldNotBeNull();
+        result.Count.ShouldBe(parameterCount);
 
         var parameters = resultsByPipe.Split("|".ToCharArray());
-        parameters.Length.Should().Be(parameterCount);
+        parameters.Length.ShouldBe(parameterCount);
 
         var parameterPosition = 0;
         foreach (var parameter in parameters)
         {
-            result[parameterPosition].Should().Be(parameter);
+            result[parameterPosition].ShouldBe(parameter);
 
             ++parameterPosition;
         }

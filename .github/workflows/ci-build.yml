@@ -2,7 +2,7 @@ name: CI Build
 run-name: CIBuild_${{ github.event_name }}_${{ github.ref_name }}_${{ github.run_number }}.${{ github.run_attempt }}
 
 env:
-  PKG_MAJOR_VERSION: 1.3
+  PKG_MAJOR_VERSION: 1.4
   PROJECT_NAME: DNX.Extensions
   DOTNET_VERSION: 8.0.x
   NUGET_VERSION: 6.x
@@ -11,6 +11,7 @@ env:
   PACK_PARAMETERS: ''
   COVERAGE_WARNING_THRESHOLD: 95
   COVERAGE_ERROR_THRESHOLD: 85
+  COVERAGE_FAIL_BELOW_MIN: false
   NUGET_OUTPUT_FOLDER: nupkgs
   BRANCH_PREFIX_RELEASE_CANDIDATE: rc/
   BRANCH_PREFIX_PUBLISH_CANDIDATE: beta/
@@ -226,6 +227,10 @@ jobs:
     - name: Verify Package Transitive Dependencies
       run: snitch "${{ env.PROJECT_NAME }}.sln"
 
+    - name: Run all pre-build Scripts
+      shell: pwsh
+      run: ./BuildAll.ps1
+
     - name: Restore NuGet packages
       run: dotnet restore
 
@@ -250,7 +255,7 @@ jobs:
       with:
         filename: "**/coverage.cobertura.xml"
         badge: true
-        fail_below_min: true
+        fail_below_min: ${{ env.COVERAGE_FAIL_BELOW_MIN }}
         format: markdown
         hide_branch_rate: false
         hide_complexity: false

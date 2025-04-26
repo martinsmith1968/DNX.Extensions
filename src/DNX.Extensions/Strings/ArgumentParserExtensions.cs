@@ -17,7 +17,7 @@ public static class ArgumentParserExtensions
     /// <remarks>
     /// See: https://stackoverflow.com/questions/14655023/split-a-string-that-has-white-spaces-unless-they-are-enclosed-within-quotes
     /// </remarks>
-    public static IList<string> ParseArguments(this string text)
+    public static IList<string> ParseToIndividualArguments(this string text)
     {
         var parts = Regex.Matches(text, @"[\""].+?[\""]|[^ ]+")
             .Cast<Match>()
