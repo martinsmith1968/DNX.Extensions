@@ -246,6 +246,86 @@ public class EnumerableExtensionsTests
         #endregion
     }
 
+    public class IsIn_Tests
+    {
+        [Theory]
+        [InlineData("1,2,3,4,5", "1", true)]
+        [InlineData("1,2,3,4,5", "3", true)]
+        [InlineData("1,2,3,4,5", "5", true)]
+        [InlineData("1,2,3,4,5", "0", false)]
+        [InlineData("1,2,3,4,5", "", false)]
+        [InlineData("1,2,3,4,5", null, false)]
+        [InlineData(null, "1", false)]
+        public void IsIn_returns_as_expected(string itemList, string item, bool expectedResult)
+        {
+            // Arrange
+            var enumerable = itemList?.Split(",");
+
+            // Act
+            var result = item.IsIn(enumerable);
+
+            // Assert
+            result.ShouldBe(expectedResult);
+        }
+
+        [Theory]
+        [InlineData("a,b,c,d,e", "a", StringComparison.Ordinal, true)]
+        [InlineData("a,b,c,d,e", "A", StringComparison.Ordinal, false)]
+        [InlineData("a,b,c,d,e", "A", StringComparison.OrdinalIgnoreCase, true)]
+        [InlineData(null, "1", StringComparison.OrdinalIgnoreCase, false)]
+        public void IsIn_EqualityComparer_returns_as_expected(string itemList, string item, StringComparison comparison, bool expectedResult)
+        {
+            // Arrange
+            var enumerable = itemList?.Split(",");
+
+            // Act
+            var result = item.IsIn(enumerable, StringComparer.FromComparison(comparison));
+
+            // Assert
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class IsNotIn_Tests
+    {
+        [Theory]
+        [InlineData("1,2,3,4,5", "1", false)]
+        [InlineData("1,2,3,4,5", "3", false)]
+        [InlineData("1,2,3,4,5", "5", false)]
+        [InlineData("1,2,3,4,5", "0", true)]
+        [InlineData("1,2,3,4,5", "", true)]
+        [InlineData("1,2,3,4,5", null, true)]
+        [InlineData(null, "1", true)]
+        public void IsNotIn_returns_as_expected(string itemList, string item, bool expectedResult)
+        {
+            // Arranger
+            var enumerable = itemList?.Split(",");
+
+            // Act
+            var result = item.IsNotIn(enumerable);
+
+            // Assert
+            result.ShouldBe(expectedResult);
+        }
+
+        [Theory]
+        [InlineData("a,b,c,d,e", "a", StringComparison.Ordinal, false)]
+        [InlineData("a,b,c,d,e", "A", StringComparison.Ordinal, true)]
+        [InlineData("a,b,c,d,e", "A", StringComparison.OrdinalIgnoreCase, false)]
+        [InlineData(null, "1", StringComparison.CurrentCultureIgnoreCase, true)]
+        public void IsNotIn_EqualityComparer_returns_as_expected(string itemList, string item, StringComparison comparison, bool expectedResult)
+        {
+            // Arrange
+            var enumerable = itemList?.Split(",");
+
+            // Act
+            var result = item.IsNotIn(enumerable, StringComparer.FromComparison(comparison));
+
+            // Assert
+            result.ShouldBe(expectedResult);
+        }
+    }
+
     public class GetRandomItem(ITestOutputHelper testOutputHelper)
     {
         [Theory]

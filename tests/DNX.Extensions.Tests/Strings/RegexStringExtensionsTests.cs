@@ -10,6 +10,18 @@ namespace DNX.Extensions.Tests.Strings;
 public class RegexStringExtensionsTests
 {
     [Theory]
+    [InlineData("ABC:123", "[A-Z]+\\:[0-9]+", true)]
+    [InlineData("ABC", "[0-9]+", false)]
+    public void IsMatch_can_match_text_and_patterns_successfully(string text, string pattern, bool expectedResult)
+    {
+        // Act
+        var result = text.IsMatch(pattern);
+
+        // Assert
+        result.ShouldBe(expectedResult);
+    }
+
+    [Theory]
     [InlineData("Qwerty:123", "([^:]+):(.*)", "1", "2", "Qwerty=123")]
     [InlineData("UseFlag=Yes", "(?<name>[^=]+)=(?<value>.*)", "name", "value", "UseFlag=Yes")]
     [InlineData("Notparseable", "([^=]+):(.*)", "1", "2", "=")]

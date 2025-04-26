@@ -4,17 +4,19 @@ using DNX.Extensions.Streams;
 using Shouldly;
 using Xunit;
 
+// ReSharper disable ExpressionIsAlwaysNull
+
 namespace DNX.Extensions.Tests.Streams;
 
 public class StreamExtensionsTests
 {
-    private static Faker _faker = new();
+    private static readonly Faker Faker = new();
 
     [Fact]
     public void ReadAllText_should_read_text_successfully()
     {
         // Arrange
-        var text = _faker.Lorem.Sentences(_faker.Random.Int(5, 10));
+        var text = Faker.Lorem.Sentences(Faker.Random.Int(5, 10));
         var bytes = Encoding.UTF8.GetBytes(text);
 
         var stream = new MemoryStream(bytes);
@@ -33,7 +35,7 @@ public class StreamExtensionsTests
     public void ReadAllText_handles_null_streams_appropriately()
     {
         // Arrange
-        var stream = (MemoryStream)null;
+        MemoryStream stream = null;
 
         // Act
         var result = stream.ReadAllText();
@@ -47,7 +49,7 @@ public class StreamExtensionsTests
     {
         // Arrange
         var textLines = Enumerable.Range(5, 10)
-            .Select(f => _faker.Lorem.Slug(_faker.Random.Int(5, 10)))
+            .Select(_ => Faker.Lorem.Slug(Faker.Random.Int(5, 10)))
             .ToList();
         var bytes = Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, textLines));
 
@@ -81,7 +83,7 @@ public class StreamExtensionsTests
     public void ReadAllBytes_should_read_bytes_successfully()
     {
         // Arrange
-        var text = _faker.Lorem.Sentences(_faker.Random.Int(5, 10));
+        var text = Faker.Lorem.Sentences(Faker.Random.Int(5, 10));
         var bytes = Encoding.UTF8.GetBytes(text);
 
         var stream = new MemoryStream(bytes);

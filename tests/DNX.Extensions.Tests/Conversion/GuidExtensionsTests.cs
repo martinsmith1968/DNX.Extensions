@@ -59,6 +59,60 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
         result.ToString().ShouldBe(expected);
     }
 
+    [Theory]
+    [InlineData(1, "00000001-0000-0000-0000-000000000000")]
+    [InlineData(12345.67, "00003039-0000-0000-0000-000000000000")]
+    [InlineData(123456789.12, "075bcd15-0000-0000-0000-000000000000")]
+    [InlineData(int.MinValue, "80000000-0000-0000-0000-000000000000")]
+    [InlineData(int.MaxValue, "7fffffff-0000-0000-0000-000000000000")]
+    public void ToGuid_from_double_generates_a_predictable_result(double value, string expected)
+    {
+        // Act
+        var result = value.ToGuid();
+        outputHelper.WriteLine($"Text: {value} = {result}");
+
+        // Assert
+        result.ShouldNotBe(Guid.Empty);
+        result.ToString().ShouldNotBe(value.ToString());
+        result.ToString().ShouldBe(expected);
+    }
+
+    [Theory]
+    [InlineData(1, "00000001-0000-0000-0000-000000000000")]
+    [InlineData(12345.67, "00003039-0000-0000-0000-000000000000")]
+    [InlineData(123456789.12, "075bcd15-0000-0000-0000-000000000000")]
+    [InlineData(int.MinValue, "80000000-0000-0000-0000-000000000000")]
+    [InlineData(int.MaxValue, "7fffffff-0000-0000-0000-000000000000")]
+    public void ToGuid_from_decimal_generates_a_predictable_result(decimal value, string expected)
+    {
+        // Act
+        var result = value.ToGuid();
+        outputHelper.WriteLine($"Text: {value} = {result}");
+
+        // Assert
+        result.ShouldNotBe(Guid.Empty);
+        result.ToString().ShouldNotBe(value.ToString());
+        result.ToString().ShouldBe(expected);
+    }
+
+    [Theory]
+    [InlineData(1, "00000001-0000-0000-0000-000000000000")]
+    [InlineData(12345.67, "00003039-0000-0000-0000-000000000000")]
+    [InlineData(123456789.12, "075bcd18-0000-0000-0000-000000000000")]
+    [InlineData(int.MinValue, "80000000-0000-0000-0000-000000000000")]
+    [InlineData(int.MaxValue, "80000000-0000-0000-0000-000000000000")]
+    public void ToGuid_from_float_generates_a_predictable_result(float value, string expected)
+    {
+        // Act
+        var result = value.ToGuid();
+        outputHelper.WriteLine($"Text: {value} = {result}");
+
+        // Assert
+        result.ShouldNotBe(Guid.Empty);
+        result.ToString().ShouldNotBe(value.ToString());
+        result.ToString().ShouldBe(expected);
+    }
+
     // Useful : https://www.compscilib.com/calculate/binaryxor?variation=default
     public static TheoryData<string, HashAlgorithm> ToDeterministicGuid_custom_algorithm_Data()
     {

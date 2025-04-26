@@ -37,7 +37,7 @@ public class ListExtensionsTests
     [InlineData("a,b,c,d,e,f,g,h,i,j", 10, 10)]
     [InlineData("a,b,c,d,e,f,g,h,i,j", -1, 9)]
     [InlineData("a,b,c,d,e,f,g,h,i,j", -4, 6)]
-    [InlineData("a,b,c,d,e,f,g,h,i,j", -15, 5)]
+    [InlineData("a,b,c,d,e,f,g,h,i,j", -15, -5)]
     [InlineData("", 5, 5)]
     [InlineData(null, 5, 5)]
     public void Test_GetAbsoluteIndex(string commaDelimitedArray, int index, int expectedResult)
@@ -62,14 +62,14 @@ public class ListExtensionsTests
     [InlineData("a,b,c,d,e,f,g,h,i,j", -15, null)]
     [InlineData("", 5, null)]
     [InlineData(null, 5, null)]
-    public void Test_GetAt(string commaDelimitedArray, int index, string expectedResult)
+    public void Test_GetItemAt(string commaDelimitedArray, int index, string expectedResult)
     {
         var array = string.IsNullOrEmpty(commaDelimitedArray)
             ? null
             : commaDelimitedArray.Split(",".ToCharArray());
 
         // Act
-        var result = array.GetAt(index);
+        var result = array.GetItemAt(index);
 
         // Assert
         result.ShouldBe(expectedResult);
