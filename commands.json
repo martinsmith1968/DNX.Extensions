@@ -21,12 +21,4 @@
       "arguments": "-ExecutionPolicy Bypass -NonInteractive -File tests\\DNX.Extensions.Tests\\Maths\\BuiltInTypes\\TestsDataSource\\Build.ps1"
     }
   }
-
-
-
-
-
-
-
-
 }
