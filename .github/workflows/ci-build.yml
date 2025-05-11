@@ -242,7 +242,7 @@ jobs:
       run: dotnet test --no-restore --no-build --configuration ${{ env.BUILD_CONFIG }} --verbosity normal --collect:"XPlat Code Coverage" --logger:trx;LogFileName=TestOutput.trx
 
     - name: Test Results Summary
-      uses: bibipkins/dotnet-test-reporter@v1.5
+      uses: bibipkins/dotnet-test-reporter@v1.5.4
       if: success() || failure()
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
