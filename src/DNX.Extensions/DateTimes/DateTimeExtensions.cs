@@ -144,8 +144,7 @@ public static class DateTimeExtensions
             1 or 2 or 3 => 1,
             4 or 5 or 6 => 2,
             7 or 8 or 9 => 3,
-            10 or 11 or 12 => 4,
-            _ => 0
+            _ => 4
         };
     }
 

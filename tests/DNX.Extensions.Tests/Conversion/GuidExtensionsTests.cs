@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using DNX.Extensions.Conversion;
+using DNX.Extensions.Strings;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
@@ -31,7 +32,20 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
     {
         // Act
         var result = text.ToDeterministicGuid(algorithm);
-        outputHelper.WriteLine($"Text: {text} = {result}");
+        outputHelper.WriteLine($"Text: {text} [{algorithm.GetType().FullName}] = {result}");
+
+        // Assert
+        result.ShouldNotBe(Guid.Empty);
+        result.ToString().ShouldNotBe(text);
+    }
+
+    [Theory]
+    [MemberData(nameof(ToDeterministicGuid_custom_algorithm_specific_reduce_method_Data))]
+    public void ToDeterministicGuid_can_create_a_guid_from_any_string_with_a_custom_algorithm_and_reduce_method(string text, HashAlgorithm algorithm, Func<byte, byte, byte> reduceMethod)
+    {
+        // Act
+        var result = text.ToDeterministicGuid(algorithm, reduceMethod);
+        outputHelper.WriteLine($"Text: {text} [{algorithm.GetType().FullName}] [{reduceMethod.Method.Name}] = {result}");
 
         // Assert
         result.ShouldNotBe(Guid.Empty);
@@ -53,7 +67,6 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
         outputHelper.WriteLine($"Text: {text} = {result}");
 
         // Assert
-        result.ShouldNotBe(Guid.Empty);
         result.ToString().ShouldNotBe(text);
         result.ShouldBe(result2);
         result.ToString().ShouldBe(expected);
@@ -61,18 +74,112 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
 
     [Theory]
     [InlineData(1, "00000001-0000-0000-0000-000000000000")]
-    [InlineData(12345.67, "00003039-0000-0000-0000-000000000000")]
-    [InlineData(123456789.12, "075bcd15-0000-0000-0000-000000000000")]
-    [InlineData(int.MinValue, "80000000-0000-0000-0000-000000000000")]
-    [InlineData(int.MaxValue, "7fffffff-0000-0000-0000-000000000000")]
-    public void ToGuid_from_double_generates_a_predictable_result(double value, string expected)
+    [InlineData(123, "0000007b-0000-0000-0000-000000000000")]
+    [InlineData(12345, "00003039-0000-0000-0000-000000000000")]
+    [InlineData(short.MinValue, "00008000-0000-0000-0000-000000000000")]
+    [InlineData(short.MaxValue, "00007fff-0000-0000-0000-000000000000")]
+    public void ToGuid_from_short_generates_a_predictable_result(short value, string expected)
     {
         // Act
         var result = value.ToGuid();
         outputHelper.WriteLine($"Text: {value} = {result}");
 
         // Assert
-        result.ShouldNotBe(Guid.Empty);
+        result.ToString().ShouldNotBe(value.ToString());
+        result.ToString().ShouldBe(expected);
+    }
+
+    [Theory]
+    [InlineData(1, "00000001-0000-0000-0000-000000000000")]
+    [InlineData(123, "0000007b-0000-0000-0000-000000000000")]
+    [InlineData(12345, "00003039-0000-0000-0000-000000000000")]
+    [InlineData(32767, "00007fff-0000-0000-0000-000000000000")]
+    [InlineData(int.MinValue, "80000000-0000-0000-0000-000000000000")]
+    [InlineData(int.MaxValue, "7fffffff-0000-0000-0000-000000000000")]
+    public void ToGuid_from_int_generates_a_predictable_result(int value, string expected)
+    {
+        // Act
+        var result = value.ToGuid();
+        outputHelper.WriteLine($"Text: {value} = {result}");
+
+        // Assert
+        result.ToString().ShouldNotBe(value.ToString());
+        result.ToString().ShouldBe(expected);
+    }
+
+    [Theory]
+    [InlineData(1, "00000001-0000-0000-0000-000000000000")]
+    [InlineData(123, "0000007b-0000-0000-0000-000000000000")]
+    [InlineData(12345, "00003039-0000-0000-0000-000000000000")]
+    [InlineData(32767, "00007fff-0000-0000-0000-000000000000")]
+    [InlineData(uint.MinValue, "00000000-0000-0000-0000-000000000000")]
+    [InlineData(uint.MaxValue, "ffffffff-0000-0000-0000-000000000000")]
+    public void ToGuid_from_uint_generates_a_predictable_result(uint value, string expected)
+    {
+        // Act
+        var result = value.ToGuid();
+        outputHelper.WriteLine($"Text: {value} = {result}");
+
+        // Assert
+        result.ToString().ShouldNotBe(value.ToString());
+        result.ToString().ShouldBe(expected);
+    }
+
+    [Theory]
+    [InlineData(1, "00000001-0000-0000-0000-000000000000")]
+    [InlineData(123, "0000007b-0000-0000-0000-000000000000")]
+    [InlineData(12345, "00003039-0000-0000-0000-000000000000")]
+    [InlineData(32767, "00007fff-0000-0000-0000-000000000000")]
+    [InlineData(int.MinValue, "80000000-0000-0000-0000-000000000000")]
+    [InlineData(int.MaxValue, "7fffffff-0000-0000-0000-000000000000")]
+    [InlineData(long.MinValue, "00000000-0000-8000-0000-000000000000")]
+    [InlineData(long.MaxValue, "ffffffff-ffff-7fff-0000-000000000000")]
+    public void ToGuid_from_long_generates_a_predictable_result(long value, string expected)
+    {
+        // Act
+        var result = value.ToGuid();
+        outputHelper.WriteLine($"Text: {value} = {result}");
+
+        // Assert
+        result.ToString().ShouldNotBe(value.ToString());
+        result.ToString().ShouldBe(expected);
+    }
+
+    [Theory]
+    [InlineData(1, "00000001-0000-0000-0000-000000000000")]
+    [InlineData(123, "0000007b-0000-0000-0000-000000000000")]
+    [InlineData(12345, "00003039-0000-0000-0000-000000000000")]
+    [InlineData(32767, "00007fff-0000-0000-0000-000000000000")]
+    [InlineData(uint.MinValue, "00000000-0000-0000-0000-000000000000")]
+    [InlineData(uint.MaxValue, "ffffffff-0000-0000-0000-000000000000")]
+    [InlineData(ulong.MinValue, "00000000-0000-0000-0000-000000000000")]
+    [InlineData(ulong.MaxValue, "ffffffff-ffff-ffff-0000-000000000000")]
+    public void ToGuid_from_ulong_generates_a_predictable_result(ulong value, string expected)
+    {
+        // Act
+        var result = value.ToGuid();
+        outputHelper.WriteLine($"Text: {value} = {result}");
+
+        // Assert
+        result.ToString().ShouldNotBe(value.ToString());
+        result.ToString().ShouldBe(expected);
+    }
+
+    [Theory]
+    [InlineData(1, "00000001-0000-0000-0000-000000000000")]
+    [InlineData(12345.67, "00003039-0000-0000-0000-000000000000")]
+    [InlineData(123456789.12, "075bcd18-0000-0000-0000-000000000000")]
+    [InlineData(int.MinValue, "80000000-0000-0000-0000-000000000000")]
+    [InlineData(int.MaxValue, "80000000-0000-0000-0000-000000000000")]
+    [InlineData(float.MinValue, "00000000-0000-0000-0000-000000010000")]
+    [InlineData(float.MaxValue, "00000000-0000-0000-0000-000000ffffff")]
+    public void ToGuid_from_float_generates_a_predictable_result(float value, string expected)
+    {
+        // Act
+        var result = value.ToGuid();
+        outputHelper.WriteLine($"Text: {value} = {result}");
+
+        // Assert
         result.ToString().ShouldNotBe(value.ToString());
         result.ToString().ShouldBe(expected);
     }
@@ -90,7 +197,6 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
         outputHelper.WriteLine($"Text: {value} = {result}");
 
         // Assert
-        result.ShouldNotBe(Guid.Empty);
         result.ToString().ShouldNotBe(value.ToString());
         result.ToString().ShouldBe(expected);
     }
@@ -98,17 +204,18 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
     [Theory]
     [InlineData(1, "00000001-0000-0000-0000-000000000000")]
     [InlineData(12345.67, "00003039-0000-0000-0000-000000000000")]
-    [InlineData(123456789.12, "075bcd18-0000-0000-0000-000000000000")]
+    [InlineData(123456789.12, "075bcd15-0000-0000-0000-000000000000")]
     [InlineData(int.MinValue, "80000000-0000-0000-0000-000000000000")]
-    [InlineData(int.MaxValue, "80000000-0000-0000-0000-000000000000")]
-    public void ToGuid_from_float_generates_a_predictable_result(float value, string expected)
+    [InlineData(int.MaxValue, "7fffffff-0000-0000-0000-000000000000")]
+    [InlineData(float.MinValue, "00000000-0000-0000-0000-000000010000")]
+    [InlineData(float.MaxValue, "00000000-0000-0000-0000-000000ffffff")]
+    public void ToGuid_from_double_generates_a_predictable_result(double value, string expected)
     {
         // Act
         var result = value.ToGuid();
         outputHelper.WriteLine($"Text: {value} = {result}");
 
         // Assert
-        result.ShouldNotBe(Guid.Empty);
         result.ToString().ShouldNotBe(value.ToString());
         result.ToString().ShouldBe(expected);
     }
@@ -132,6 +239,38 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
             data.Add("", algorithm);
             data.Add(null, algorithm);
             data.Add("497111F7-1511-49A8-8DB2-31B5E40953CB", algorithm);
+        }
+
+        return data;
+    }
+
+    public static TheoryData<string, HashAlgorithm, Func<byte, byte, byte>> ToDeterministicGuid_custom_algorithm_specific_reduce_method_Data()
+    {
+        var algorithms = new HashAlgorithm[]
+        {
+            MD5.Create(),
+            SHA1.Create(),
+            SHA256.Create(),
+        };
+
+        var reduceMethods = new[]
+        {
+            GuidExtensions.KeepOriginalValue,
+            GuidExtensions.ExclusiveOr,
+        };
+
+        var data = new TheoryData<string, HashAlgorithm, Func<byte, byte, byte>>();
+
+        foreach (var reduceMethod in reduceMethods)
+        {
+            foreach (var algorithm in algorithms)
+            {
+                data.Add("ABC", algorithm, reduceMethod);
+                data.Add("abc", algorithm, reduceMethod);
+                data.Add("", algorithm, reduceMethod);
+                data.Add(null, algorithm, reduceMethod);
+                data.Add("497111F7-1511-49A8-8DB2-31B5E40953CB", algorithm, reduceMethod);
+            }
         }
 
         return data;

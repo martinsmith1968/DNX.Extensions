@@ -24,7 +24,7 @@ public static class ObjectExtensions
     }
 
     /// <summary>
-    /// Converts to the specified type.
+    /// Converts the object to the specified type.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="obj">The object.</param>

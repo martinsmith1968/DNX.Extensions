@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using DNX.Extensions.Dictionaries;
 using DNX.Extensions.Linq;
 
 namespace DNX.Extensions.Strings.Interpolation;
@@ -118,6 +120,7 @@ public static class StringInterpolator
     /// <param name="parameterValues">The parameter values.</param>
     /// <param name="format">The format.</param>
     /// <returns>System.String.</returns>
+    [ExcludeFromCodeCoverage]
     internal static void FilterParameterValues(IDictionary<string, object> parameterValues, string format)
     {
         if (parameterValues == null || string.IsNullOrEmpty(format))
