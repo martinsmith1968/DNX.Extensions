@@ -15,8 +15,8 @@ public static class GuidExtensions
 {
     public const int MAX_GUID_BYTE_ARRAY_SIZE = 16;
 
-    private static byte KeepOriginalValue(byte value1, byte value2) => value1;
-    private static byte ExclusiveOr(byte value1, byte value2) => (byte)(value1 ^ value2);
+    public static byte KeepOriginalValue(byte value1, byte value2) => value1;
+    public static byte ExclusiveOr(byte value1, byte value2) => (byte)(value1 ^ value2);
 
     /// <summary>Convert any text item to a guid.</summary>
     /// <param name="input">The text to convert</param>

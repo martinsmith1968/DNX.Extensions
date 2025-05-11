@@ -192,6 +192,16 @@ public class DateTimeExtensionsTests
     }
 
     [Theory]
+    [MemberData(nameof(GetQuarter_Data))]
+    public void GetQuarter_calculates_as_expected(DateTime dateTime, int expectedResult)
+    {
+        var result = dateTime.GetQuarter();
+
+        // Assert
+        result.ShouldBe(expectedResult);
+    }
+
+    [Theory]
     [MemberData(nameof(ResetDateTime_Data))]
     public void SetYear_can_operate_as_expected(DateTime dateTime)
     {
@@ -360,6 +370,29 @@ public class DateTimeExtensionsTests
         };
 
 
+        return list;
+    }
+
+    public static TheoryData<DateTime, int> GetQuarter_Data()
+    {
+        var thisYear = DateTime.UtcNow.Year;
+
+        var list = new TheoryData<DateTime, int>
+        {
+            { new DateTime(thisYear, 01, 01), 1 },
+            { new DateTime(thisYear, 02, 01), 1 },
+            { new DateTime(thisYear, 03, 01), 1 },
+            { new DateTime(thisYear, 04, 01), 2 },
+            { new DateTime(thisYear, 04, 01), 2 },
+            { new DateTime(thisYear, 05, 01), 2 },
+            { new DateTime(thisYear, 07, 01), 3 },
+            { new DateTime(thisYear, 08, 01), 3 },
+            { new DateTime(thisYear, 09, 01), 3 },
+            { new DateTime(thisYear, 10, 01), 4 },
+            { new DateTime(thisYear, 11, 01), 4 },
+            { new DateTime(thisYear, 12, 01), 4 },
+            { new DateTime(thisYear + 1, 01, 01), 1 },
+        };
         return list;
     }
 

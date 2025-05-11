@@ -3,7 +3,7 @@ using System;
 namespace DNX.Extensions.Exceptions;
 
 /// <summary>
-/// An exception for idenifying issues with expected parameters
+/// An exception for identifying issues with expected parameters
 /// </summary>
 /// <seealso cref="System.Exception" />
 public class ParameterException : Exception

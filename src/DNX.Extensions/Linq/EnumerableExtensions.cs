@@ -170,14 +170,28 @@ public static class EnumerableExtensions
     /// <returns></returns>
     public static T GetRandomItem<T>(this IEnumerable<T> items, Random randomizer = null)
     {
+        return items.GetRandomItem(
+            () => (randomizer ?? Randomizer).Next(items.Count())
+        );
+    }
+
+    /// <summary>
+    /// Gets the random item.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="items">The items.</param>
+    /// <param name="indexProvider">The index provider.</param>
+    /// <returns></returns>
+    public static T GetRandomItem<T>(this IEnumerable<T> items, Func<int> indexProvider)
+    {
         if (!items.HasAny())
             return default;
 
         var list = items.ToArray();
 
-        var index = (randomizer ?? Randomizer).Next(list.Length);
+        var index = indexProvider.Invoke();
 
-        return list[index];
+        return list.GetAt(index);
     }
 
     /// <summary>
@@ -205,9 +219,8 @@ public static class EnumerableExtensions
     /// <returns>IList&lt;T&gt;.</returns>
     public static IList<T> ToConcreteList<T>(this IEnumerable<T> enumerable)
     {
-        return enumerable == null
-            ? []
-            : enumerable.ToList();
+        return enumerable?.ToList()
+            ?? [];
     }
 
     /// <summary>

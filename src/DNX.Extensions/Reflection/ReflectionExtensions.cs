@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.Linq;
 using System;
 using System.Reflection;
+using DNX.Extensions.Dictionaries;
 using DNX.Extensions.Linq;
 
 namespace DNX.Extensions.Reflection;

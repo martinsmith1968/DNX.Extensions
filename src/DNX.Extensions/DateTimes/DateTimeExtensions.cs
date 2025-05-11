@@ -133,6 +133,22 @@ public static class DateTimeExtensions
     }
 
     /// <summary>
+    /// Gets the Year Quarter
+    /// </summary>
+    /// <param name="dateTime">The date time.</param>
+    /// <returns>The Quarter (1-4), or 0 on error</returns>
+    public static int GetQuarter(this DateTime dateTime)
+    {
+        return dateTime.Month switch
+        {
+            1 or 2 or 3 => 1,
+            4 or 5 or 6 => 2,
+            7 or 8 or 9 => 3,
+            _ => 4
+        };
+    }
+
+    /// <summary>
     /// Sets the year.
     /// </summary>
     /// <param name="dateTime">The date time.</param>

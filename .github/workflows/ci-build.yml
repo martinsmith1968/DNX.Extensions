@@ -2,8 +2,9 @@ name: CI Build
 run-name: CIBuild_${{ github.event_name }}_${{ github.ref_name }}_${{ github.run_number }}.${{ github.run_attempt }}
 
 env:
-  PKG_MAJOR_VERSION: 1.4
-  PROJECT_NAME: DNX.Extensions
+  PRODUCT_NAME: DNX.Extensions
+  PRODUCT_VERSION: 1.4
+  PRIMARY_BRANCH_NAME: main
   DOTNET_VERSION: 8.0.x
   NUGET_VERSION: 6.x
   BUILD_CONFIG: Release
@@ -175,10 +176,10 @@ jobs:
         echo "package_suffix=${package_suffix}" >> $GITHUB_ENV
 
     - name: Set Product Version
-      run: echo "product_version=${{ env.PKG_MAJOR_VERSION }}" >> $GITHUB_ENV
+      run: echo "product_version=${{ env.PRODUCT_VERSION }}" >> $GITHUB_ENV
 
     - name: Set Assembly Version
-      run: echo "assembly_version=${{ env.PKG_MAJOR_VERSION }}.${{ env.build_date }}.${{ github.run_number }}${{ github.run_attempt }}" >> $GITHUB_ENV
+      run: echo "assembly_version=${{ env.PRODUCT_VERSION }}.${{ env.build_date }}.${{ github.run_number }}${{ github.run_attempt }}" >> $GITHUB_ENV
 
     - name: Set Package Version
       run: echo "package_version=${{ env.assembly_version }}${{ env.package_suffix }}" >> $GITHUB_ENV
@@ -222,10 +223,10 @@ jobs:
         dotnet tool install -g dotnet-consolidate
 
     - name: Verify Package Consolidation
-      run: dotnet-consolidate -s "${{ env.PROJECT_NAME }}.sln"
+      run: dotnet-consolidate -s "${{ env.PRODUCT_NAME }}.sln"
 
     - name: Verify Package Transitive Dependencies
-      run: snitch "${{ env.PROJECT_NAME }}.sln"
+      run: snitch "${{ env.PRODUCT_NAME }}.sln"
 
     - name: Run all pre-build Scripts
       shell: pwsh
@@ -280,7 +281,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build_output
-        path: "**/${{ env.PROJECT_NAME }}/bin/${{ env.BUILD_CONFIG }}/**"
+        path: "**/${{ env.PRODUCT_NAME }}/bin/${{ env.BUILD_CONFIG }}/**"
         if-no-files-found: error
 
     - name: Upload NuGet Artifact
