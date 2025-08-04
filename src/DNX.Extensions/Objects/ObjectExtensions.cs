@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DNX.Extensions.Reflection;
 using DNX.Extensions.Strings;
 
 // ReSharper disable UseStringInterpolation
@@ -40,6 +41,19 @@ public static class ObjectExtensions
         {
             return defaultValue;
         }
+    }
+
+    /// <summary>
+    /// Converts the supplied object to dictionary.
+    /// </summary>
+    /// <param name="obj">The object.</param>
+    /// <returns></returns>
+    public static Dictionary<string, object> ToDictionary(this object obj)
+    {
+        if (obj == null)
+            return null;
+
+        var properties = ReflectionExtensions.GetPropertiesForType(obj.GetType());
     }
 
     /// <summary>
