@@ -54,6 +54,8 @@ public static class ObjectExtensions
             return null;
 
         var properties = ReflectionExtensions.GetPropertiesForType(obj.GetType());
+
+        return properties.ToDictionary(p => p.Name, p => p.GetValue(obj));
     }
 
     /// <summary>
