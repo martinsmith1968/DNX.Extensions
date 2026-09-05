@@ -229,7 +229,7 @@ public abstract class ProducerConsumerQueue<T> : IDisposable, IProducerConsumerQ
         EnqueueItems(
             item == null
                 ? null
-                : new [] { item }
+                : new[] { item }
         );
     }
 

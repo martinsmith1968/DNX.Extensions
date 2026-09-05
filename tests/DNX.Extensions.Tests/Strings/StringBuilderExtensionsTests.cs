@@ -4,6 +4,7 @@ using Shouldly;
 using Xunit;
 
 namespace DNX.Extensions.Tests.Strings;
+
 public class StringBuilderExtensionsTests
 {
     private StringBuilder Sut { get; set; } = new();

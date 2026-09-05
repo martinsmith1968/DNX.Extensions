@@ -70,7 +70,7 @@ public class EnumValueExceptionTests
     {
         // Arrange
         var messageTemplate = "Customer message about: {0} - {1}";
-        var value = (MyEnumValueTestEnum) int.MaxValue;
+        var value = (MyEnumValueTestEnum)int.MaxValue;
 
         // Act
         var ex = new EnumValueException<MyEnumValueTestEnum>(value, messageTemplate);

@@ -26,7 +26,7 @@ public static class VersionExtensions
             return null;
         }
 
-        var parts = new List<string>( version.ToString().Split('.'));
+        var parts = new List<string>(version.ToString().Split('.'));
 
         while (parts.Any() && parts.Last().Equals("0") && parts.Count > minimumPositions)
         {

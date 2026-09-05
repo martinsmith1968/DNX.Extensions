@@ -756,7 +756,7 @@ public static class StringExtensions
     /// <returns>System.String.</returns>
     internal static string BuildNumberValidationRegexForCulture(CultureInfo cultureInfo)
     {
-        var pattern =string.Format(
+        var pattern = string.Format(
             @"^[\{2}\{3}]?(0|[1-9][0-9]*|[1-9][0-9]{{0,{4}}}(\{0}[0-9]{{{5},{5}}})*)([\{1}]+[0-9]+)?$",
             cultureInfo.NumberFormat.NumberGroupSeparator,
             cultureInfo.NumberFormat.NumberDecimalSeparator,

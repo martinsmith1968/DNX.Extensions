@@ -20,8 +20,8 @@ public class StringInterpolatorTests
     {
         var person = new Person()
         {
-            FirstName   = firstName,
-            LastName    = lastName,
+            FirstName = firstName,
+            LastName = lastName,
             DateOfBirth = DateTime.Parse(dateOfBirth)
         };
 
@@ -38,8 +38,8 @@ public class StringInterpolatorTests
     {
         var person = new Person()
         {
-            FirstName   = firstName,
-            LastName    = lastName,
+            FirstName = firstName,
+            LastName = lastName,
             DateOfBirth = DateTime.Parse(dateOfBirth),
         };
 
@@ -103,7 +103,7 @@ public class StringInterpolatorTests
     {
         // Arrange
         var dict = Enum.GetNames(typeof(OneToTen))
-                .ToDictionary(x => x, x => (int) Enum.Parse(typeof(OneToTen), x))
+                .ToDictionary(x => x, x => (int)Enum.Parse(typeof(OneToTen), x))
             ;
 
         // Act
@@ -120,14 +120,14 @@ public class StringInterpolatorTests
     {
         var person1 = new Person()
         {
-            FirstName   = firstName1,
-            LastName    = lastName1,
+            FirstName = firstName1,
+            LastName = lastName1,
             DateOfBirth = DateTime.Parse(dateOfBirth1)
         };
         var person2 = new Person()
         {
-            FirstName   = firstName2,
-            LastName    = lastName2,
+            FirstName = firstName2,
+            LastName = lastName2,
             DateOfBirth = DateTime.Parse(dateOfBirth2)
         };
 
@@ -150,8 +150,8 @@ public class StringInterpolatorTests
     {
         var person = new Person()
         {
-            FirstName   = firstName,
-            LastName    = lastName,
+            FirstName = firstName,
+            LastName = lastName,
             DateOfBirth = DateTime.Parse(dateOfBirth)
         };
         var club = new Club()

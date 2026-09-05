@@ -20,7 +20,7 @@ public class ProducerConsumerQueueAction<T> : ProducerConsumerQueue<T> where T :
     /// </summary>
     /// <param name="action">The action.</param>
     public ProducerConsumerQueueAction(Action<T> action)
-        :base()
+        : base()
     {
         _action = action;
     }

@@ -74,13 +74,13 @@ public static class AssemblyExtensions
     }
 
     /// <summary>
-     /// Gets the embedded resource text.
-     /// </summary>
-     /// <param name="assembly">The assembly.</param>
-     /// <param name="relativeResourceName">Name of the relative resource.</param>
-     /// <param name="nameSpace">The name space.</param>
-     /// <returns></returns>
-     /// <exception cref="MissingManifestResourceException"></exception>
+    /// Gets the embedded resource text.
+    /// </summary>
+    /// <param name="assembly">The assembly.</param>
+    /// <param name="relativeResourceName">Name of the relative resource.</param>
+    /// <param name="nameSpace">The name space.</param>
+    /// <returns></returns>
+    /// <exception cref="MissingManifestResourceException"></exception>
     public static string GetEmbeddedResourceText(this Assembly assembly, string relativeResourceName, string nameSpace = null)
     {
         try

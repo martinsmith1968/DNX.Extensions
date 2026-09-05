@@ -1,4 +1,4 @@
-﻿namespace DNX.Extensions.Linq
+namespace DNX.Extensions.Linq
 {
     /// <summary>
     /// ItemComparison result for logical comparison of 2 objects.

@@ -4,6 +4,7 @@ using Shouldly;
 using Xunit;
 
 namespace DNX.Extensions.Tests.Strings.Interpolation;
+
 public class NamedInstanceTests
 {
     [Fact]

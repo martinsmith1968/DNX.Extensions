@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using DNX.Extensions.Exceptions;
 using System.Linq;
+using DNX.Extensions.Exceptions;
 using DNX.Extensions.Linq;
 using DNX.Extensions.Reflection;
 using DNX.Extensions.Strings;

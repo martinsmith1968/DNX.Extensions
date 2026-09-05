@@ -171,6 +171,6 @@ public class ObjectExtensionsTests
         var result = ObjectExtensions.CoalesceNull(a, b, c);
 
         // Assert
-       result.ShouldBe(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 }
