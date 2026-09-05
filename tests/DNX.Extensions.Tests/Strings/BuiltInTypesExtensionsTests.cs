@@ -1,5 +1,5 @@
 using DNX.Extensions.Strings;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 // ReSharper disable StringLiteralTypo
@@ -16,7 +16,7 @@ public class BuiltInTypesExtensionsTests
         var result = value.ToText();
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -27,7 +27,7 @@ public class BuiltInTypesExtensionsTests
         var result = value.ToText(trueText, falseText);
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -38,7 +38,7 @@ public class BuiltInTypesExtensionsTests
         var result = value.ToYesNo();
 
         // Assert
-        result.Should().Be(expectedResult);
+        result.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -49,7 +49,7 @@ public class BuiltInTypesExtensionsTests
     {
         var result = number.ToHexString();
 
-        result.Should().Be(expectedHexString);
+        result.ShouldBe(expectedHexString);
     }
 
     [Theory]
@@ -60,6 +60,6 @@ public class BuiltInTypesExtensionsTests
     {
         var result = number.ToHexString(format);
 
-        result.Should().Be(expectedHexString);
+        result.ShouldBe(expectedHexString);
     }
 }

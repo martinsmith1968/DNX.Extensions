@@ -1,51 +1,50 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace DNX.Extensions.Exceptions
+namespace DNX.Extensions.Exceptions;
+
+/// <summary>
+/// Exception Extensions.
+/// </summary>
+public static class ExceptionExtensions
 {
     /// <summary>
-    /// Exception Extensions.
+    /// Gets the list of messages from an Exception and inner exceptions
     /// </summary>
-    public static class ExceptionExtensions
+    /// <param name="ex">The ex.</param>
+    /// <returns>IList&lt;System.String&gt;.</returns>
+    /// <remarks>Also available as an extension method</remarks>
+    public static IList<string> GetMessageList(this Exception ex)
     {
-        /// <summary>
-        /// Gets the list of messages from an Exception and inner exceptions
-        /// </summary>
-        /// <param name="ex">The ex.</param>
-        /// <returns>IList&lt;System.String&gt;.</returns>
-        /// <remarks>Also available as an extension method</remarks>
-        public static IList<string> GetMessageList(this Exception ex)
+        var list = new List<string>();
+
+        while (ex != null)
         {
-            var list = new List<string>();
+            list.Add(ex.Message);
 
-            while (ex != null)
-            {
-                list.Add(ex.Message);
-
-                ex = ex.InnerException;
-            }
-
-            return list;
+            ex = ex.InnerException;
         }
 
-        /// <summary>
-        /// Gets the list of messages from an Exception and inner exceptions
-        /// </summary>
-        /// <param name="ex">The ex.</param>
-        /// <returns>IList&lt;System.String&gt;.</returns>
-        /// <remarks>Also available as an extension method</remarks>
-        public static IList<Exception> GetExceptionList(this Exception ex)
+        return list;
+    }
+
+    /// <summary>
+    /// Gets the list of messages from an Exception and inner exceptions
+    /// </summary>
+    /// <param name="ex">The ex.</param>
+    /// <returns>IList&lt;System.String&gt;.</returns>
+    /// <remarks>Also available as an extension method</remarks>
+    public static IList<Exception> GetExceptionList(this Exception ex)
+    {
+        var list = new List<Exception>();
+
+        while (ex != null)
         {
-            var list = new List<Exception>();
+            list.Add(ex);
 
-            while (ex != null)
-            {
-                list.Add(ex);
-
-                ex = ex.InnerException;
-            }
-
-            return list;
+            ex = ex.InnerException;
         }
+
+        return list;
     }
 }

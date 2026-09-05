@@ -57,7 +57,7 @@ public class StringComparisonEqualityComparer : IEqualityComparer<string>
     public int GetHashCode(string obj)
     {
         if (Equals(obj?.ToLowerInvariant(), obj?.ToUpperInvariant()))
-            return obj?.ToLowerInvariant().GetHashCode() ?? default;
+            return obj?.ToLowerInvariant().GetHashCode() ?? 0;
 
         return obj.GetHashCode();
     }

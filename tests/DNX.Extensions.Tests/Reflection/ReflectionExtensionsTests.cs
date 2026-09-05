@@ -1,6 +1,9 @@
+using System.Dynamic;
 using System.Reflection;
+using AutoFixture;
 using DNX.Extensions.Reflection;
-using FluentAssertions;
+using DNX.Extensions.Tests.Strings.Interpolation.Data;
+using Shouldly;
 using Xunit;
 
 #pragma warning disable CA1822 // Members can be static
@@ -23,6 +26,8 @@ public class TestClass
 
 public class ReflectionExtensionsTests
 {
+    private static readonly Fixture AutoFixture = new();
+
     public static TheoryData<string, string> GetPrivatePropertyValue_Private_Data()
     {
         return new TheoryData<string, string>
@@ -51,7 +56,7 @@ public class ReflectionExtensionsTests
         var result = instance.GetPrivatePropertyValue(propertyName);
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     [Theory]
@@ -65,7 +70,7 @@ public class ReflectionExtensionsTests
         var result = instance.GetPrivatePropertyValue(propertyName);
 
         // Assert
-        result.Should().Be(expected);
+        result.ShouldBe(expected);
     }
 
     [Fact]
@@ -78,7 +83,7 @@ public class ReflectionExtensionsTests
         var result = instance.GetPropertyValueByName("CurrentDirectory", BindingFlags.Static | BindingFlags.NonPublic);
 
         // Assert
-        result.Should().Be(Environment.CurrentDirectory);
+        result.ShouldBe(Environment.CurrentDirectory);
     }
 
     [Fact]
@@ -91,7 +96,7 @@ public class ReflectionExtensionsTests
         var result = instance.GetPropertyValueByName(Guid.NewGuid().ToString(), BindingFlags.Static | BindingFlags.NonPublic);
 
         // Assert
-        result.Should().BeNull();
+        result.ShouldBeNull();
     }
 
     [Fact]
@@ -104,7 +109,7 @@ public class ReflectionExtensionsTests
         var result = instance.GetPropertyValueByName(nameof(TestClass.PublicSetOnly), BindingFlags.Instance | BindingFlags.Public);
 
         // Assert
-        result.Should().BeNull();
+        result.ShouldBeNull();
     }
 
     [Fact]
@@ -117,7 +122,7 @@ public class ReflectionExtensionsTests
         var result = instance.GetPrivatePropertyValue(Guid.NewGuid().ToString());
 
         // Assert
-        result.Should().BeNull();
+        result.ShouldBeNull();
     }
 
     [Fact]
@@ -131,6 +136,100 @@ public class ReflectionExtensionsTests
         var result = instance.GetPrivatePropertyValue(Guid.NewGuid().ToString(), defaultValue);
 
         // Assert
-        result.Should().Be(defaultValue);
+        result.ShouldBe(defaultValue);
+    }
+
+    [Fact]
+    public void AsDictionary_handles_nulls()
+    {
+        // Arrange
+        Person instance = null;
+
+        // Act
+        var properties = instance.AsDictionary();
+
+        // Assert
+        properties.ShouldBeNull();
+    }
+
+    [Fact]
+    public void AsDictionary_can_detect_all_default_properties_of_POCO_Person()
+    {
+        // Arrange
+        var instance = AutoFixture.Create<Person>();
+
+        // Act
+        var properties = instance.AsDictionary();
+
+        // Assert
+        properties.ShouldNotBeNull();
+        properties.Count.ShouldBe(5);
+        properties.Keys.ShouldContain(nameof(Person.FirstName));
+        properties.Keys.ShouldContain(nameof(Person.LastName));
+        properties.Keys.ShouldContain(nameof(Person.DateOfBirth));
+        properties.Keys.ShouldContain(nameof(Person.AgeInYears));
+        properties.Keys.ShouldContain(nameof(Person.YearOfBirth));
+        properties[nameof(Person.FirstName)].ShouldBe(instance.FirstName);
+        properties[nameof(Person.LastName)].ShouldBe(instance.LastName);
+        properties[nameof(Person.DateOfBirth)].ShouldBe(instance.DateOfBirth);
+        properties[nameof(Person.AgeInYears)].ShouldBe(instance.AgeInYears);
+        properties[nameof(Person.YearOfBirth)].ShouldBe(instance.YearOfBirth);
+    }
+
+    [Fact]
+    public void AsDictionary_can_detect_all_default_properties_of_Expando()
+    {
+        // Arrange
+        var sample = AutoFixture.Create<Person>();
+
+        dynamic instance = new ExpandoObject();
+        instance.FirstName = sample.FirstName;
+        instance.LastName = sample.LastName;
+        instance.DateOfBirth = sample.DateOfBirth;
+        instance.AgeInYears = sample.AgeInYears;
+        instance.YearOfBirth = sample.YearOfBirth;
+
+        // Act
+        var properties = (instance as ExpandoObject).AsDictionary();
+
+        // Assert
+        properties.ShouldNotBeNull();
+        properties.Count.ShouldBe(5);
+        properties.Keys.ShouldContain(nameof(Person.FirstName));
+        properties.Keys.ShouldContain(nameof(Person.LastName));
+        properties.Keys.ShouldContain(nameof(Person.DateOfBirth));
+        properties.Keys.ShouldContain(nameof(Person.AgeInYears));
+        properties.Keys.ShouldContain(nameof(Person.YearOfBirth));
+        properties[nameof(Person.FirstName)].ShouldBe(sample.FirstName);
+        properties[nameof(Person.LastName)].ShouldBe(sample.LastName);
+        properties[nameof(Person.DateOfBirth)].ShouldBe(sample.DateOfBirth);
+        properties[nameof(Person.AgeInYears)].ShouldBe(sample.AgeInYears);
+        properties[nameof(Person.YearOfBirth)].ShouldBe(sample.YearOfBirth);
+    }
+
+    [Fact]
+    public void AsDictionary_can_detect_all_default_properties_of_Dictionary()
+    {
+        // Arrange
+        var sample = AutoFixture.Create<Person>();
+
+        var dict = sample.AsDictionary();
+
+        // Act
+        var properties = dict.AsDictionary();
+
+        // Assert
+        properties.ShouldNotBeNull();
+        properties.Count.ShouldBe(5);
+        properties.Keys.ShouldContain(nameof(Person.FirstName));
+        properties.Keys.ShouldContain(nameof(Person.LastName));
+        properties.Keys.ShouldContain(nameof(Person.DateOfBirth));
+        properties.Keys.ShouldContain(nameof(Person.AgeInYears));
+        properties.Keys.ShouldContain(nameof(Person.YearOfBirth));
+        properties[nameof(Person.FirstName)].ShouldBe(sample.FirstName);
+        properties[nameof(Person.LastName)].ShouldBe(sample.LastName);
+        properties[nameof(Person.DateOfBirth)].ShouldBe(sample.DateOfBirth);
+        properties[nameof(Person.AgeInYears)].ShouldBe(sample.AgeInYears);
+        properties[nameof(Person.YearOfBirth)].ShouldBe(sample.YearOfBirth);
     }
 }

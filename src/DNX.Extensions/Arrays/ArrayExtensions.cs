@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 #pragma warning disable 1591
 
@@ -30,16 +32,57 @@ public static class ArrayExtensions
         return paddedArray;
     }
 
-    public static T[] ShiftLeft<T>(this T[] input)
+    public static T[] ShiftLeft<T>(this T[] input, int by = 1, T fillValue = default)
     {
         if (input == null)
         {
-            return new T[0];
+            return [];
         }
 
         var shiftedArray = new T[input.Length];
-        Array.Copy(input, 1, shiftedArray, 0, input.Length - 1);
+        Array.Copy(input, by, shiftedArray, 0, input.Length - by);
+
+        for (var x = input.Length - by; x < input.Length; ++x)
+        {
+            shiftedArray[x] = fillValue;
+        }
 
         return shiftedArray;
+    }
+
+    public static T[] ShiftRight<T>(this T[] input, int by = 1, T fillValue = default)
+    {
+        if (input == null)
+        {
+            return [];
+        }
+
+        var shiftedArray = new T[input.Length];
+        Array.Copy(input, 0, shiftedArray, by, input.Length - by);
+
+        for (var x = 0; x < by; ++x)
+        {
+            shiftedArray[x] = fillValue;
+        }
+
+        return shiftedArray;
+    }
+
+    public static T[] Reduce<T>(this T[] inputArray, int targetSize, Func<T, T, T> method)
+    {
+        if (inputArray.Length <= targetSize)
+            return inputArray;
+
+        var result = new List<T>(inputArray.Take(targetSize));
+
+        for (var sourceIndex = targetSize; sourceIndex < inputArray.Length; ++sourceIndex)
+        {
+            var targetIndex = sourceIndex % targetSize;
+
+            var value = method(result[targetIndex], inputArray[sourceIndex]);
+            result[targetIndex] = value;
+        }
+
+        return result.ToArray();
     }
 }

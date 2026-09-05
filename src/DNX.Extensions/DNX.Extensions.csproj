@@ -11,7 +11,9 @@
   <PropertyGroup>
     <Authors>Martin Smith</Authors>
     <Copyright>Copyright © 2016-2019 DNX Solutions Ltd</Copyright>
+    <Title>DNX.Extensions</Title>
     <Description>.NET Extensions and helpers for Core and Common .NET types</Description>
+    <Trademark>DNX.Extensions</Trademark>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/martinsmith1968/DNX.Extensions</PackageProjectUrl>
     <PackageId>DNX.Extensions</PackageId>
@@ -36,6 +38,10 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 
 </Project>

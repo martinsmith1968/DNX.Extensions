@@ -22,11 +22,13 @@ public static class ByteArrayExtensions
     /// Converts A byte array into an hex string
     /// </summary>
     /// <param name="input">The byte[] to turn into the string</param>
-    public static string ToHexString(this byte[] input)
+    /// <param name="format">The format to use for each byte</param>
+    public static string ToHexString(this byte[] input, string format = "X2")
     {
         var hex = new StringBuilder(input.Length * 2);
+        var byteFormat = "{0:" + format + "}";
         foreach (var b in input)
-            hex.AppendFormat("{0:x2}", b);
+            hex.AppendFormat(byteFormat, b);
         return hex.ToString();
     }
 }

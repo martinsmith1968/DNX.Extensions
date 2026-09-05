@@ -1,148 +1,116 @@
 using System;
 using System.Linq.Expressions;
 
-namespace DNX.Extensions.Reflection
+namespace DNX.Extensions.Reflection;
+
+/// <summary>
+/// Class ExpressionExtensions.
+/// </summary>
+public static class ExpressionExtensions
 {
     /// <summary>
-    /// Class ExpressionExtensions.
+    /// Determines whether the expression is a member expression
     /// </summary>
-    public static class ExpressionExtensions
+    /// <typeparam name="T"></typeparam>
+    /// <param name="exp">The exp.</param>
+    /// <returns></returns>
+    public static bool IsMemberExpression<T>(Expression<Func<T>> exp)
     {
-        /// <summary>
-        /// Determines whether the func is a member expression
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="func">The func.</param>
-        /// <returns></returns>
-        public static bool IsMemberExpression<T>(this Expression<Func<T>> func)
+        var memberExpression = exp.Body as MemberExpression;
+
+        return memberExpression != null;
+    }
+
+    /// <summary>
+    /// Determines whether the expression is a lambda expression
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="exp">The exp.</param>
+    /// <returns></returns>
+    public static bool IsLambdaExpression<T>(Expression<Func<T>> exp)
+    {
+        var lambdaExpression = exp.Body as LambdaExpression;
+
+        return lambdaExpression != null;
+    }
+
+    /// <summary>
+    /// Determines whether the expression is a unary expression
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="exp">The exp.</param>
+    /// <returns></returns>
+    public static bool IsUnaryExpression<T>(Expression<Func<T>> exp)
+    {
+        var unaryExpression = exp.Body as UnaryExpression;
+
+        return unaryExpression != null;
+    }
+
+    /// <summary>
+    /// Gets the name of the member expression.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="exp">The exp.</param>
+    /// <returns></returns>
+    public static string GetMemberName<T>(Expression<Func<T>> exp)
+    {
+        return exp.Body is MemberExpression memberExpression
+            ? memberExpression.Member.Name
+            : null;
+    }
+
+    /// <summary>
+    /// Gets the name of the lambda expression.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="exp">The exp.</param>
+    /// <returns></returns>
+    public static string GetLambdaName<T>(Expression<Func<T>> exp)
+    {
+        return exp.Body is LambdaExpression lambdaExpression
+            ? lambdaExpression.Name
+            : null;
+    }
+
+    /// <summary>
+    /// Gets the name of the unary expression.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="exp">The exp.</param>
+    /// <returns></returns>
+    public static string GetUnaryName<T>(Expression<Func<T>> exp)
+    {
+        var unaryExpression = exp.Body as UnaryExpression; //((UnaryExpression)exp.Body).Operand;
+
+        return unaryExpression?.Operand is MemberExpression operand
+            ? operand.Member.Name
+            : null;
+    }
+
+    /// <summary>
+    /// Gets the name of the expression.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="exp">The exp.</param>
+    /// <returns></returns>
+    public static string GetExpressionName<T>(Expression<Func<T>> exp)
+    {
+        if (IsMemberExpression(exp))
         {
-            return func.Body is MemberExpression;
+            return GetMemberName(exp);
         }
 
-        /// <summary>
-        /// Determines whether the action is a member expression
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action">The action.</param>
-        /// <returns></returns>
-        public static bool IsMemberExpression<T>(this Expression<Action> action)
+        if (IsLambdaExpression(exp))
         {
-            return action.Body is MemberExpression;
+            return GetLambdaName(exp);
         }
 
-        /// <summary>
-        /// Determines whether the func is a lambda expression
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="func">The func.</param>
-        /// <returns></returns>
-        public static bool IsLambdaExpression<T>(Expression<Func<T>> func)
+        if (IsUnaryExpression(exp))
         {
-            return func.Body is LambdaExpression;
+            return GetUnaryName(exp);
         }
 
-        /// <summary>
-        /// Determines whether the action is a lambda expression
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action">The action.</param>
-        /// <returns></returns>
-        public static bool IsLambdaExpression<T>(Expression<Action<T>> action)
-        {
-            return action.Body is LambdaExpression;
-        }
-
-        /// <summary>
-        /// Determines whether the func is a unary expression
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="func">The func.</param>
-        /// <returns></returns>
-        public static bool IsUnaryExpression<T>(Expression<Func<T>> func)
-        {
-            var unaryExpression = func.Body as UnaryExpression;
-
-            return unaryExpression != null;
-        }
-
-        /// <summary>
-        /// Determines whether the action is a unary expression
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action">The action.</param>
-        /// <returns></returns>
-        public static bool IsUnaryExpression<T>(Expression<Action<T>> action)
-        {
-            var unaryExpression = action.Body as UnaryExpression;
-
-            return unaryExpression != null;
-        }
-
-        /// <summary>
-        /// Gets the name of the member expression.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="func">The func.</param>
-        /// <returns></returns>
-        public static string GetMemberName<T>(Expression<Func<T>> func)
-        {
-            var memberExpression = func.Body as MemberExpression;
-
-            return memberExpression?.Member.Name;
-        }
-
-        /// <summary>
-        /// Gets the name of the lambda expression.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="exp">The exp.</param>
-        /// <returns></returns>
-        public static string GetLambdaName<T>(Expression<Func<T>> exp)
-        {
-            var lambdaExpression = exp.Body as LambdaExpression;
-
-            return lambdaExpression?.Name;
-        }
-
-        /// <summary>
-        /// Gets the name of the unary expression.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="exp">The exp.</param>
-        /// <returns></returns>
-        public static string GetUnaryName<T>(Expression<Func<T>> exp)
-        {
-            var unaryExpression = exp.Body as UnaryExpression; //((UnaryExpression)exp.Body).Operand;
-
-            var operand = unaryExpression?.Operand as MemberExpression;
-
-            return operand?.Member.Name;
-        }
-
-        /// <summary>
-        /// Gets the name of the expression.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="exp">The exp.</param>
-        /// <returns></returns>
-        public static string GetExpressionName<T>(Expression<Func<T>> exp)
-        {
-            if (IsMemberExpression(exp))
-            {
-                return GetMemberName(exp);
-            }
-
-            if (IsLambdaExpression(exp))
-            {
-                return GetLambdaName(exp);
-            }
-
-            if (IsUnaryExpression(exp))
-            {
-                return GetUnaryName(exp);
-            }
-
-            return null;
-        }
+        return null;
     }
 }

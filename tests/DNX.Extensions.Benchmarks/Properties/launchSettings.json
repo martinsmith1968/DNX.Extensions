@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "DNX.Extensions.Benchmarks": {
+      "commandName": "Project"
+    }
+  }
+}

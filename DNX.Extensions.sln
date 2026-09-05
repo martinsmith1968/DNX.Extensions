@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNX.Extensions", "src\DNX.E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{9E70C755-0A39-46EA-8063-0A3B594B7271}"
 	ProjectSection(SolutionItems) = preProject
+		BuildAll.ps1 = BuildAll.ps1
 		.github\workflows\ci-build.yml = .github\workflows\ci-build.yml
+		commands.json = commands.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNX.Extensions.Tests", "tests\DNX.Extensions.Tests\DNX.Extensions.Tests.csproj", "{B14EFA70-CA77-4439-9C08-357061B97E4D}"
@@ -29,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docs", ".docs", "{8700E3D9
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNX.Extensions.Benchmarks", "tests\DNX.Extensions.Benchmarks\DNX.Extensions.Benchmarks.csproj", "{D9664527-B415-498F-B8A9-9AF016D7D91F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "verification", "verification", "{330ACF3B-A824-4203-9CC1-ACAD65FD201C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,7 +59,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E2B8F640-BCFE-4BD7-B158-E7FE957A38CB} = {E832563B-3DD6-4CCD-B5DA-91F89AE3B98A}
 		{B14EFA70-CA77-4439-9C08-357061B97E4D} = {27BBD260-1C33-4F57-925A-12AB922D6AB5}
-		{D9664527-B415-498F-B8A9-9AF016D7D91F} = {27BBD260-1C33-4F57-925A-12AB922D6AB5}
+		{D9664527-B415-498F-B8A9-9AF016D7D91F} = {330ACF3B-A824-4203-9CC1-ACAD65FD201C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A971C3D4-3729-43C6-88E7-16371F03161F}
