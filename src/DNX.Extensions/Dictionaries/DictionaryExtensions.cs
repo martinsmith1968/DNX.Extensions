@@ -126,7 +126,7 @@ public static class DictionaryExtensions
             .ToStringDictionary(elementSeparator, valueSeparator)
             .ToDictionary(
                 x => x.Key,
-                x => (object)x.Value
+                object (x) => x.Value
             );
 
         return dictionary;
@@ -144,7 +144,7 @@ public static class DictionaryExtensions
     /// <remarks>Source and target dictionaries are left untouched</remarks>
     public static IDictionary<TK, TV> MergeWith<TK, TV>(this IDictionary<TK, TV> dict, IDictionary<TK, TV> other, MergeTechnique mergeTechnique = MergeTechnique.Unique)
     {
-        var result = Merge(mergeTechnique, dict, other);
+        var result = MergeAll(mergeTechnique, dict, other);
 
         return result;
     }
@@ -158,7 +158,7 @@ public static class DictionaryExtensions
     /// <param name="dictionaries">The dictionaries.</param>
     /// <returns>Dictionary&lt;TK, TV&gt;.</returns>
     /// <exception cref="System.ArgumentException">Invalid or unsupported Merge Technique - mergeTechnique</exception>
-    public static IDictionary<TK, TV> Merge<TK, TV>(MergeTechnique mergeTechnique, params IDictionary<TK, TV>[] dictionaries)
+    public static IDictionary<TK, TV> MergeAll<TK, TV>(MergeTechnique mergeTechnique, params IDictionary<TK, TV>[] dictionaries)
     {
         return mergeTechnique switch
         {

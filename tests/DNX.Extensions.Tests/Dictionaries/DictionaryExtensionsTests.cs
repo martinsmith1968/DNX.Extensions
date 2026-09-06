@@ -68,6 +68,19 @@ public class DictionaryExtensionsTests
         value.ShouldBe(expectedValue);
     }
 
+    [Fact]
+    public void GetValue_can_return_explicit_value_or_default()
+    {
+        var dict = new Dictionary<string, int>
+        {
+            ["A"] = 10,
+            ["B"] = 20
+        };
+
+        dict.GetValue("A").ShouldBe(10);
+        dict.GetValue("Missing", 99).ShouldBe(99);
+    }
+
     [Theory]
     [InlineData("a=1;b=2;c=3", "b", "4", "a=1;b=4;c=3")]
     [InlineData("a=1;b=2;c=3", "a", "4", "a=4;b=2;c=3")]
@@ -248,6 +261,20 @@ public class DictionaryExtensionsTests
     }
 
     [Fact]
+    public void ToStringDictionary_and_object_dictionary_can_use_custom_separators()
+    {
+        var text = "A:1|B:two";
+
+        var stringDict = text.ToStringDictionary("|", ":");
+        var objectDict = text.ToStringObjectDictionary("|", ":");
+
+        stringDict["A"].ShouldBe("1");
+        stringDict["B"].ShouldBe("two");
+        objectDict["A"].ShouldBe("1");
+        objectDict["B"].ShouldBe("two");
+    }
+
+    [Fact]
     public void MergeUnique_can_combine_dictionaries_successfully()
     {
         // Arrange
@@ -276,7 +303,7 @@ public class DictionaryExtensionsTests
 
         // Act
         var result1 = DictionaryExtensions.MergeUnique(dict1, dict2, dict3);
-        var result2 = DictionaryExtensions.Merge(MergeTechnique.Unique, dict1, dict2, dict3);
+        var result2 = DictionaryExtensions.MergeAll(MergeTechnique.Unique, dict1, dict2, dict3);
 
         // Assert
         result1.ShouldNotBeNull();
@@ -334,7 +361,7 @@ public class DictionaryExtensionsTests
 
         try
         {
-            var result = DictionaryExtensions.Merge(MergeTechnique.Unique, dict1, dict2);
+            var result = DictionaryExtensions.MergeAll(MergeTechnique.Unique, dict1, dict2);
 
             Assert.Fail("Expected exception not thrown");
         }
@@ -373,7 +400,7 @@ public class DictionaryExtensionsTests
 
         // Act
         var result1 = DictionaryExtensions.MergeFirst(dict1, dict2, dict3);
-        var result2 = DictionaryExtensions.Merge(MergeTechnique.TakeFirst, dict1, dict2, dict3);
+        var result2 = DictionaryExtensions.MergeAll(MergeTechnique.TakeFirst, dict1, dict2, dict3);
 
         // Assert
         result1.ShouldNotBeNull();
@@ -426,7 +453,7 @@ public class DictionaryExtensionsTests
 
         // Act
         var result1 = DictionaryExtensions.MergeFirst(dict1, dict2, dict3);
-        var result2 = DictionaryExtensions.Merge(MergeTechnique.TakeFirst, dict1, dict2, dict3);
+        var result2 = DictionaryExtensions.MergeAll(MergeTechnique.TakeFirst, dict1, dict2, dict3);
 
         // Assert
         result1.ShouldNotBeNull();
@@ -482,7 +509,7 @@ public class DictionaryExtensionsTests
 
         // Act
         var result1 = DictionaryExtensions.MergeLast(dict1, dict2, dict3);
-        var result2 = DictionaryExtensions.Merge(MergeTechnique.TakeLast, dict1, dict2, dict3);
+        var result2 = DictionaryExtensions.MergeAll(MergeTechnique.TakeLast, dict1, dict2, dict3);
 
         // Assert
         result1.ShouldNotBeNull();
@@ -535,7 +562,7 @@ public class DictionaryExtensionsTests
 
         // Act
         var result1 = DictionaryExtensions.MergeLast(dict1, dict2, dict3);
-        var result2 = DictionaryExtensions.Merge(MergeTechnique.TakeLast, dict1, dict2, dict3);
+        var result2 = DictionaryExtensions.MergeAll(MergeTechnique.TakeLast, dict1, dict2, dict3);
 
         // Assert
         result1.ShouldNotBeNull();

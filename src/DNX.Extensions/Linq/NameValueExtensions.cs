@@ -36,6 +36,6 @@ public static class NameValueExtensions
             }
         }
 
-        return DictionaryExtensions.Merge(mergeTechnique, dictionaries.ToArray());
+        return DictionaryExtensions.MergeAll(mergeTechnique, [.. dictionaries]);
     }
 }

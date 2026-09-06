@@ -15,9 +15,9 @@ namespace DNX.Extensions.Validation
         /// <typeparam name="T"></typeparam>
         /// <param name="exp">The exp.</param>
         public static void IsValidEnum<T>(this Expression<Func<T>> exp)
-            where T : struct
+            where T : struct, Enum
         {
-            IsValidEnum(exp, exp.Compile().Invoke());
+            exp.IsValidEnum(exp.Compile().Invoke());
         }
 
         /// <summary>
@@ -28,16 +28,18 @@ namespace DNX.Extensions.Validation
         /// <param name="val">The value.</param>
         /// <exception cref="System.ArgumentException"></exception>
         public static void IsValidEnum<T>(this Expression<Func<T>> exp, T val)
-            where T : struct
+            where T : struct, Enum
         {
-            if (!val.IsValidEnum())
+            if (val.IsValidEnum())
             {
-                var memberName = ExpressionExtensions.GetMemberName(exp);
-
-                throw new ArgumentException(
-                    $"{memberName} must be a valid {typeof(T).Name} value", memberName
-                );
+                return;
             }
+
+            var memberName = ExpressionExtensions.GetMemberName(exp);
+
+            throw new ArgumentException(
+                $"{memberName} must be a valid {typeof(T).Name} value", memberName
+            );
         }
 
         /// <summary>
@@ -47,9 +49,9 @@ namespace DNX.Extensions.Validation
         /// <param name="exp">The exp.</param>
         /// <param name="allowed">The allowed.</param>
         public static void IsEnumOneOf<T>(this Expression<Func<T>> exp, params T[] allowed)
-            where T : struct
+            where T : struct, Enum
         {
-            IsEnumOneOf(exp, exp.Compile().Invoke(), allowed);
+            exp.IsEnumOneOf(exp.Compile().Invoke(), allowed);
         }
 
         /// <summary>
@@ -59,9 +61,9 @@ namespace DNX.Extensions.Validation
         /// <param name="exp">The exp.</param>
         /// <param name="allowed">The allowed.</param>
         public static void IsEnumOneOf<T>(this Expression<Func<T>> exp, IList<T> allowed)
-            where T : struct
+            where T : struct, Enum
         {
-            IsEnumOneOf(exp, exp.Compile().Invoke(), allowed);
+            exp.IsEnumOneOf(exp.Compile().Invoke(), allowed);
         }
 
         /// <summary>
@@ -73,7 +75,7 @@ namespace DNX.Extensions.Validation
         /// <param name="allowed">The allowed.</param>
         /// <exception cref="System.ArgumentException"></exception>
         public static void IsEnumOneOf<T>(this Expression<Func<T>> exp, T val, IList<T> allowed)
-            where T : struct
+            where T : struct, Enum
         {
             if (!val.IsValueOneOf(allowed))
             {

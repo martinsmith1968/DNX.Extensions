@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using DNX.Extensions.Enumerations;
+using DNX.Extensions.Exceptions;
 using Shouldly;
 using Xunit;
 
@@ -11,7 +12,7 @@ internal class MultiplierAttribute(int multiplier) : Attribute
     public int Multiplier { get; set; } = multiplier;
 }
 
-internal enum MyTestEnum1
+public enum MyTestEnum1
 {
     [Description("First")]
     One = 1,
@@ -39,7 +40,7 @@ internal enum MyTestEnum2
     Flag5 = 16
 }
 
-internal enum MyTestEnum3
+public enum MyTestEnum3
 {
     [Multiplier(10)]
     Ten = 10,
@@ -78,7 +79,7 @@ public class EnumerationExtensionsTests
     [InlineData("One", "One")]
     [InlineData("Four", "Four")]
     [InlineData("Five", "Five")]
-    public void ParseEnumTest_can_successfully_parse_MyTestEnum1(string text, string expectedResult)
+    public void ParseEnum_can_successfully_parse_MyTestEnum1(string text, string expectedResult)
     {
         var result = text.ParseEnum<MyTestEnum1>();
 
@@ -89,39 +90,74 @@ public class EnumerationExtensionsTests
     [InlineData("ONE", false)]
     [InlineData("Twenty", false)]
     [InlineData("Six", false)]
-    public void ParseEnumTest_fails_to_parse_MyTestEnum1(string text, bool expectedResult)
+    public void ParseEnum_fails_to_parse_MyTestEnum1(string text, bool expectedResult)
     {
-        try
+        if (expectedResult)
         {
-            var result = text.ParseEnum<MyTestEnum1>();
-
-            expectedResult.ShouldBeTrue();
+            text.ParseEnum<MyTestEnum1>();
+            return;
         }
-        catch (ArgumentException ex)
-        {
-            ex.Message.ShouldContain($"'{text}'");
 
-            expectedResult.ShouldBeFalse();
-        }
+        var ex = Should.Throw<ArgumentException>(() => text.ParseEnum<MyTestEnum1>());
+        ex.Message.ShouldContain($"'{text}'");
     }
 
-
-    [Fact]
-    public void ParseEnumTest1()
+    [Theory]
+    [InlineData("ONE", MyTestEnum1.One)]
+    [InlineData("tHrEe", MyTestEnum1.Three)]
+    public void ParseEnum_can_parse_case_insensitively(string text, MyTestEnum1 expectedResult)
     {
-
-    }
-
-    [Fact]
-    public void ParseEnumOrDefaultTest()
-    {
-
+        text.ParseEnum<MyTestEnum1>(true).ShouldBe(expectedResult);
     }
 
     [Fact]
-    public void ParseEnumOrDefaultTest1()
+    public void ParseEnum_throws_for_null_text()
     {
+        string text = null;
 
+        Should.Throw<ArgumentNullException>(() => text.ParseEnum<MyTestEnum1>());
+    }
+
+    [Fact]
+    public void IsValidEnum_throws_for_null_type()
+    {
+        var ex = Should.Throw<ArgumentNullException>(
+            () => "One".IsValidEnum(null, false));
+
+        ex.ParamName.ShouldBe("type");
+    }
+
+    [Fact]
+    public void IsValidEnum_throws_for_non_enum_type()
+    {
+        var ex = Should.Throw<EnumTypeException>(
+            () => "One".IsValidEnum(typeof(int), false));
+
+        ex.Message.ShouldContain(nameof(Int32));
+    }
+
+    [Theory]
+    [InlineData("One", MyTestEnum1.One, MyTestEnum1.One)]
+    [InlineData("THREE", MyTestEnum1.One, MyTestEnum1.One)]
+    [InlineData("Seven", MyTestEnum1.One, MyTestEnum1.One)]
+    public void ParseEnumOrDefaultTest(string text, MyTestEnum1 defaultValue, MyTestEnum1 expectedResult)
+    {
+        var result = text.ParseEnumOrDefault(defaultValue);
+
+        result.ShouldBe(expectedResult);
+    }
+
+    [Theory]
+    [InlineData("One", false, MyTestEnum1.One)]
+    [InlineData("THREE", false, MyTestEnum1.One)]
+    [InlineData("THREE", true, MyTestEnum1.Three)]
+    [InlineData("Seven", false, MyTestEnum1.One)]
+    public void ParseEnumOrDefaultTest1(string text, bool ignoreCase, MyTestEnum1 expectedResult)
+    {
+        var defaultValue = MyTestEnum1.One;
+        var result = text.ParseEnumOrDefault(ignoreCase, defaultValue);
+
+        result.ShouldBe(expectedResult);
     }
 
     [Theory]
@@ -147,6 +183,26 @@ public class EnumerationExtensionsTests
         result.ShouldBe(expectedResult);
     }
 
+    [Theory]
+    [InlineData(MyTestEnum1.One, true)]
+    [InlineData((MyTestEnum1)99, false)]
+    public void IsValidEnum_can_validate_enum_values(MyTestEnum1 value, bool expectedResult)
+    {
+        value.IsValidEnum().ShouldBe(expectedResult);
+    }
+
+    [Theory]
+    [InlineData("One", true, true)]
+    [InlineData("one", false, true)]
+    public void IsValidEnum_string_generic_overloads_respect_case(
+        string value,
+        bool expectedCaseSensitiveResult,
+        bool expectedIgnoreCaseResult)
+    {
+        value.IsValidEnum<MyTestEnum1>().ShouldBe(expectedCaseSensitiveResult);
+        value.IsValidEnum<MyTestEnum1>(true).ShouldBe(expectedIgnoreCaseResult);
+    }
+
     [Fact]
     public void GetMaxValueTest()
     {
@@ -167,16 +223,23 @@ public class EnumerationExtensionsTests
         ((int)max2).ShouldBe((int)MyTestEnum2.Flag1);
     }
 
-    [Fact]
-    public void IsValueOneOfTest()
+    [Theory]
+    [InlineData(MyTestEnum1.One, true)]
+    [InlineData(MyTestEnum1.Three, true)]
+    [InlineData(MyTestEnum1.Four, false)]
+    public void IsValueOneOfTest(MyTestEnum1 value, bool expectedResult)
     {
+        var allowed = new[] { MyTestEnum1.One, MyTestEnum1.Three, MyTestEnum1.Five };
 
+        value.IsValueOneOf(allowed).ShouldBe(expectedResult);
+        value.IsValueOneOf(allowed.ToList()).ShouldBe(expectedResult);
     }
 
     [Fact]
-    public void IsValueOneOfTest1()
+    public void IsValueOneOf_can_handle_an_empty_allowed_list()
     {
-
+        MyTestEnum1.One.IsValueOneOf(Array.Empty<MyTestEnum1>()).ShouldBeFalse();
+        MyTestEnum1.One.IsValueOneOf(new List<MyTestEnum1>()).ShouldBeFalse();
     }
 
     [Fact]
@@ -222,19 +285,30 @@ public class EnumerationExtensionsTests
     }
 
     [Fact]
-    public void GetSetValuesListTest()
+    public void GetSetValuesTest()
     {
         // Arrange
         var flags = MyTestEnum2.Flag2 | MyTestEnum2.Flag4 | MyTestEnum2.Flag5;
+        var invalidFlags = 1 | 2 | 4;
 
         // Act
-        var setFlags = EnumerationExtensions.GetSetValuesList<MyTestEnum2>(flags);
+        var setFlags = flags.GetSetValues();
+        //var invalidTypeSetValues = invalidFlags.GetSetValues();   // Does not compile as int is not an Enum
 
         // Assert
-        setFlags.Count.ShouldBe(3);
+        setFlags.Length.ShouldBe(3);
         setFlags.Contains(MyTestEnum2.Flag2).ShouldBeTrue();
         setFlags.Contains(MyTestEnum2.Flag4).ShouldBeTrue();
         setFlags.Contains(MyTestEnum2.Flag5).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void GetSetValues_returns_empty_for_no_flags()
+    {
+        var setFlags = MyTestEnum2.Flag1.GetSetValues();
+
+        setFlags.ShouldHaveSingleItem();
+        setFlags[0].ShouldBe(MyTestEnum2.Flag1);
     }
 
     [Fact]
@@ -244,11 +318,11 @@ public class EnumerationExtensionsTests
 
         dict.ShouldNotBeNull();
         dict.Count.ShouldBe(5);
-        dict[MyTestEnum1.One.ToString()].ShouldBe(MyTestEnum1.One);
-        dict[MyTestEnum1.Two.ToString()].ShouldBe(MyTestEnum1.Two);
-        dict[MyTestEnum1.Three.ToString()].ShouldBe(MyTestEnum1.Three);
-        dict[MyTestEnum1.Four.ToString()].ShouldBe(MyTestEnum1.Four);
-        dict[MyTestEnum1.Five.ToString()].ShouldBe(MyTestEnum1.Five);
+        dict[nameof(MyTestEnum1.One)].ShouldBe(MyTestEnum1.One);
+        dict[nameof(MyTestEnum1.Two)].ShouldBe(MyTestEnum1.Two);
+        dict[nameof(MyTestEnum1.Three)].ShouldBe(MyTestEnum1.Three);
+        dict[nameof(MyTestEnum1.Four)].ShouldBe(MyTestEnum1.Four);
+        dict[nameof(MyTestEnum1.Five)].ShouldBe(MyTestEnum1.Five);
     }
 
     [Fact]
@@ -258,11 +332,25 @@ public class EnumerationExtensionsTests
 
         dict.ShouldNotBeNull();
         dict.Count.ShouldBe(5);
-        dict[MyTestEnum2.Flag1.ToString()].ShouldBe(MyTestEnum2.Flag1);
-        dict[MyTestEnum2.Flag2.ToString()].ShouldBe(MyTestEnum2.Flag2);
-        dict[MyTestEnum2.Flag3.ToString()].ShouldBe(MyTestEnum2.Flag3);
-        dict[MyTestEnum2.Flag4.ToString()].ShouldBe(MyTestEnum2.Flag4);
-        dict[MyTestEnum2.Flag5.ToString()].ShouldBe(MyTestEnum2.Flag5);
+        dict[nameof(MyTestEnum2.Flag1)].ShouldBe(MyTestEnum2.Flag1);
+        dict[nameof(MyTestEnum2.Flag2)].ShouldBe(MyTestEnum2.Flag2);
+        dict[nameof(MyTestEnum2.Flag3)].ShouldBe(MyTestEnum2.Flag3);
+        dict[nameof(MyTestEnum2.Flag4)].ShouldBe(MyTestEnum2.Flag4);
+        dict[nameof(MyTestEnum2.Flag5)].ShouldBe(MyTestEnum2.Flag5);
+    }
+
+    [Fact]
+    public void ToDictionaryByValueTest_MyTestEnum1()
+    {
+        var dict = EnumerationExtensions.ToDictionaryByValue<MyTestEnum1>();
+
+        dict.ShouldNotBeNull();
+        dict.Count.ShouldBe(5);
+        dict[MyTestEnum1.One].ShouldBe(nameof(MyTestEnum1.One));
+        dict[MyTestEnum1.Two].ShouldBe(nameof(MyTestEnum1.Two));
+        dict[MyTestEnum1.Three].ShouldBe(nameof(MyTestEnum1.Three));
+        dict[MyTestEnum1.Four].ShouldBe(nameof(MyTestEnum1.Four));
+        dict[MyTestEnum1.Five].ShouldBe(nameof(MyTestEnum1.Five));
     }
 
     [Theory]
@@ -281,6 +369,18 @@ public class EnumerationExtensionsTests
         result.ShouldBe(expectedResult);
     }
 
+    [Fact]
+    public void Attribute_and_description_overloads_can_be_called_with_inherit()
+    {
+        var attributes = MyTestEnum3.Ten.GetAttributes<MultiplierAttribute>(true);
+        var attribute = MyTestEnum3.Ten.GetAttribute<MultiplierAttribute>(true);
+
+        attributes.ShouldHaveSingleItem();
+        attributes[0].Multiplier.ShouldBe(10);
+        attribute.Multiplier.ShouldBe(10);
+        MyTestEnum1.Two.GetDescription(true).ShouldBe("Second");
+    }
+
     [Theory]
     [InlineData(MyTestEnum3.Ten, 10)]
     [InlineData(MyTestEnum3.Twenty, null)]
@@ -292,6 +392,18 @@ public class EnumerationExtensionsTests
         var attribute = value.GetAttribute<MultiplierAttribute>();
 
         (attribute?.Multiplier).ShouldBe(expectedResult);
+    }
+
+    [Fact]
+    public void GetAttributes_default_overload_returns_attributes_and_handles_composite_values()
+    {
+        var attributes = MyTestEnum3.Ten.GetAttributes<MultiplierAttribute>();
+        var compositeAttributes = (MyTestEnum2.Flag2 | MyTestEnum2.Flag4)
+            .GetAttributes<DescriptionAttribute>();
+
+        attributes.ShouldHaveSingleItem();
+        attributes[0].Multiplier.ShouldBe(10);
+        compositeAttributes.ShouldBeNull();
     }
 
     [Theory]
@@ -322,5 +434,12 @@ public class EnumerationExtensionsTests
 
         // Assert
         result.ShouldBe(expectedResult, $"{myType} has description: {result}");
+    }
+
+    [Fact]
+    public void GetDescriptionOrName_inherit_overload_returns_description_or_name()
+    {
+        MyType.Two.GetDescriptionOrName(true).ShouldBe("Number 2");
+        MyType.One.GetDescriptionOrName(true).ShouldBe(nameof(MyType.One));
     }
 }

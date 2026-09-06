@@ -22,9 +22,9 @@ public static class EnumerationExtensions
     /// <param name="item">The string representation of an enum value of T</param>
     /// <returns>The result</returns>
     public static T ParseEnum<T>(this string item)
-        where T : struct
+        where T : struct, Enum
     {
-        return ParseEnum<T>(item, false);
+        return item.ParseEnum<T>(false);
     }
 
     /// <summary>
@@ -35,15 +35,9 @@ public static class EnumerationExtensions
     /// <param name="item">The string representation of an enum value of T</param>
     /// <param name="ignoreCase">if set to <c>true</c> ignore the case of item.</param>
     /// <returns>The result</returns>
-    /// <exception cref="EnumTypeException"></exception>
     public static T ParseEnum<T>(this string item, bool ignoreCase)
-        where T : struct
+        where T : struct, Enum
     {
-        if (typeof(T).IsEnum == false)
-        {
-            throw new EnumTypeException(typeof(T));
-        }
-
         return (T)Enum.Parse(typeof(T), item, ignoreCase);
     }
 
@@ -57,9 +51,9 @@ public static class EnumerationExtensions
     /// <returns>T.</returns>
     /// <exception cref="EnumTypeException"></exception>
     public static T ParseEnumOrDefault<T>(this string item, T defaultValue)
-        where T : struct
+        where T : struct, Enum
     {
-        return ParseEnumOrDefault(item, false, defaultValue);
+        return item.ParseEnumOrDefault(false, defaultValue);
     }
 
     /// <summary>
@@ -73,21 +67,11 @@ public static class EnumerationExtensions
     /// <returns>T.</returns>
     /// <exception cref="EnumTypeException"></exception>
     public static T ParseEnumOrDefault<T>(this string item, bool ignoreCase, T defaultValue)
-        where T : struct
+        where T : struct, Enum
     {
-        if (typeof(T).IsEnum == false)
-        {
-            throw new EnumTypeException(typeof(T));
-        }
-
-        try
-        {
-            return (T)Enum.Parse(typeof(T), item, ignoreCase);
-        }
-        catch
-        {
-            return defaultValue;
-        }
+        return Enum.TryParse(item, ignoreCase, out T result)
+            ? result :
+            defaultValue;
     }
 
     /// <summary>
@@ -197,7 +181,7 @@ public static class EnumerationExtensions
     /// <param name="value">The enum value.</param>
     /// <returns><c>true</c> if the specified value is valid; otherwise, <c>false</c>.</returns>
     public static bool IsValidEnum<T>(this T value)
-        where T : struct
+        where T : struct, Enum
     {
         return Convert.ToString(value).IsValidEnum<T>();
     }
@@ -209,9 +193,9 @@ public static class EnumerationExtensions
     /// <param name="value">The enum Name.</param>
     /// <returns><c>true</c> if the specified value is valid; otherwise, <c>false</c>.</returns>
     public static bool IsValidEnum<T>(this string value)
-        where T : struct
+        where T : struct, Enum
     {
-        return IsValidEnum(value, typeof(T), false);
+        return value.IsValidEnum(typeof(T), false);
     }
 
     /// <summary>
@@ -222,9 +206,9 @@ public static class EnumerationExtensions
     /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
     /// <returns><c>true</c> if [is valid enum] [the specified ignore case]; otherwise, <c>false</c>.</returns>
     public static bool IsValidEnum<T>(this string value, bool ignoreCase)
-        where T : struct
+        where T : struct, Enum
     {
-        return IsValidEnum(value, typeof(T), ignoreCase);
+        return value.IsValidEnum(typeof(T), ignoreCase);
     }
 
     /// <summary>
@@ -265,13 +249,8 @@ public static class EnumerationExtensions
     /// <returns>T.</returns>
     /// <exception cref="EnumTypeException"></exception>
     public static T GetMaxValue<T>()
-        where T : struct
+        where T : struct, Enum
     {
-        if (!typeof(T).IsEnum)
-        {
-            throw new EnumTypeException(typeof(T));
-        }
-
         return Enum.GetValues(typeof(T))
             .Cast<T>()
             .Max();
@@ -284,13 +263,8 @@ public static class EnumerationExtensions
     /// <returns>T.</returns>
     /// <exception cref="EnumTypeException"></exception>
     public static T GetMinValue<T>()
-        where T : struct
+        where T : struct, Enum
     {
-        if (!typeof(T).IsEnum)
-        {
-            throw new EnumTypeException(typeof(T));
-        }
-
         return Enum.GetValues(typeof(T))
             .Cast<T>()
             .Min();
@@ -304,7 +278,7 @@ public static class EnumerationExtensions
     /// <param name="allowed">The allowed.</param>
     /// <returns><c>true</c> if [is value one of] [the specified args]; otherwise, <c>false</c>.</returns>
     public static bool IsValueOneOf<T>(this T value, params T[] allowed)
-        where T : struct
+        where T : struct, Enum
     {
         return value.IsValueOneOf(allowed.ToList());
     }
@@ -318,13 +292,8 @@ public static class EnumerationExtensions
     /// <returns><c>true</c> if [is value one of] [the specified args]; otherwise, <c>false</c>.</returns>
     /// <exception cref="EnumTypeException"></exception>
     public static bool IsValueOneOf<T>(this T value, IList<T> allowed)
-        where T : struct
+        where T : struct, Enum
     {
-        if (!typeof(T).IsEnum)
-        {
-            throw new EnumTypeException(typeof(T));
-        }
-
         return allowed.Contains(value);
     }
 
@@ -337,6 +306,7 @@ public static class EnumerationExtensions
     /// <param name="set">if set to <c>true</c> [set].</param>
     /// <returns>T.</returns>
     public static T ManipulateFlag<T>(this Enum value, T flag, bool set)
+        where T : struct, Enum
     {
         var underlyingType = Enum.GetUnderlyingType(value.GetType());
 
@@ -363,8 +333,9 @@ public static class EnumerationExtensions
     /// <param name="flag">The flag.</param>
     /// <returns>T.</returns>
     public static T SetFlag<T>(this Enum value, T flag)
+        where T : struct, Enum
     {
-        return ManipulateFlag(value, flag, true);
+        return value.ManipulateFlag(flag, true);
     }
 
     /// <summary>
@@ -375,40 +346,26 @@ public static class EnumerationExtensions
     /// <param name="flag">The flag.</param>
     /// <returns>T.</returns>
     public static T UnsetFlag<T>(this Enum value, T flag)
+        where T : struct, Enum
     {
-        return ManipulateFlag(value, flag, false);
+        return value.ManipulateFlag(flag, false);
     }
 
     /// <summary>
-    /// Gets the set values list.
+    /// Gets the set values of an Enum.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The Enum Type</typeparam>
     /// <param name="enumValue">The enum value.</param>
-    /// <returns>List&lt;T&gt;.</returns>
-    /// <exception cref="EnumTypeException"></exception>
-    public static List<T> GetSetValuesList<T>(this Enum enumValue)
-        where T : struct
+    /// <returns>Array of T.</returns>
+    public static T[] GetSetValues<T>(this T enumValue)
+        where T : struct, Enum
     {
-        if (!typeof(T).IsEnum)
-        {
-            throw new EnumTypeException(typeof(T));
-        }
+        var values = Enum.GetValues(typeof(T))
+            .Cast<T>()
+            .Where(value => enumValue.HasFlag(value))
+            .ToArray();
 
-        var list = new List<T>();
-
-        foreach (var name in Enum.GetNames(typeof(T)))
-        {
-            var nameValue = (Enum)Enum.Parse(typeof(T), name);
-
-            if ((enumValue.HasFlag(nameValue)))
-            {
-                var actualValue = (T)Enum.Parse(typeof(T), name);
-
-                list.Add(actualValue);
-            }
-        }
-
-        return list;
+        return values;
     }
 
     /// <summary>
@@ -418,13 +375,8 @@ public static class EnumerationExtensions
     /// <returns>IDictionary&lt;System.String, T&gt;.</returns>
     /// <exception cref="EnumTypeException"></exception>
     public static IDictionary<string, T> ToDictionaryByName<T>()
-        where T : struct
+        where T : struct, Enum
     {
-        if (!typeof(T).IsEnum)
-        {
-            throw new EnumTypeException(typeof(T));
-        }
-
         var dictionary = Enum.GetValues(typeof(T))
             .Cast<T>()
             .Distinct()
@@ -443,13 +395,8 @@ public static class EnumerationExtensions
     /// <returns>IDictionary&lt;T, System.String&gt;.</returns>
     /// <exception cref="EnumTypeException"></exception>
     public static IDictionary<T, string> ToDictionaryByValue<T>()
-        where T : struct
+        where T : struct, Enum
     {
-        if (!typeof(T).IsEnum)
-        {
-            throw new EnumTypeException(typeof(T));
-        }
-
         var dictionary = Enum.GetValues(typeof(T))
             .Cast<T>()
             .Distinct()

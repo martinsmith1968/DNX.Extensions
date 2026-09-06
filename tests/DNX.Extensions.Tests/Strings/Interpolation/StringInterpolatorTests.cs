@@ -10,6 +10,15 @@ namespace DNX.Extensions.Tests.Strings.Interpolation;
 
 public class StringInterpolatorTests
 {
+    private sealed class ThrowingFormattable : IFormattable
+    {
+        public string ToString(string format, IFormatProvider formatProvider)
+            => throw new FormatException("Formatting failed");
+
+        public override string ToString()
+            => "value";
+    }
+
     [Theory]
     [InlineData("Hello {FirstName}", "Martin", "Smith", "2017-08-11", null, "Hello Martin")]
     [InlineData("{FirstName} {LastName} {DateOfBirth:MMM-dd} {YearOfBirth}", "Martin", "Smith", "2017-08-11", null, "Martin Smith Aug-11 2017")]
@@ -227,5 +236,44 @@ public class StringInterpolatorTests
 
         // Assert
         result.ShouldBe(fileName);
+    }
+
+    [Fact]
+    public void InterpolateWithAll_ignores_unused_parameters_and_formats_only_requested_values()
+    {
+        var format = "Hello {FirstName}!";
+        var values = new Dictionary<string, object>
+        {
+            { "FirstName", "Martin" },
+            { "LastName", "Smith" }
+        };
+
+        var result = format.InterpolateWithAll(values);
+
+        result.ShouldBe("Hello Martin!");
+    }
+
+    [Fact]
+    public void InterpolateWithAll_returns_original_text_when_ignore_errors_is_true()
+    {
+        var values = new Dictionary<string, object>
+        {
+            { "Age", new ThrowingFormattable() }
+        };
+
+        var result = "Hello {Age:0000}".InterpolateWithAll(values, ignoreErrors: true);
+
+        result.ShouldBe("Hello {Age:0000}");
+    }
+
+    [Fact]
+    public void InterpolateWithAll_throws_when_formatting_cannot_be_resolved_and_ignore_errors_is_false()
+    {
+        var values = new Dictionary<string, object>
+        {
+            { "Age", new ThrowingFormattable() }
+        };
+
+        Should.Throw<FormatException>(() => "Hello {Age:0000}".InterpolateWithAll(values));
     }
 }

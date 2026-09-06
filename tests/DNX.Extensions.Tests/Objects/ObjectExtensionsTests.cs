@@ -173,4 +173,31 @@ public class ObjectExtensionsTests
         // Assert
         result.ShouldBe(expectedResult);
     }
+
+    [Fact]
+    public void ChangeType_can_convert_string_to_integer_and_return_default_on_failure()
+    {
+        object value = "42";
+        var converted = value.ChangeType<int>();
+        converted.ShouldBe(42);
+
+        value = "42";
+        var typed = value.ChangeType(typeof(int));
+        typed.ShouldBe(42);
+
+        var fallback = "not-an-int".ChangeType(99);
+        fallback.ShouldBe(99);
+
+        Should.Throw<FormatException>(() => "not-an-int".ChangeType(typeof(int)));
+    }
+
+    [Fact]
+    public void To_can_return_default_when_conversion_fails()
+    {
+        var good = ((object)42).To<int>();
+        var bad = "abc".To<int>(99);
+
+        good.ShouldBe(42);
+        bad.ShouldBe(99);
+    }
 }
