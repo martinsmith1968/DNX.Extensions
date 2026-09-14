@@ -5,7 +5,7 @@ using System.Dynamic;
 using System.Linq;
 using DNX.Extensions.Exceptions;
 using DNX.Extensions.Linq;
-using DNX.Extensions.Validation;
+using DNX.Extensions.Validation.BuiltInTypes;
 
 namespace DNX.Extensions.Dictionaries;
 

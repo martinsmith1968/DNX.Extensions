@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using DNX.Extensions.Maths;
-using DNX.Extensions.Validation;
+using DNX.Extensions.Validation.BuiltInTypes;
 using Xunit;
 
 namespace DNX.Extensions.Tests.Validation;
