@@ -69,4 +69,3 @@ public static class ConvertUInt32Extensions
         }
     }
 }
-

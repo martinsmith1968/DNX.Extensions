@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using DNX.Extensions.Enumerations;
 using DNX.Extensions.Reflection;
 
-namespace DNX.Extensions.Validation
+namespace DNX.Extensions.Validation.BuiltInTypes
 {
     public static partial class Guard
     {
@@ -26,7 +26,7 @@ namespace DNX.Extensions.Validation
         /// <typeparam name="T"></typeparam>
         /// <param name="exp">The exp.</param>
         /// <param name="val">The value.</param>
-        /// <exception cref="System.ArgumentException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public static void IsValidEnum<T>(this Expression<Func<T>> exp, T val)
             where T : struct, Enum
         {
@@ -73,7 +73,7 @@ namespace DNX.Extensions.Validation
         /// <param name="exp">The exp.</param>
         /// <param name="val">The value.</param>
         /// <param name="allowed">The allowed.</param>
-        /// <exception cref="System.ArgumentException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public static void IsEnumOneOf<T>(this Expression<Func<T>> exp, T val, IList<T> allowed)
             where T : struct, Enum
         {

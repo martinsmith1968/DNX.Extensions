@@ -171,4 +171,3 @@ public static class MathsInt32Extensions
             : max;
     }
 }
-

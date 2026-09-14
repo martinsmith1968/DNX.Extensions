@@ -4,7 +4,7 @@ using DNX.Extensions.Reflection;
 
 // ReSharper disable InvertIf
 
-namespace DNX.Extensions.Validation;
+namespace DNX.Extensions.Validation.BuiltInTypes;
 
 /// <summary>
 /// Guard Extensions.

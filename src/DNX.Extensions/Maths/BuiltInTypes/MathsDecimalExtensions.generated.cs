@@ -171,4 +171,3 @@ public static class MathsDecimalExtensions
             : max;
     }
 }
-

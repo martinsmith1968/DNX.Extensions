@@ -69,4 +69,3 @@ public static class ConvertInt16Extensions
         }
     }
 }
-

@@ -171,4 +171,3 @@ public static class MathsUInt16Extensions
             : max;
     }
 }
-
