@@ -8,6 +8,38 @@ namespace DNX.Extensions.Tests.Linq;
 public class NameValueExtensionsTests
 {
     [Fact]
+    public void Can_convert_a_NameValueCollection_using_default_ToDictionary_successfully()
+    {
+        // Arrange
+        var collection = new NameValueCollection
+        {
+            { "One", "1" },
+            { "Two", "2" },
+            { "Three", "3" }
+        };
+
+        // Act
+        var result = collection.ToDictionary();
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Count.ShouldBe(collection.Count);
+        result["One"].ShouldBe("1");
+        result["Two"].ShouldBe("2");
+        result["Three"].ShouldBe("3");
+    }
+
+    [Fact]
+    public void Converting_null_NameValueCollection_with_ToDictionary_throws()
+    {
+        NameValueCollection collection = null;
+
+        var ex = Should.Throw<ArgumentNullException>(() => collection.ToDictionary());
+
+        ex.ParamName.ShouldBe("collection");
+    }
+
+    [Fact]
     public void Can_convert_a_NameValueCollection_using_Unique_successfully()
     {
         // Arrange
