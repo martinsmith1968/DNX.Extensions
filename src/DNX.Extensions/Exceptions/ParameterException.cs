@@ -40,7 +40,7 @@ public class ParameterException : Exception
     public ParameterException(string paramName, object paramValue, string message)
         : base(message)
     {
-        ParamName  = paramName;
+        ParamName = paramName;
         ParamValue = paramValue;
     }
 
@@ -66,7 +66,7 @@ public class ParameterException : Exception
     public ParameterException(string paramName, object paramValue, string message, Exception innerException)
         : base(message, innerException)
     {
-        ParamName  = paramName;
+        ParamName = paramName;
         ParamValue = paramValue;
     }
 }

@@ -1,3 +1,4 @@
+$ErrorActionPreference = "Stop"
 $sleep_time = 100
 
 #----------------------------------------------------------------------------
@@ -20,33 +21,6 @@ function Update-TagsInText{
 }
 
 #----------------------------------------------------------------------------
-# Update-TagsInFile
-#
-# Use a dictionary of string pairs to read and replace placeholders in a text file.
-#----------------------------------------------------------------------------
-function Update-TagsInFile{
-    param(
-        [string]$FilePath,
-        [hashtable]$Tags,
-        [string]$Prefix = "#",
-        [string]$Suffix = "#"
-    )
-
-    if (-Not ( Test-Path $FilePath -PathType Leaf)) {
-        Write-Host "File not found: $FilePath"
-        return $False
-    }
-
-    $content = (Get-Content -Path $FilePath -Raw)
-    Start-Sleep -MilliSeconds $sleep_time
-    $content = Update-TagsInText -Text $content -Tags $Tags -Prefix $Prefix -Suffix $Suffix
-    (Set-Content -Path $FilePath -Value $content -NoNewline)
-    #[System.IO.File]::WriteAllText($FilePath, $content)
-
-    return $True
-}
-
-#----------------------------------------------------------------------------
 # Write-HostBanner
 #
 # Write a head banner to the console with a given text.
@@ -62,22 +36,6 @@ function Write-HostBanner {
     Write-Host $line      -ForegroundColor Yellow
     Write-Host "-- $Text" -ForegroundColor Yellow
     Write-Host $line      -ForegroundColor Yellow
-}
-
-function Write-HostError {
-    param(
-        [string]$Text
-    )
-
-    Write-Host "ERROR: $Text" -ForegroundColor Red
-}
-
-function Write-HostWarning {
-    param(
-        [string]$Text
-    )
-
-    Write-Host "WARNING: $Text" -ForegroundColor Cyan
 }
 
 #----------------------------------------------------------------------------
@@ -109,9 +67,7 @@ foreach ($template in $templates) {
   Push-Location -Path $template.DirectoryName
 
   if ( -Not (Test-Path -Path $data_filename)) {
-    Write-HostWarning "Template Data file not found: $(Join-Path $template.DirectoryName $data_filename)"
-    Pop-Location
-    continue
+    throw "Template data file not found: $(Join-Path $template.DirectoryName $data_filename)"
   }
 
   # Preset variables to be populated
@@ -125,9 +81,11 @@ foreach ($template in $templates) {
 
   # Validate variables were set
   if ($output_filename_template -eq "") {
-    Write-HostError "Build Data script did not set the output filename template: $data_filename"
-    Pop-Location
-    continue
+    throw "Build data script did not set the output filename template: $data_filename"
+  }
+
+  if ($build_data.Count -eq 0) {
+    throw "Build data script did not define any output files: $data_filename"
   }
 
   # Remove previous generated files
@@ -135,10 +93,10 @@ foreach ($template in $templates) {
   if ($verbose -eq $True) {
     Write-Host "-- Removing previous generated files matching: $wildcard"
   }
-  Remove-Item -Path $wildcard -ErrorAction SilentlyContinue
+  Remove-Item -Path (Join-Path $template.DirectoryName $wildcard) -ErrorAction SilentlyContinue
 
   $template_content = (Get-Content -Path $template.FullName -Raw)
-  Start-Sleep -MilliSeconds $sleep_time
+  Start-Sleep -Milliseconds $sleep_time
 
   # Iterate each definition
   Write-Host "-- Generating $($build_data.Count) files"
@@ -147,11 +105,10 @@ foreach ($template in $templates) {
     $output_filename = Update-TagsInText -Text $output_filename_template -Tags $definition.Value
 
     Write-Host "-- Building: $($definition.Key) -> ${output_filename}"
-    (Set-Content -Path $output_filename -Value $template_content -NoNewline)
-    #[System.IO.File]::WriteAllText($output_filename, $template_content)
-    if ( -Not (Update-TagsInFile -FilePath $output_filename -Tags $definition.Value -Prefix $Tag_Prefix -Suffix $Tag_Suffix) ) {
-      Write-HostError "Failed to update tags in file: $output_filename"
-    }
+    $output_content = Update-TagsInText -Text $template_content -Tags $definition.Value -Prefix $Tag_Prefix -Suffix $Tag_Suffix
+    $output_path = Join-Path $template.DirectoryName $output_filename
+    [System.IO.File]::WriteAllText($output_path, $output_content, [System.Text.UTF8Encoding]::new($false))
+    Start-Sleep -Milliseconds $sleep_time
   }
 
   Pop-Location

@@ -235,6 +235,23 @@ jobs:
     - name: Restore NuGet packages
       run: dotnet restore
 
+    - name: Verify generated files
+      run: |
+        if ! git diff --quiet -- '*.generated.cs'; then
+          echo "Generated files are out of date:"
+          git --no-pager diff -- '*.generated.cs'
+          exit 1
+        fi
+        untracked=$(git ls-files --others --exclude-standard -- '*.generated.cs')
+        if [ -n "$untracked" ]; then
+          echo "Untracked generated files found:"
+          echo "$untracked"
+          exit 1
+        fi
+
+    - name: Verify C# formatting
+      run: dotnet format whitespace DNX.Extensions.sln --verify-no-changes --no-restore --verbosity quiet
+
     - name: Build
       run: dotnet build --no-restore --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version=${{ needs.setup.outputs.product_version }}" /p:"AssemblyVersion=${{ needs.setup.outputs.assembly_version }}"
 

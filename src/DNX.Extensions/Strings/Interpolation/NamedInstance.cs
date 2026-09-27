@@ -39,7 +39,7 @@ public class NamedInstance
     public NamedInstance(object instance, string name = null)
     {
         Instance = instance;
-        Name     = name;
+        Name = name;
     }
 
     /// <summary>
