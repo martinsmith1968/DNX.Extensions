@@ -75,4 +75,3 @@ public class MathsDateTimeExtensionsTests
         MathsDateTimeExtensions.GetUpperBound(min, max, allowEitherOrder).ShouldBe(expectedResult);
     }
 }
-

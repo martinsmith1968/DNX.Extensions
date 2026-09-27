@@ -75,4 +75,3 @@ public class MathsUInt64ExtensionsTests
         MathsUInt64Extensions.GetUpperBound(min, max, allowEitherOrder).ShouldBe(expectedResult);
     }
 }
-

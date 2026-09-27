@@ -1,4 +1,7 @@
+#define ConvertdecimalExtensions
+
 using System;
+using System.Globalization;
 using DNX.Extensions.Exceptions;
 
 //==============================================================================
@@ -22,10 +25,23 @@ public static class ConvertDecimalExtensions
     {
         decimal result;
 
+#if ConvertDateTimeExtensions
+        var flags = DateTimeStyles.AssumeUniversal;
+        if (text.TrimEnd().EndsWith("Z"))
+        {
+            flags |= DateTimeStyles.AdjustToUniversal;
+        }
+
+        if (!DateTime.TryParse(text, CultureInfo.CurrentCulture, flags, out result))
+        {
+            throw new ConversionException(text, "Unable to convert value to DateTime", typeof(DateTime));
+        }
+#else
         if (!decimal.TryParse(text, out result))
         {
             throw new ConversionException(text, "Unable to convert value to Decimal", typeof(decimal));
         }
+#endif
 
         return result;
     }

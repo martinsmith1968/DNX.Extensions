@@ -75,4 +75,3 @@ public class MathsByteExtensionsTests
         MathsByteExtensions.GetUpperBound(min, max, allowEitherOrder).ShouldBe(expectedResult);
     }
 }
-

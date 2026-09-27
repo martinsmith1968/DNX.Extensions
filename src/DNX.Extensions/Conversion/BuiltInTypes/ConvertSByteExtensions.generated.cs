@@ -1,4 +1,7 @@
+#define ConvertsbyteExtensions
+
 using System;
+using System.Globalization;
 using DNX.Extensions.Exceptions;
 
 //==============================================================================
@@ -22,10 +25,23 @@ public static class ConvertSByteExtensions
     {
         sbyte result;
 
+#if ConvertDateTimeExtensions
+        var flags = DateTimeStyles.AssumeUniversal;
+        if (text.TrimEnd().EndsWith("Z"))
+        {
+            flags |= DateTimeStyles.AdjustToUniversal;
+        }
+
+        if (!DateTime.TryParse(text, CultureInfo.CurrentCulture, flags, out result))
+        {
+            throw new ConversionException(text, "Unable to convert value to DateTime", typeof(DateTime));
+        }
+#else
         if (!sbyte.TryParse(text, out result))
         {
             throw new ConversionException(text, "Unable to convert value to SByte", typeof(sbyte));
         }
+#endif
 
         return result;
     }

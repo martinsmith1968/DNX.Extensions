@@ -1,4 +1,7 @@
+#define ConvertbyteExtensions
+
 using System;
+using System.Globalization;
 using DNX.Extensions.Exceptions;
 
 //==============================================================================
@@ -22,10 +25,23 @@ public static class ConvertByteExtensions
     {
         byte result;
 
+#if ConvertDateTimeExtensions
+        var flags = DateTimeStyles.AssumeUniversal;
+        if (text.TrimEnd().EndsWith("Z"))
+        {
+            flags |= DateTimeStyles.AdjustToUniversal;
+        }
+
+        if (!DateTime.TryParse(text, CultureInfo.CurrentCulture, flags, out result))
+        {
+            throw new ConversionException(text, "Unable to convert value to DateTime", typeof(DateTime));
+        }
+#else
         if (!byte.TryParse(text, out result))
         {
             throw new ConversionException(text, "Unable to convert value to Byte", typeof(byte));
         }
+#endif
 
         return result;
     }

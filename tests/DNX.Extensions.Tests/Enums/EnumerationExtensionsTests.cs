@@ -4,6 +4,8 @@ using DNX.Extensions.Exceptions;
 using Shouldly;
 using Xunit;
 
+// ReSharper disable RedundantExplicitParamsArrayCreation
+
 namespace DNX.Extensions.Tests.Enums;
 
 [AttributeUsage(AttributeTargets.Field)]
@@ -289,7 +291,6 @@ public class EnumerationExtensionsTests
     {
         // Arrange
         var flags = MyTestEnum2.Flag2 | MyTestEnum2.Flag4 | MyTestEnum2.Flag5;
-        var invalidFlags = 1 | 2 | 4;
 
         // Act
         var setFlags = flags.GetSetValues();
@@ -300,6 +301,23 @@ public class EnumerationExtensionsTests
         setFlags.Contains(MyTestEnum2.Flag2).ShouldBeTrue();
         setFlags.Contains(MyTestEnum2.Flag4).ShouldBeTrue();
         setFlags.Contains(MyTestEnum2.Flag5).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void GetSetValuesUnnamedTest()
+    {
+        // Arrange
+        var flags = MyTestEnum2.Flag2 | MyTestEnum2.Flag4 | (MyTestEnum2)4;
+
+        // Act
+        var setFlags = flags.GetSetValues();
+        //var invalidTypeSetValues = invalidFlags.GetSetValues();   // Does not compile as int is not an Enum
+
+        // Assert
+        setFlags.Length.ShouldBe(3);
+        setFlags.Contains(MyTestEnum2.Flag2).ShouldBeTrue();
+        setFlags.Contains(MyTestEnum2.Flag4).ShouldBeTrue();
+        setFlags.Contains((MyTestEnum2)4).ShouldBeTrue();
     }
 
     [Fact]

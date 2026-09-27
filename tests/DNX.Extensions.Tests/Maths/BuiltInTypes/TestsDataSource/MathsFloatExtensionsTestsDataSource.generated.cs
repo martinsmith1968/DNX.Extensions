@@ -15,6 +15,10 @@ public class MathsFloatExtensionsTestsDataSource
 {
 #if MathsExtensionsTestsDataSource_DateTime
     private static float CreateDataValue(int value)
+#elif MathsExtensionsTestsDataSource_DateTimeOffset
+    private static float CreateDataValue(int value)
+#elif MathsExtensionsTestsDataSource_TimeSpan
+    private static float CreateDataValue(int value)
 #elif MathsExtensionsTestsDataSource_Guid
     private static float CreateDataValue(int value)
 #else
@@ -25,6 +29,14 @@ public class MathsFloatExtensionsTestsDataSource
         var epoch = new DateTime(2017, 01, 01);
 
         return epoch.AddDays(Convert.ToInt32(value));
+#elif MathsExtensionsTestsDataSource_DateTimeOffset
+        var epoch = new DateTimeOffset(2017, 01, 01, 0, 0, 0, TimeSpan.Zero);
+
+        return epoch.AddDays(Convert.ToInt32(value));
+#elif MathsExtensionsTestsDataSource_TimeSpan
+        var epoch = TimeSpan.FromMinutes(value);
+
+        return epoch.Add(TimeSpan.FromMinutes(Convert.ToInt32(value)));
 #elif MathsExtensionsTestsDataSource_Guid
         return value.ToGuid();
 #else
@@ -345,4 +357,3 @@ public class MathsFloatExtensionsTestsDataSource
         };
     }
 }
-

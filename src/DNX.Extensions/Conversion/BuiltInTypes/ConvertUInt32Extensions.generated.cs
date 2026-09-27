@@ -1,4 +1,7 @@
+#define ConvertuintExtensions
+
 using System;
+using System.Globalization;
 using DNX.Extensions.Exceptions;
 
 //==============================================================================
@@ -22,10 +25,23 @@ public static class ConvertUInt32Extensions
     {
         uint result;
 
+#if ConvertDateTimeExtensions
+        var flags = DateTimeStyles.AssumeUniversal;
+        if (text.TrimEnd().EndsWith("Z"))
+        {
+            flags |= DateTimeStyles.AdjustToUniversal;
+        }
+
+        if (!DateTime.TryParse(text, CultureInfo.CurrentCulture, flags, out result))
+        {
+            throw new ConversionException(text, "Unable to convert value to DateTime", typeof(DateTime));
+        }
+#else
         if (!uint.TryParse(text, out result))
         {
             throw new ConversionException(text, "Unable to convert value to UInt32", typeof(uint));
         }
+#endif
 
         return result;
     }

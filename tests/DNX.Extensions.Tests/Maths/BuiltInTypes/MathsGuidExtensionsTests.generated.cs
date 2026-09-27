@@ -75,4 +75,3 @@ public class MathsGuidExtensionsTests
         MathsGuidExtensions.GetUpperBound(min, max, allowEitherOrder).ShouldBe(expectedResult);
     }
 }
-

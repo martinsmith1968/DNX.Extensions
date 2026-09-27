@@ -75,4 +75,3 @@ public class MathsDecimalExtensionsTests
         MathsDecimalExtensions.GetUpperBound(min, max, allowEitherOrder).ShouldBe(expectedResult);
     }
 }
-

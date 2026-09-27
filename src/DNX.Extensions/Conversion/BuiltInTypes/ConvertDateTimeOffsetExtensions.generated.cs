@@ -1,4 +1,7 @@
+#define ConvertDateTimeOffsetExtensions
+
 using System;
+using System.Globalization;
 using DNX.Extensions.Exceptions;
 
 //==============================================================================
@@ -22,10 +25,23 @@ public static class ConvertDateTimeOffsetExtensions
     {
         DateTimeOffset result;
 
+#if ConvertDateTimeExtensions
+        var flags = DateTimeStyles.AssumeUniversal;
+        if (text.TrimEnd().EndsWith("Z"))
+        {
+            flags |= DateTimeStyles.AdjustToUniversal;
+        }
+
+        if (!DateTime.TryParse(text, CultureInfo.CurrentCulture, flags, out result))
+        {
+            throw new ConversionException(text, "Unable to convert value to DateTime", typeof(DateTime));
+        }
+#else
         if (!DateTimeOffset.TryParse(text, out result))
         {
             throw new ConversionException(text, "Unable to convert value to DateTimeOffset", typeof(DateTimeOffset));
         }
+#endif
 
         return result;
     }

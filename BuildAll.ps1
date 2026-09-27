@@ -1,3 +1,5 @@
+$sleep_time = 100
+
 #----------------------------------------------------------------------------
 # Update-TagsInText
 #
@@ -35,9 +37,11 @@ function Update-TagsInFile{
         return $False
     }
 
-    $content = Get-Content -Path $FilePath -Raw
+    $content = (Get-Content -Path $FilePath -Raw)
+    Start-Sleep -MilliSeconds $sleep_time
     $content = Update-TagsInText -Text $content -Tags $Tags -Prefix $Prefix -Suffix $Suffix
-    Set-Content -Path $FilePath -Value $content -NoNewline
+    (Set-Content -Path $FilePath -Value $content -NoNewline)
+    #[System.IO.File]::WriteAllText($FilePath, $content)
 
     return $True
 }
@@ -52,9 +56,12 @@ function Write-HostBanner {
         [string]$Text
     )
 
-    Write-Host "--------------------------------------------------------------------------------------------------------------------------------------------" -ForegroundColor Yellow
-    Write-Host "-- $Text"                                                                                                                                     -ForegroundColor Yellow
-    Write-Host "--------------------------------------------------------------------------------------------------------------------------------------------" -ForegroundColor Yellow
+    $length = (($Text.Length + 4), 70 | Measure -Max).Maximum
+    $line = "-" * $length
+
+    Write-Host $line      -ForegroundColor Yellow
+    Write-Host "-- $Text" -ForegroundColor Yellow
+    Write-Host $line      -ForegroundColor Yellow
 }
 
 function Write-HostError {
@@ -79,6 +86,8 @@ $verbose           = $True
 $template_wildcard = "*.template"
 $data_filename     = "BuildData.ps1"
 
+Set-Location -Path $PSScriptRoot
+
 $templates = Get-Childitem -Path $PSScriptRoot -Include $template_wildcard -Recurse
 Write-Host "$($templates.Length) templates found"
 
@@ -87,8 +96,8 @@ Write-Host "$($templates.Length) templates found"
 
     $index = 0
     foreach ($template in $templates) {
-        ++$index
-        Write-Host "${index}: Template: $($template.FullName)"
+      ++$index
+      Write-Host "${index}: Template: $($template.FullName)"
     }
   }
 
@@ -101,6 +110,7 @@ foreach ($template in $templates) {
 
   if ( -Not (Test-Path -Path $data_filename)) {
     Write-HostWarning "Template Data file not found: $(Join-Path $template.DirectoryName $data_filename)"
+    Pop-Location
     continue
   }
 
@@ -116,6 +126,7 @@ foreach ($template in $templates) {
   # Validate variables were set
   if ($output_filename_template -eq "") {
     Write-HostError "Build Data script did not set the output filename template: $data_filename"
+    Pop-Location
     continue
   }
 
@@ -126,7 +137,8 @@ foreach ($template in $templates) {
   }
   Remove-Item -Path $wildcard -ErrorAction SilentlyContinue
 
-  $template_content = Get-Content -Path $template.FullName -Raw
+  $template_content = (Get-Content -Path $template.FullName -Raw)
+  Start-Sleep -MilliSeconds $sleep_time
 
   # Iterate each definition
   Write-Host "-- Generating $($build_data.Count) files"
@@ -135,7 +147,8 @@ foreach ($template in $templates) {
     $output_filename = Update-TagsInText -Text $output_filename_template -Tags $definition.Value
 
     Write-Host "-- Building: $($definition.Key) -> ${output_filename}"
-    Set-Content -Path $output_filename -Value $template_content -NoNewline
+    (Set-Content -Path $output_filename -Value $template_content -NoNewline)
+    #[System.IO.File]::WriteAllText($output_filename, $template_content)
     if ( -Not (Update-TagsInFile -FilePath $output_filename -Tags $definition.Value -Prefix $Tag_Prefix -Suffix $Tag_Suffix) ) {
       Write-HostError "Failed to update tags in file: $output_filename"
     }

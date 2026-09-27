@@ -1,4 +1,7 @@
+#define ConvertTimeSpanExtensions
+
 using System;
+using System.Globalization;
 using DNX.Extensions.Exceptions;
 
 //==============================================================================
@@ -22,10 +25,23 @@ public static class ConvertTimeSpanExtensions
     {
         TimeSpan result;
 
+#if ConvertDateTimeExtensions
+        var flags = DateTimeStyles.AssumeUniversal;
+        if (text.TrimEnd().EndsWith("Z"))
+        {
+            flags |= DateTimeStyles.AdjustToUniversal;
+        }
+
+        if (!DateTime.TryParse(text, CultureInfo.CurrentCulture, flags, out result))
+        {
+            throw new ConversionException(text, "Unable to convert value to DateTime", typeof(DateTime));
+        }
+#else
         if (!TimeSpan.TryParse(text, out result))
         {
             throw new ConversionException(text, "Unable to convert value to TimeSpan", typeof(TimeSpan));
         }
+#endif
 
         return result;
     }

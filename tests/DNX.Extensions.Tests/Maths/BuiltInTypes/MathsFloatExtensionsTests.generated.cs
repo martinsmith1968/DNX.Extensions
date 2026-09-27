@@ -75,4 +75,3 @@ public class MathsFloatExtensionsTests
         MathsFloatExtensions.GetUpperBound(min, max, allowEitherOrder).ShouldBe(expectedResult);
     }
 }
-
