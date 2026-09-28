@@ -3,9 +3,9 @@ run-name: CIBuild_${{ github.event_name }}_${{ github.ref_name }}_${{ github.run
 
 env:
   PRODUCT_NAME: DNX.Extensions
-  PRODUCT_VERSION: 1.4
+  PRODUCT_VERSION: 2.0
   PRIMARY_BRANCH_NAME: main
-  DOTNET_VERSION: 8.0.x
+  DOTNET_VERSION: 10.0.x
   NUGET_VERSION: 6.x
   BUILD_CONFIG: Release
   BUILD_PLATFORM: Any CPU
