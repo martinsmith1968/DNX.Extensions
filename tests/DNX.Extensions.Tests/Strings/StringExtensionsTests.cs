@@ -4,8 +4,8 @@ using DNX.Extensions.Strings;
 using Shouldly;
 using Xunit;
 
-#pragma warning disable CA1861 // Arrays in InlineData
 #pragma warning disable xUnit1025   // Duplicate inline test cases
+#pragma warning disable xUnit1045   // Encoding might not be serializable
 
 namespace DNX.Extensions.Tests.Strings;
 
@@ -1223,7 +1223,7 @@ public class StringExtensionsTests
 
         public static TheoryData<string, Encoding, byte[]> GetBytes_with_Encoding_Data()
         {
-            var str1 = new string(new[] { (char)100, (char)200, (char)300 });
+            var str1 = new string([ (char)100, (char)200, (char)300 ]);
 
             return new TheoryData<string, Encoding, byte[]>
             {

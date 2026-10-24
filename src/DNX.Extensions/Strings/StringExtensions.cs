@@ -966,10 +966,7 @@ public static class StringExtensions
             return string.Empty;
         }
 
-        if (ellipsis == null)
-        {
-            ellipsis = string.Empty;
-        }
+        ellipsis ??= string.Empty;
 
         if (input.Length <= maxLength)
         {
@@ -1050,7 +1047,7 @@ public static class StringExtensions
         var words = input
             .Replace("_", " ")
             .Replace("-", " ")
-            .Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            .Split([' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
         if (words.Length == 0)
         {
@@ -1215,7 +1212,7 @@ public static class StringExtensions
             return email;
         }
 
-        var parts = email.Split(new[] { '@' }, 2);
+        var parts = email.Split(['@'], 2);
         var localPart = parts[0];
         var domainPart = parts[1];
 
