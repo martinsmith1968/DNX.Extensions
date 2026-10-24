@@ -826,7 +826,6 @@ public class StringExtensionsTests
         [InlineData("Line 1/Line 2//Line 4", StringSplitOptions.None, StringComparison.CurrentCulture, "Line 1/Line 2//Line 4")]
         [InlineData("Line 1/Line 2//Line 4", StringSplitOptions.RemoveEmptyEntries, StringComparison.CurrentCulture, "Line 1/Line 2/Line 4")]
         [InlineData("Line 1///Line 2//Line 4/", StringSplitOptions.None, StringComparison.CurrentCulture, "Line 1///Line 2//Line 4")]
-        [InlineData("Line 1/Line 2//Line 4", StringSplitOptions.RemoveEmptyEntries, StringComparison.CurrentCulture, "Line 1/Line 2/Line 4")]
         public void Test_SplitByText_ComplexDelimiter(string text, StringSplitOptions options, StringComparison comparison, string expectedResult)
         {
             var delimiters = Environment.NewLine;
