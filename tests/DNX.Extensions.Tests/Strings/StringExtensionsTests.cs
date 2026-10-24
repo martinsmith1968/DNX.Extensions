@@ -1152,6 +1152,9 @@ public class StringExtensionsTests
         [InlineData("", 0, "")]
         [InlineData("", 5, "")]
         [InlineData(null, 2, null)]
+        [InlineData("Some text", -5, " text")]
+        [InlineData("Some text", -9, "Some text")]
+        [InlineData("Some text", -20, "Some text")]
         public void Test_Left(string text, int length, string expectedResult)
         {
             var result = text.Left(length);
@@ -1171,6 +1174,9 @@ public class StringExtensionsTests
         [InlineData("", 0, "")]
         [InlineData("", 5, "")]
         [InlineData(null, 2, null)]
+        [InlineData("Some text", -5, "Some ")]
+        [InlineData("Some text", -9, "Some text")]
+        [InlineData("Some text", -20, "Some text")]
         public void Test_Right(string text, int length, string expectedResult)
         {
             var result = text.Right(length);
