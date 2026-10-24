@@ -6,6 +6,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Nullable>disable</Nullable>
     <IsPackable>true</IsPackable>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -16,6 +20,8 @@
     <Trademark>DNX.Extensions</Trademark>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/martinsmith1968/DNX.Extensions</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/martinsmith1968/DNX.Extensions</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageId>DNX.Extensions</PackageId>
     <PackageTags>DNX helpers extensions string array linq</PackageTags>
     <PackageIcon>favicon-32x32.png</PackageIcon>
@@ -42,6 +48,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
