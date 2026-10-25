@@ -2,7 +2,6 @@ using DNX.Extensions.IO;
 using DNX.Extensions.Strings;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
 
 // ReSharper disable StringLiteralTypo
 
@@ -224,9 +223,11 @@ public class DirectoryInfoExtensionsTests : IDisposable
 
     [Theory]
     [MemberData(nameof(GetRelativePath_Data))]
-    public void GetRelativePath_can_extract_relative_path_correctly(string dirName, string relativeToDirName, string expected)
+    public void GetRelativePath_can_extract_relative_path_correctly(string dirName, string relativeToDirName,
+        string expected)
     {
-        _outputHelper.WriteLine($"{Environment.OSVersion.Platform} - Checking DirName: {dirName} -> {relativeToDirName} = {expected}");
+        _outputHelper.WriteLine(
+            $"{Environment.OSVersion.Platform} - Checking DirName: {dirName} -> {relativeToDirName} = {expected}");
 
         var dirInfo = dirName == null ? null : new DirectoryInfo(dirName);
         var relativeToDirInfo = relativeToDirName == null ? null : new DirectoryInfo(relativeToDirName);
@@ -242,26 +243,65 @@ public class DirectoryInfoExtensionsTests : IDisposable
         var guid2 = Guid.NewGuid().ToString();
         var guid3 = Guid.NewGuid().ToString();
 
-        var data = new TheoryData<string, string, string>()
+        var data = new TheoryData<string, string, string>
         {
-            { Path.Combine(Path.GetTempPath(), guid1), null, null },
-            { null, Path.Combine(Path.GetTempPath(), guid1), null },
-            { Path.Combine(Path.GetTempPath(), guid1), Path.Combine(Path.GetTempPath(), guid1), "" },
-            { Path.Combine(Path.GetTempPath(), guid1), Path.Combine(Path.GetTempPath(), "abcdefg"), Path.Join("..", guid1) },
-            { Path.Combine(Path.GetTempPath(), guid2), Path.Combine(Path.GetTempPath(), guid3), Path.Join("..", guid2) },
-            { Path.Combine(Path.GetTempPath(), "abcdefg"), Path.Combine(Path.GetTempPath(), "abcdefg"), "" },
-            { Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"), Path.Combine(Path.GetTempPath(), "abcdefg"), "dir3" },
-            { Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"), Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"), "" },
-            { Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine(Path.GetTempPath(), "folder2"), Path.Combine("..", "folder1") },
+            {
+                Path.Combine(Path.GetTempPath(), guid1),
+                null,
+                null
+            },
+            {
+                null,
+                Path.Combine(Path.GetTempPath(), guid1),
+                null
+            },
+            {
+                Path.Combine(Path.GetTempPath(), guid1),
+                Path.Combine(Path.GetTempPath(), guid1),
+                ""
+            },
+            {
+                Path.Combine(Path.GetTempPath(), guid1),
+                Path.Combine(Path.GetTempPath(), "abcdefg"),
+                Path.Join("..", guid1)
+            },
+            {
+                Path.Combine(Path.GetTempPath(), guid2),
+                Path.Combine(Path.GetTempPath(), guid3),
+                Path.Join("..", guid2)
+            },
+            {
+                Path.Combine(Path.GetTempPath(), "abcdefg"),
+                Path.Combine(Path.GetTempPath(), "abcdefg"),
+                ""
+            },
+            {
+                Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"),
+                Path.Combine(Path.GetTempPath(), "abcdefg"),
+                "dir3"
+            },
+            {
+                Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"),
+                Path.Combine(Path.GetTempPath(), "abcdefg", "dir3"),
+                ""
+            },
+            {
+                Path.Combine(Path.GetTempPath(), "folder1"),
+                Path.Combine(Path.GetTempPath(), "folder2"),
+                Path.Combine("..", "folder1")
+            }
         };
 
         if (Configuration.EnvironmentConfig.IsWindowsStyleFileSystem)
         {
-            data.Add(Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("D:", "folder2"), Path.Combine(Path.GetTempPath(), "folder1"));
+            data.Add(Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("D:", "folder2"),
+                Path.Combine(Path.GetTempPath(), "folder1"));
         }
+
         if (Configuration.EnvironmentConfig.IsLinuxStyleFileSystem)
         {
-            data.Add(Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("/etc", "folder2"), Path.Combine(Path.GetTempPath(), "folder1").EnsureStartsWith(Path.Combine("..", "..")));
+            data.Add(Path.Combine(Path.GetTempPath(), "folder1"), Path.Combine("/etc", "folder2"),
+                Path.Combine(Path.GetTempPath(), "folder1").EnsureStartsWith(Path.Combine("..", "..")));
         }
 
         return data;
