@@ -20,7 +20,7 @@ public class ThreadHelperTests
             completed.Set();
         }, 42);
 
-        completed.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+        completed.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ShouldBeTrue();
         thread.Join(TimeSpan.FromSeconds(5)).ShouldBeTrue();
         result.ShouldBe(42);
         isThreadPoolThread.ShouldBeFalse();
@@ -33,7 +33,7 @@ public class ThreadHelperTests
 
         var thread = ThreadHelper.Start(() => completed.Set());
 
-        completed.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+        completed.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ShouldBeTrue();
         thread.Join(TimeSpan.FromSeconds(5)).ShouldBeTrue();
     }
 
@@ -51,7 +51,7 @@ public class ThreadHelperTests
             completed.Set();
         }, 24).ShouldBeTrue();
 
-        completed.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+        completed.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ShouldBeTrue();
         result.ShouldBe(24);
         isThreadPoolThread.ShouldBeTrue();
     }
@@ -63,7 +63,7 @@ public class ThreadHelperTests
 
         ThreadHelper.StartOnThreadPool(() => completed.Set()).ShouldBeTrue();
 
-        completed.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+        completed.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ShouldBeTrue();
     }
 
     [Fact]

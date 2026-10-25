@@ -3,6 +3,8 @@ using DNX.Extensions.Threading;
 using Shouldly;
 using Xunit;
 
+#pragma warning disable IDE0290 // No need for Primary Constructor here
+
 namespace DNX.Extensions.Tests.Threading;
 
 public class ProducerConsumerQueueTests
@@ -32,7 +34,7 @@ public class ProducerConsumerQueueTests
             _handle = handle;
         }
 
-        public string DescribeException(Exception exception) => Describe(exception);
+        public static string DescribeException(Exception exception) => Describe(exception);
 
         protected override void ProcessItem(DisposableItem item) => _process(item);
 
@@ -80,16 +82,15 @@ public class ProducerConsumerQueueTests
 
         queue.IsTimed.ShouldBeFalse();
         queue.IsExecuting.ShouldBeFalse();
-        queue.AddItems(new[]
-        {
+        queue.AddItems([
             new DisposableItem(1),
             null,
             new DisposableItem(2),
             new DisposableItem(3)
-        });
+        ]);
 
-        completed.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
-        values.OrderBy(value => value).ShouldBe(new[] { 1, 2, 3 });
+        completed.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ShouldBeTrue();
+        values.OrderBy(value => value).ShouldBe([1, 2, 3]);
         queue.Items.ShouldBeEmpty();
         queue.ExecutingCount.ShouldBe(0);
     }
@@ -105,8 +106,8 @@ public class ProducerConsumerQueueTests
             comparer: Comparer<DisposableItem>.Create((left, right) => right.Value.CompareTo(left.Value)));
 
         queue.IsTimed.ShouldBeTrue();
-        queue.AddItems(new[] { new DisposableItem(1), new DisposableItem(2) });
-        completed.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+        queue.AddItems([new DisposableItem(1), new DisposableItem(2)]);
+        completed.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ShouldBeTrue();
     }
 
     [Fact]
@@ -143,7 +144,7 @@ public class ProducerConsumerQueueTests
 
         queue.AddItem(item);
 
-        completed.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+        completed.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ShouldBeTrue();
         SpinWait.SpinUntil(() => item.Disposed, TimeSpan.FromSeconds(5)).ShouldBeTrue();
         item.Disposed.ShouldBeTrue();
     }
@@ -166,7 +167,7 @@ public class ProducerConsumerQueueTests
         queue.Timeout.ShouldBe(TimeSpan.FromMilliseconds(10));
         queue.AddItem(item);
 
-        started.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+        started.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ShouldBeTrue();
         queue.IsExecuting.ShouldBeTrue();
         queue.ExecutingCount.ShouldBe(1);
         queue.ExecutingItems.ShouldContain(item);
@@ -186,7 +187,7 @@ public class ProducerConsumerQueueTests
 
         queue.AddItem(item);
 
-        completed.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+        completed.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ShouldBeTrue();
         added.ShouldContain(1);
     }
 
@@ -225,7 +226,7 @@ public class ProducerConsumerQueueTests
 
         allow = true;
         queue.AddItem(new DisposableItem(2));
-        processed.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+        processed.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ShouldBeTrue();
     }
 
     [Fact]
@@ -242,9 +243,9 @@ public class ProducerConsumerQueueTests
 
         queue.AddItem(new DisposableItem(1));
 
-        completed.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
-        queue.DescribeException(new InvalidOperationException("message")).ShouldContain("message");
-        queue.DescribeException(null).ShouldBeEmpty();
+        completed.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ShouldBeTrue();
+        TestQueue.DescribeException(new InvalidOperationException("message")).ShouldContain("message");
+        TestQueue.DescribeException(null).ShouldBeEmpty();
     }
 
     [Fact]
@@ -264,9 +265,9 @@ public class ProducerConsumerQueueTests
                 secondItemHandled.Set();
             });
 
-        queue.AddItems(new[] { new DisposableItem(1), new DisposableItem(2) });
+        queue.AddItems([new DisposableItem(1), new DisposableItem(2)]);
 
-        secondItemHandled.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+        secondItemHandled.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ShouldBeTrue();
         handledItems.ShouldBe(2);
     }
 }
