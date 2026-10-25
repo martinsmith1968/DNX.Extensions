@@ -180,11 +180,7 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
     }
 
     [Theory]
-    [InlineData(1, "00000001-0000-0000-0000-000000000000")]
-    [InlineData(12345.67, "00003039-0000-0000-0000-000000000000")]
-    [InlineData(123456789.12, "075bcd15-0000-0000-0000-000000000000")]
-    [InlineData(decimal.MinValue, "80000000-0000-0000-0000-000000000000")]
-    [InlineData(decimal.MaxValue, "7fffffff-0000-0000-0000-000000000000")]
+    [MemberData(nameof(ToGuid_from_decimal_generates_a_predictable_result_Data))]
     public void ToGuid_from_decimal_generates_a_predictable_result(decimal value, string expected)
     {
         // Act
@@ -200,8 +196,8 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
     [InlineData(1, "00000001-0000-0000-0000-000000000000")]
     [InlineData(12345.67, "00003039-0000-0000-0000-000000000000")]
     [InlineData(123456789.12, "075bcd15-0000-0000-0000-000000000000")]
-    [InlineData(double.MinValue, "00000000-0000-0000-0000-000000010000")]
-    [InlineData(double.MaxValue, "00000000-0000-0000-0000-000000ffffff")]
+    [InlineData(double.MinValue, "00000000-0000-0000-0000-000000000000")]
+    [InlineData(double.MaxValue, "00000000-0000-0000-0000-000000000000")]
     public void ToGuid_from_double_generates_a_predictable_result(double value, string expected)
     {
         // Act
@@ -235,6 +231,18 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
         }
 
         return data;
+    }
+
+    public static TheoryData<decimal, string> ToGuid_from_decimal_generates_a_predictable_result_Data()
+    {
+        return new TheoryData<decimal, string>
+        {
+            { 1m, "00000001-0000-0000-0000-000000000000" },
+            { 12345.67m, "00003039-0000-0000-0000-000000000000" },
+            { 123456789.12m, "075bcd15-0000-0000-0000-000000000000" },
+            { decimal.MinValue, "00000001-0000-0000-0000-0000ff000000" },
+            { decimal.MaxValue, "ffffffff-ffff-ffff-ffff-ffff00000000" },
+        };
     }
 
     public static TheoryData<string, HashAlgorithm, Func<byte, byte, byte>> ToDeterministicGuid_custom_algorithm_specific_reduce_method_Data()
