@@ -1,10 +1,8 @@
-using System;
 using System.Reflection;
 using System.Resources;
 using DNX.Extensions.Assemblies;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace DNX.Extensions.Tests.Assemblies;
 

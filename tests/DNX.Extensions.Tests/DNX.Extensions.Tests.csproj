@@ -13,16 +13,17 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <IsPackable>false</IsPackable>
+    <!-- Required for IDE0005 (unnecessary using directives) to be reported during build -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- CS1591: missing XML comment for publicly visible type or member -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="TestResults\**" />
     <EmbeddedResource Remove="TestResults\**" />
     <None Remove="TestResults\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="TestData\SampleData.json" />
   </ItemGroup>
 
   <ItemGroup>

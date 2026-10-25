@@ -1,4 +1,3 @@
-using System;
 using DNX.Extensions.Threading.Mutexes;
 using Shouldly;
 using Xunit;

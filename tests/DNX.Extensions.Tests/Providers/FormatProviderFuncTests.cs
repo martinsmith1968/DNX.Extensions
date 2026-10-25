@@ -1,4 +1,3 @@
-using System;
 using DNX.Extensions.Providers;
 using Shouldly;
 using Xunit;

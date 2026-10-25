@@ -1,4 +1,3 @@
-using System;
 using DNX.Extensions.Exceptions;
 using Shouldly;
 using Xunit;

@@ -1,5 +1,3 @@
-using System;
-using System.Threading;
 using DNX.Extensions.Threading;
 using Shouldly;
 using Xunit;

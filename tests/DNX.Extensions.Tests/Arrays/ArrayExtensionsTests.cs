@@ -1,11 +1,8 @@
 using DNX.Extensions.Arrays;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
 
 // ReSharper disable UseUtf8StringLiteral
-
-#pragma warning disable IDE0290
 
 namespace DNX.Extensions.Tests.Arrays;
 
