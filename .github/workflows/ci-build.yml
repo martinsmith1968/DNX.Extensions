@@ -210,10 +210,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Install .NET SDK
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -259,7 +259,7 @@ jobs:
       run: dotnet test --no-restore --no-build --configuration ${{ env.BUILD_CONFIG }} --verbosity normal --collect:"XPlat Code Coverage" --logger:trx;LogFileName=TestOutput.trx
 
     - name: Test Results Summary
-      uses: bibipkins/dotnet-test-reporter@v1.5.4
+      uses: bibipkins/dotnet-test-reporter@v1.6.4
       if: success() || failure()
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -285,7 +285,7 @@ jobs:
       run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
 
     - name: Pull Request - Add Coverage Comment
-      uses: marocchino/sticky-pull-request-comment@v2
+      uses: marocchino/sticky-pull-request-comment@v3
       if: github.event_name == 'pull_request'
       with:
         recreate: true
@@ -295,14 +295,14 @@ jobs:
       run: dotnet pack --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"PackageVersion=${{ needs.setup.outputs.package_version }}" --no-restore --output "${{ env.NUGET_OUTPUT_FOLDER }}"
 
     - name: Upload Build Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: build_output
         path: "**/${{ env.PRODUCT_NAME }}/bin/${{ env.BUILD_CONFIG }}/**"
         if-no-files-found: error
 
     - name: Upload NuGet Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: nuget_output
         path: "${{ env.NUGET_OUTPUT_FOLDER }}/**"
@@ -346,15 +346,15 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v8
       with:
         name: nuget_output
         path: nuget
 
     - name: Build Changelog
-      uses: mikepenz/release-changelog-builder-action@v5
+      uses: mikepenz/release-changelog-builder-action@v6
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -384,10 +384,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Install .NET SDK
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -413,13 +413,13 @@ jobs:
 
     steps:
     - name: Install NuGet
-      uses: NuGet/setup-nuget@v2
+      uses: NuGet/setup-nuget@v4
       with:
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
         nuget-version: ${{ env.NUGET_VERSION }}
 
     - name: Download NuGet Output
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: nuget_output
         path: ${{ env.NUGET_OUTPUT_FOLDER }}
