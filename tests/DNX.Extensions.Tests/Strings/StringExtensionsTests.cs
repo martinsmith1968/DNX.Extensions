@@ -1236,4 +1236,177 @@ public class StringExtensionsTests
             };
         }
     }
+
+    public class Truncate
+    {
+        [Theory]
+        [InlineData(null, 5, "...", null)]
+        [InlineData("", 5, "...", "")]
+        [InlineData("Hello", 0, "...", "")]
+        [InlineData("Hello", -1, "...", "")]
+        [InlineData("Hello", 5, "...", "Hello")]
+        [InlineData("Hello", 20, "...", "Hello")]
+        [InlineData("Hello world", 8, "...", "Hello...")]
+        [InlineData("Hello world", 7, "---", "Hell---")]
+        [InlineData("Hello world", 2, "...", "..")]
+        [InlineData("Hello world", 5, null, "Hello")]
+        public void Test_Truncate(string input, int maxLength, string ellipsis, string expectedResult)
+        {
+            var result = input.Truncate(maxLength, ellipsis);
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class CountOccurrences
+    {
+        [Theory]
+        [InlineData(null, "ab", StringComparison.Ordinal, 0)]
+        [InlineData("", "ab", StringComparison.Ordinal, 0)]
+        [InlineData("ababab", null, StringComparison.Ordinal, 0)]
+        [InlineData("ababab", "", StringComparison.Ordinal, 0)]
+        [InlineData("ababab", "ab", StringComparison.Ordinal, 3)]
+        [InlineData("aaaa", "aa", StringComparison.Ordinal, 2)]
+        [InlineData("abc", "xyz", StringComparison.Ordinal, 0)]
+        [InlineData("ABAB", "ab", StringComparison.Ordinal, 0)]
+        [InlineData("ABAB", "ab", StringComparison.OrdinalIgnoreCase, 2)]
+        public void Test_CountOccurrences_text(string input, string value, StringComparison comparison, int expectedResult)
+        {
+            var result = input.CountOccurrences(value, comparison);
+
+            result.ShouldBe(expectedResult);
+        }
+
+        [Theory]
+        [InlineData(null, 'a', 0)]
+        [InlineData("", 'a', 0)]
+        [InlineData("banana", 'a', 3)]
+        [InlineData("banana", 'z', 0)]
+        public void Test_CountOccurrences_char(string input, char value, int expectedResult)
+        {
+            var result = input.CountOccurrences(value);
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class ToPascalCase
+    {
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData(" ", " ")]
+        [InlineData("hello", "Hello")]
+        [InlineData("hello world", "HelloWorld")]
+        [InlineData("hello_world", "HelloWorld")]
+        [InlineData("hello-world", "HelloWorld")]
+        [InlineData("HELLO WORLD", "HelloWorld")]
+        [InlineData("hello   world", "HelloWorld")]
+        [InlineData("hello2world", "Hello2world")]
+        public void Test_ToPascalCase(string input, string expectedResult)
+        {
+            var result = input.ToPascalCase();
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class ToCamelCase
+    {
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData(" ", " ")]
+        [InlineData("hello", "hello")]
+        [InlineData("Hello World", "helloWorld")]
+        [InlineData("hello_world", "helloWorld")]
+        [InlineData("A", "a")]
+        public void Test_ToCamelCase(string input, string expectedResult)
+        {
+            var result = input.ToCamelCase();
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class ToSnakeCase
+    {
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData(" ", " ")]
+        [InlineData("HelloWorld", "hello_world")]
+        [InlineData("helloWorld", "hello_world")]
+        [InlineData("Hello World", "hello_world")]
+        [InlineData("hello-world", "hello_world")]
+        [InlineData("hello.world", "hello_world")]
+        [InlineData("HELLO", "hello")]
+        [InlineData("hello__world", "hello_world")]
+        [InlineData("_hello_", "hello")]
+        [InlineData("Item1Value", "item1_value")]
+        [InlineData("hello!world", "helloworld")]
+        public void Test_ToSnakeCase(string input, string expectedResult)
+        {
+            var result = input.ToSnakeCase();
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class ToKebabCase
+    {
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData(" ", " ")]
+        [InlineData("HelloWorld", "hello-world")]
+        [InlineData("hello_world", "hello-world")]
+        [InlineData("Hello World", "hello-world")]
+        public void Test_ToKebabCase(string input, string expectedResult)
+        {
+            var result = input.ToKebabCase();
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class Mask
+    {
+        [Theory]
+        [InlineData(null, 0, 0, '*', null)]
+        [InlineData("", 0, 0, '*', "")]
+        [InlineData("1234567890", 0, 0, '*', "**********")]
+        [InlineData("abcdef", 1, 1, '*', "a****f")]
+        [InlineData("abcdef", 3, 0, '*', "abc***")]
+        [InlineData("abcdef", 0, 3, '*', "***def")]
+        [InlineData("abcdef", 1, 1, '#', "a####f")]
+        [InlineData("abcdef", -1, -1, '*', "******")]
+        [InlineData("abcd", 2, 2, '*', "abcd")]
+        [InlineData("abcd", 3, 3, '*', "abcd")]
+        public void Test_Mask(string input, int visibleStart, int visibleEnd, char maskChar, string expectedResult)
+        {
+            var result = input.Mask(visibleStart, visibleEnd, maskChar);
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class MaskEmail
+    {
+        [Theory]
+        [InlineData(null, '*', null)]
+        [InlineData("", '*', "")]
+        [InlineData("notanemail", '*', "notanemail")]
+        [InlineData("john@example.com", '*', "j***@example.com")]
+        [InlineData("j@example.com", '*', "j@example.com")]
+        [InlineData("ab@example.com", '*', "a*@example.com")]
+        [InlineData("john@example.com", '#', "j###@example.com")]
+        [InlineData("@example.com", '*', "@example.com")]
+        public void Test_MaskEmail(string email, char maskChar, string expectedResult)
+        {
+            var result = email.MaskEmail(maskChar);
+
+            result.ShouldBe(expectedResult);
+        }
+    }
 }
