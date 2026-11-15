@@ -612,6 +612,11 @@ public static class StringExtensions
     /// <remarks>Also available as an extension method</remarks>
     public static IEnumerable<string> SplitText(this string text, string delimiters, StringSplitOptions options = StringSplitOptions.None, SplitDelimiterType delimiterType = SplitDelimiterType.Any)
     {
+        if (text == null)
+        {
+            return [];
+        }
+
         return delimiterType switch
         {
             SplitDelimiterType.Any => text.Split(delimiters.ToCharArray(), options),
@@ -633,6 +638,11 @@ public static class StringExtensions
     public static IEnumerable<string> SplitByText(this string text, string delimiterText, StringSplitOptions options = StringSplitOptions.None, StringComparison comparison = StringComparison.CurrentCulture)
     {
         var elements = new List<string>();
+
+        if (text == null)
+        {
+            return elements;
+        }
 
         var tempText = text;
 
@@ -688,7 +698,7 @@ public static class StringExtensions
     /// <remarks>Also available as an extension method</remarks>
     public static string CoalesceNull(this IList<string> strings)
     {
-        var value = strings.FirstOrDefault(s => s != null);
+        var value = strings?.FirstOrDefault(s => s != null);
 
         return value;
     }
@@ -798,6 +808,11 @@ public static class StringExtensions
     /// <returns><c>true</c> if the specified culture information is numeric; otherwise, <c>false</c>.</returns>
     public static bool IsValidNumber(this string text)
     {
+        if (string.IsNullOrEmpty(text))
+        {
+            return false;
+        }
+
         var pattern = BuildNumberValidationRegexForCulture(CultureInfo.DefaultThreadCurrentCulture);
 
         return Regex.IsMatch(text, pattern);
@@ -811,6 +826,11 @@ public static class StringExtensions
     /// <returns><c>true</c> if the specified culture information is numeric; otherwise, <c>false</c>.</returns>
     public static bool IsValidNumber(this string text, CultureInfo cultureInfo)
     {
+        if (string.IsNullOrEmpty(text))
+        {
+            return false;
+        }
+
         var pattern = BuildNumberValidationRegexForCulture(cultureInfo);
 
         return Regex.IsMatch(text, pattern);
@@ -922,6 +942,11 @@ public static class StringExtensions
     /// <returns>Input as Hexadecimal</returns>
     public static string ToHexString(this string input, string format = "X2")
     {
+        if (string.IsNullOrEmpty(input))
+        {
+            return input;
+        }
+
         return string.Join("", input.Select(c => ((int)c).ToString(format)));
     }
 
@@ -942,6 +967,11 @@ public static class StringExtensions
     /// <returns></returns>
     public static byte[] GetBytes(this string input, Encoding encoding)
     {
+        if (input == null)
+        {
+            return null;
+        }
+
         encoding ??= Encoding.UTF8;
 
         return encoding.GetBytes(input);
@@ -1057,11 +1087,6 @@ public static class StringExtensions
         var sb = new StringBuilder(input.Length);
         foreach (var word in words)
         {
-            if (word.Length == 0)
-            {
-                continue;
-            }
-
             sb.Append(char.ToUpperInvariant(word[0]));
             if (word.Length > 1)
             {
@@ -1085,10 +1110,6 @@ public static class StringExtensions
         }
 
         var pascal = input.ToPascalCase();
-        if (string.IsNullOrEmpty(pascal))
-        {
-            return pascal;
-        }
 
         return char.ToLowerInvariant(pascal[0]) + pascal.Substring(1);
     }
