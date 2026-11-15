@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using DNX.Extensions.Validation.BuiltInTypes;
 
 namespace DNX.Extensions.Threading;
 
@@ -505,10 +506,7 @@ public abstract class ProducerConsumerQueue<T> : IDisposable, IProducerConsumerQ
     /// </remarks>
     public void AddItem(T item)
     {
-        if (item == null)
-        {
-            throw new NullReferenceException("Must add a valid item");
-        }
+        Guard.IsNotNull(() => item);
 
         EnqueueItem(item);
     }

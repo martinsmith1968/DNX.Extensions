@@ -127,7 +127,7 @@ public class ProducerConsumerQueueTests
     {
         using var queue = new ProducerConsumerQueueAction<DisposableItem>(_ => { });
 
-        Should.Throw<NullReferenceException>(() => queue.AddItem(null));
+        Should.Throw<ArgumentNullException>(() => queue.AddItem(null));
         queue.AddItems(null);
         queue.Clear();
         queue.Items.ShouldBeEmpty();

@@ -45,6 +45,17 @@ public class GuardTests
     }
 
     [Fact]
+    public void IsNotNull_with_precomputed_value_throws_when_null()
+    {
+        var value = new object();
+
+        Guard.IsNotNull(() => value, value);
+
+        var ex = Should.Throw<ArgumentNullException>(() => Guard.IsNotNull(() => (object)null, (object)null));
+        ex.Message.ShouldContain("must not be null");
+    }
+
+    [Fact]
     public void IsNotNullOrEmpty_throws_when_string_is_null_or_empty()
     {
         var value = "hello";

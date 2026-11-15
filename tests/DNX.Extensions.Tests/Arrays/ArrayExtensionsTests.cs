@@ -57,6 +57,16 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
         }
     }
 
+    [Fact]
+    public void Test_PadLeft_null_array()
+    {
+        string[] values = null;
+
+        var ex = Should.Throw<ArgumentNullException>(() => values.PadLeft(4));
+
+        ex.ParamName.ShouldBe("input");
+    }
+
     public class ShiftLeft
     {
         [Fact]
@@ -171,6 +181,16 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
 
     public class Reduce
     {
+        [Fact]
+        public void Reduce_null_array()
+        {
+            byte[] input = null;
+
+            var ex = Should.Throw<ArgumentNullException>(() => input.Reduce(4, (a, b) => (byte)(a + b)));
+
+            ex.ParamName.ShouldBe("inputArray");
+        }
+
         [Theory]
         [MemberData(nameof(Reduce_Data_byte))]
         public void Reduce_can_produce_an_appropriate_output_for_bytes(byte[] input, int targetSize, Func<byte, byte, byte> method, byte[] expectedResult)

@@ -139,7 +139,7 @@ public class DictionaryExtensionsTests
         );
 
         // Assert
-        ex.ParamName.ShouldBe("keyName");
+        ex.ParamName.ShouldBe("key");
     }
 
     [Theory]
@@ -185,7 +185,7 @@ public class DictionaryExtensionsTests
         );
 
         // Assert
-        ex.ParamName.ShouldBe("fromKeyName");
+        ex.ParamName.ShouldBe("fromKey");
     }
 
     [Fact]
@@ -204,7 +204,7 @@ public class DictionaryExtensionsTests
         );
 
         // Assert
-        ex.ParamName.ShouldBe("toKeyName");
+        ex.ParamName.ShouldBe("toKey");
     }
 
     [Fact]

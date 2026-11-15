@@ -86,6 +86,14 @@ public static partial class Guard
         IsNotNull(exp, val);
     }
 
+    internal static void IsNotNull<T>(Expression<Func<T>> exp, string memberNameOverride)
+        where T : class
+    {
+        var val = exp.Compile().Invoke();
+
+        IsNotNull(exp, val, memberNameOverride);
+    }
+
     /// <summary>
     /// Ensures the specified exp is not null
     /// </summary>
@@ -96,9 +104,16 @@ public static partial class Guard
     public static void IsNotNull<T>(Expression<Func<T>> exp, T val)
         where T : class
     {
+        IsNotNull(exp, val, null);
+    }
+
+    internal static void IsNotNull<T>(Expression<Func<T>> exp, T val, string memberNameOverride)
+        where T : class
+    {
         if (val == null)
         {
-            var memberName = ExpressionExtensions.GetMemberName(exp);
+            var memberName = ExpressionExtensions.GetMemberName(exp)
+                             ?? memberNameOverride;
 
             throw new ArgumentNullException(
                 memberName,

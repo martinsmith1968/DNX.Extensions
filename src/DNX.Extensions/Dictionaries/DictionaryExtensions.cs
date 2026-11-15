@@ -26,10 +26,9 @@ public static class DictionaryExtensions
     public static TV GetValue<TK, TV>(this IDictionary<TK, TV> dictionary, TK key, TV defaultValue = default)
     {
         Guard.IsNotNull(() => dictionary);
-
-        if (key == null)
+        if (!typeof(TK).IsValueType)
         {
-            throw new ArgumentNullException(nameof(key));
+            Guard.IsNotNull(() => (object)key, memberNameOverride: nameof(key));
         }
 
         return dictionary.TryGetValue(key, out var value)
@@ -43,26 +42,19 @@ public static class DictionaryExtensions
     /// <typeparam name="TK">The type of the tk.</typeparam>
     /// <typeparam name="TV">The type of the tv.</typeparam>
     /// <param name="dictionary">The dictionary.</param>
-    /// <param name="keyName">Name of the key.</param>
+    /// <param name="key">Name of the key.</param>
     /// <param name="value">The value.</param>
-    /// <exception cref="System.ArgumentNullException">dictionary or keyName</exception>
-    public static void SetValue<TK, TV>(this IDictionary<TK, TV> dictionary, TK keyName, TV value)
+    /// <exception cref="System.ArgumentNullException">dictionary or key</exception>
+    public static void SetValue<TK, TV>(this IDictionary<TK, TV> dictionary, TK key, TV value)
     {
         Guard.IsNotNull(() => dictionary);
-
-        if (keyName == null)
+        if (!typeof(TK).IsValueType)
         {
-            throw new ArgumentNullException(nameof(keyName));
+            Guard.IsNotNull(() => (object)key, memberNameOverride: nameof(key));
         }
 
-        if (dictionary.ContainsKey(keyName))
-        {
-            dictionary[keyName] = value;
-        }
-        else
-        {
-            dictionary.Add(keyName, value);
-        }
+
+        dictionary[key] = value;
     }
 
     /// <summary>
@@ -70,28 +62,22 @@ public static class DictionaryExtensions
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="dictionary">The dictionary.</param>
-    /// <param name="fromKeyName">Name of from key.</param>
-    /// <param name="toKeyName">Name of to key.</param>
-    /// <exception cref="System.ArgumentNullException">fromKeyName or toKeyName</exception>
-    public static void RenameKey<T>(this IDictionary<string, T> dictionary, string fromKeyName, string toKeyName)
+    /// <param name="fromKey">Name of from key.</param>
+    /// <param name="toKey">Name of to key.</param>
+    /// <exception cref="System.ArgumentNullException">fromKey or toKey</exception>
+    public static void RenameKey<T>(this IDictionary<string, T> dictionary, string fromKey, string toKey)
     {
-        if (fromKeyName == null)
-        {
-            throw new ArgumentNullException(nameof(fromKeyName));
-        }
-        if (toKeyName == null)
-        {
-            throw new ArgumentNullException(nameof(toKeyName));
-        }
+        Guard.IsNotNull(() => fromKey);
+        Guard.IsNotNull(() => toKey);
 
-        if (dictionary == null || !dictionary.ContainsKey(fromKeyName) || dictionary.ContainsKey(toKeyName))
+        if (dictionary == null || !dictionary.ContainsKey(fromKey) || dictionary.ContainsKey(toKey))
         {
             return;
         }
 
-        var old = dictionary[fromKeyName];
-        dictionary.Remove(fromKeyName);
-        dictionary.SetValue(toKeyName, old);
+        var old = dictionary[fromKey];
+        dictionary.Remove(fromKey);
+        dictionary.SetValue(toKey, old);
     }
 
     /// <summary>

@@ -6,6 +6,7 @@ using DNX.Extensions.Exceptions;
 using DNX.Extensions.Linq;
 using DNX.Extensions.Reflection;
 using DNX.Extensions.Strings;
+using DNX.Extensions.Validation.BuiltInTypes;
 
 namespace DNX.Extensions.Enumerations;
 
@@ -222,10 +223,7 @@ public static class EnumerationExtensions
     /// <exception cref="EnumTypeException"></exception>
     public static bool IsValidEnum(this string value, Type type, bool ignoreCase)
     {
-        if (type == null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
+        Guard.IsNotNull(() => type);
 
         if (!type.IsEnum)
         {
