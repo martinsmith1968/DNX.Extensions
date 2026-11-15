@@ -19,6 +19,9 @@ public class GeneratedGuardTests
         typeof(double),
         typeof(decimal),
         typeof(DateTime),
+        typeof(DateTimeOffset),
+        typeof(TimeSpan),
+        typeof(Guid),
         typeof(ushort),
         typeof(uint),
         typeof(ulong)
@@ -41,12 +44,7 @@ public class GeneratedGuardTests
     [MemberData(nameof(GuardedTypeData))]
     public void Every_generated_direct_value_guard_rejects_invalid_values(Type valueType)
     {
-        foreach (var method in GetGuardMethods(valueType)
-                     .Where(method =>
-                         method.GetParameters().Length == 3 &&
-                         method.Name != "IsBetween" ||
-                         method is { Name: "IsBetween" } &&
-                         method.GetParameters().Length == 6))
+        foreach (var method in GetGuardMethods(valueType))
         {
             try
             {
@@ -126,32 +124,31 @@ public class GeneratedGuardTests
                 break;
 
             case "IsBetween":
-                arguments[1] = lower;
-                arguments[2] = upper;
-
-                if (parameters.Length == 3)
+                if (parameters.Length == 6)
                 {
-                    break;
-                }
-
-                if (parameters.Length == 4)
-                {
-                    arguments[3] = IsBetweenBoundsType.Inclusive;
-                }
-                else if (parameters.Length == 5)
-                {
-                    arguments[1] = lower;
-                    arguments[2] = upper;
-                    arguments[3] = true;
-                    arguments[4] = IsBetweenBoundsType.Inclusive;
-                }
-                else
-                {
+                    // Direct-value overload: exp's constant stays fixed, vary the precomputed probe instead.
                     arguments[1] = valid ? value : CreateValue(valueType, 12);
                     arguments[2] = lower;
                     arguments[3] = upper;
                     arguments[4] = true;
                     arguments[5] = IsBetweenBoundsType.Inclusive;
+                }
+                else
+                {
+                    // Convenience overloads always evaluate exp to the fixed constant (7), so move the
+                    // bounds themselves to exclude it when testing the invalid case.
+                    arguments[1] = valid ? lower : upper;
+                    arguments[2] = valid ? upper : CreateValue(valueType, 12);
+
+                    if (parameters.Length == 4)
+                    {
+                        arguments[3] = IsBetweenBoundsType.Inclusive;
+                    }
+                    else if (parameters.Length == 5)
+                    {
+                        arguments[3] = true;
+                        arguments[4] = IsBetweenBoundsType.Inclusive;
+                    }
                 }
                 break;
         }
@@ -179,6 +176,25 @@ public class GeneratedGuardTests
         if (valueType == typeof(DateTime))
         {
             return new DateTime(2020, 1, 1).AddDays(value);
+        }
+
+        if (valueType == typeof(DateTimeOffset))
+        {
+            return new DateTimeOffset(new DateTime(2020, 1, 1).AddDays(value), TimeSpan.Zero);
+        }
+
+        if (valueType == typeof(TimeSpan))
+        {
+            return TimeSpan.FromDays(value);
+        }
+
+        if (valueType == typeof(Guid))
+        {
+            // Guid has no native ordering: Guard compares via ToBigInteger(), which treats
+            // Guid.ToByteArray() as a little-endian integer, so only the last byte need vary.
+            var bytes = new byte[16];
+            bytes[15] = (byte)value;
+            return new Guid(bytes);
         }
 
         return Convert.ChangeType(value, valueType);
