@@ -20,12 +20,12 @@ public static class EnumerationExtensions
     /// May throw a translation exception
     /// </summary>
     /// <typeparam name="T">The enum type to translate to</typeparam>
-    /// <param name="item">The string representation of an enum value of T</param>
+    /// <param name="value">The string representation of an enum value of T</param>
     /// <returns>The result</returns>
-    public static T ParseEnum<T>(this string item)
+    public static T ParseEnum<T>(this string value)
         where T : struct, Enum
     {
-        return item.ParseEnum<T>(false);
+        return value.ParseEnum<T>(false);
     }
 
     /// <summary>
@@ -33,13 +33,13 @@ public static class EnumerationExtensions
     /// May throw a translation exception
     /// </summary>
     /// <typeparam name="T">The enum type to translate to</typeparam>
-    /// <param name="item">The string representation of an enum value of T</param>
+    /// <param name="value">The string representation of an enum value of T</param>
     /// <param name="ignoreCase">if set to <c>true</c> ignore the case of item.</param>
     /// <returns>The result</returns>
-    public static T ParseEnum<T>(this string item, bool ignoreCase)
+    public static T ParseEnum<T>(this string value, bool ignoreCase)
         where T : struct, Enum
     {
-        return (T)Enum.Parse(typeof(T), item, ignoreCase);
+        return (T)Enum.Parse(typeof(T), value, ignoreCase);
     }
 
     /// <summary>
@@ -47,14 +47,14 @@ public static class EnumerationExtensions
     /// If translation is not possible return a default value
     /// </summary>
     /// <typeparam name="T">The enum type to translate to</typeparam>
-    /// <param name="item">The string representation of an enum value of T</param>
+    /// <param name="value">The string representation of an enum value of T</param>
     /// <param name="defaultValue">The default value to return if translation cannot complete</param>
     /// <returns>T.</returns>
     /// <exception cref="EnumTypeException"></exception>
-    public static T ParseEnumOrDefault<T>(this string item, T defaultValue)
+    public static T ParseEnumOrDefault<T>(this string value, T defaultValue)
         where T : struct, Enum
     {
-        return item.ParseEnumOrDefault(false, defaultValue);
+        return value.ParseEnumOrDefault(false, defaultValue);
     }
 
     /// <summary>
@@ -62,15 +62,15 @@ public static class EnumerationExtensions
     /// If translation is not possible return a default value
     /// </summary>
     /// <typeparam name="T">The enum type to translate to</typeparam>
-    /// <param name="item">The string representation of an enum value of T</param>
+    /// <param name="value">The string representation of an enum value of T</param>
     /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
     /// <param name="defaultValue">The default value to return if translation cannot complete</param>
     /// <returns>T.</returns>
     /// <exception cref="EnumTypeException"></exception>
-    public static T ParseEnumOrDefault<T>(this string item, bool ignoreCase, T defaultValue)
+    public static T ParseEnumOrDefault<T>(this string value, bool ignoreCase, T defaultValue)
         where T : struct, Enum
     {
-        return Enum.TryParse(item, ignoreCase, out T result)
+        return Enum.TryParse(value, ignoreCase, out T result)
             ? result :
             defaultValue;
     }

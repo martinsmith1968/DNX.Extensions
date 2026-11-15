@@ -887,9 +887,9 @@ public static class StringExtensions
     /// <summary>
     /// Truncates a string to the given length of the leftmost characters if it is longer than the given length, otherwise returns the original string.
     /// </summary>
-    public static string Left(this string input, int length)
+    public static string Left(this string text, int length)
     {
-        if (input == null)
+        if (text == null)
         {
             return null;
         }
@@ -901,20 +901,20 @@ public static class StringExtensions
 
         if (length < 0)
         {
-            return input.Right(-length);
+            return text.Right(-length);
         }
 
-        return input.Length > length
-            ? input.Substring(0, length)
-            : input;
+        return text.Length > length
+            ? text.Substring(0, length)
+            : text;
     }
 
     /// <summary>
     /// Truncates a string to the given length of the rightmost characters if it is longer than the given length, otherwise returns the original string.
     /// </summary>
-    public static string Right(this string input, int length)
+    public static string Right(this string text, int length)
     {
-        if (input == null)
+        if (text == null)
         {
             return null;
         }
@@ -926,69 +926,69 @@ public static class StringExtensions
 
         if (length < 0)
         {
-            return input.Left(-length);
+            return text.Left(-length);
         }
 
-        return input.Length > length
-            ? input.Substring(input.Length - length, length)
-            : input;
+        return text.Length > length
+            ? text.Substring(text.Length - length, length)
+            : text;
     }
 
     /// <summary>
     /// Converts an ASCII encoded string to Hexadecimal
     /// </summary>
-    /// <param name="input">ASCII Encoded Input</param>
+    /// <param name="text">ASCII Encoded Input</param>
     /// <param name="format">The format to use to generate the Hex value</param>
     /// <returns>Input as Hexadecimal</returns>
-    public static string ToHexString(this string input, string format = "X2")
+    public static string ToHexString(this string text, string format = "X2")
     {
-        if (string.IsNullOrEmpty(input))
+        if (string.IsNullOrEmpty(text))
         {
-            return input;
+            return text;
         }
 
-        return string.Join("", input.Select(c => ((int)c).ToString(format)));
+        return string.Join("", text.Select(c => ((int)c).ToString(format)));
     }
 
     /// <summary>
     /// Converts string into a byte[] using the default encoding (UTF-8)
     /// </summary>
-    /// <param name="input">The string to turn into the byte[]</param>
-    public static byte[] GetBytes(this string input)
+    /// <param name="text">The string to turn into the byte[]</param>
+    public static byte[] GetBytes(this string text)
     {
-        return input.GetBytes(Encoding.UTF8);
+        return text.GetBytes(Encoding.UTF8);
     }
 
     /// <summary>
     /// Converts string into a byte[] using the specified encoding
     /// </summary>
-    /// <param name="input">The string to turn into the byte[]</param>
+    /// <param name="text">The string to turn into the byte[]</param>
     /// <param name="encoding">The encoding.</param>
     /// <returns></returns>
-    public static byte[] GetBytes(this string input, Encoding encoding)
+    public static byte[] GetBytes(this string text, Encoding encoding)
     {
-        if (input == null)
+        if (text == null)
         {
             return null;
         }
 
         encoding ??= Encoding.UTF8;
 
-        return encoding.GetBytes(input);
+        return encoding.GetBytes(text);
     }
 
     /// <summary>
     /// Truncates a string to the specified maximum length, adding an ellipsis if truncated.
     /// </summary>
-    /// <param name="input">The string to truncate.</param>
+    /// <param name="text">The string to truncate.</param>
     /// <param name="maxLength">The maximum length.</param>
     /// <param name="ellipsis">The ellipsis to append (default is "...").</param>
     /// <returns>The truncated string.</returns>
-    public static string Truncate(this string input, int maxLength, string ellipsis = "...")
+    public static string Truncate(this string text, int maxLength, string ellipsis = "...")
     {
-        if (string.IsNullOrEmpty(input))
+        if (string.IsNullOrEmpty(text))
         {
-            return input;
+            return text;
         }
 
         if (maxLength <= 0)
@@ -998,9 +998,9 @@ public static class StringExtensions
 
         ellipsis ??= string.Empty;
 
-        if (input.Length <= maxLength)
+        if (text.Length <= maxLength)
         {
-            return input;
+            return text;
         }
 
         if (maxLength <= ellipsis.Length)
@@ -1008,19 +1008,19 @@ public static class StringExtensions
             return ellipsis.Left(maxLength);
         }
 
-        return input.Left(maxLength - ellipsis.Length) + ellipsis;
+        return text.Left(maxLength - ellipsis.Length) + ellipsis;
     }
 
     /// <summary>
     /// Counts the number of occurrences of a substring.
     /// </summary>
-    /// <param name="input">The string to search in.</param>
-    /// <param name="value">The substring to search for.</param>
+    /// <param name="text">The string to search in.</param>
+    /// <param name="searchText">The substring to search for.</param>
     /// <param name="comparison">The string comparison type.</param>
     /// <returns>The number of occurrences.</returns>
-    public static int CountOccurrences(this string input, string value, StringComparison comparison = StringComparison.Ordinal)
+    public static int CountOccurrences(this string text, string searchText, StringComparison comparison = StringComparison.Ordinal)
     {
-        if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(value))
+        if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(searchText))
         {
             return 0;
         }
@@ -1028,10 +1028,10 @@ public static class StringExtensions
         var count = 0;
         var index = 0;
 
-        while ((index = input.IndexOf(value, index, comparison)) >= 0)
+        while ((index = text.IndexOf(searchText, index, comparison)) >= 0)
         {
             count++;
-            index += value.Length;
+            index += searchText.Length;
         }
 
         return count;
@@ -1040,20 +1040,20 @@ public static class StringExtensions
     /// <summary>
     /// Counts the number of occurrences of a character.
     /// </summary>
-    /// <param name="input">The string to search in.</param>
+    /// <param name="text">The string to search in.</param>
     /// <param name="value">The character to search for.</param>
     /// <returns>The number of occurrences.</returns>
-    public static int CountOccurrences(this string input, char value)
+    public static int CountOccurrences(this string text, char value)
     {
-        if (string.IsNullOrEmpty(input))
+        if (string.IsNullOrEmpty(text))
         {
             return 0;
         }
 
         var count = 0;
-        for (var i = 0; i < input.Length; i++)
+        for (var i = 0; i < text.Length; i++)
         {
-            if (input[i] == value)
+            if (text[i] == value)
             {
                 count++;
             }
@@ -1065,26 +1065,26 @@ public static class StringExtensions
     /// <summary>
     /// Converts a string to PascalCase.
     /// </summary>
-    /// <param name="input">The string to convert.</param>
+    /// <param name="text">The string to convert.</param>
     /// <returns>The string in PascalCase.</returns>
-    public static string ToPascalCase(this string input)
+    public static string ToPascalCase(this string text)
     {
-        if (string.IsNullOrWhiteSpace(input))
+        if (string.IsNullOrWhiteSpace(text))
         {
-            return input;
+            return text;
         }
 
-        var words = input
+        var words = text
             .Replace("_", " ")
             .Replace("-", " ")
             .Split([' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
         if (words.Length == 0)
         {
-            return input;
+            return text;
         }
 
-        var sb = new StringBuilder(input.Length);
+        var sb = new StringBuilder(text.Length);
         foreach (var word in words)
         {
             sb.Append(char.ToUpperInvariant(word[0]));
@@ -1100,16 +1100,16 @@ public static class StringExtensions
     /// <summary>
     /// Converts a string to camelCase.
     /// </summary>
-    /// <param name="input">The string to convert.</param>
+    /// <param name="text">The string to convert.</param>
     /// <returns>The string in camelCase.</returns>
-    public static string ToCamelCase(this string input)
+    public static string ToCamelCase(this string text)
     {
-        if (string.IsNullOrWhiteSpace(input))
+        if (string.IsNullOrWhiteSpace(text))
         {
-            return input;
+            return text;
         }
 
-        var pascal = input.ToPascalCase();
+        var pascal = text.ToPascalCase();
 
         return char.ToLowerInvariant(pascal[0]) + pascal.Substring(1);
     }
@@ -1117,22 +1117,22 @@ public static class StringExtensions
     /// <summary>
     /// Converts a string to snake_case.
     /// </summary>
-    /// <param name="input">The string to convert.</param>
+    /// <param name="text">The string to convert.</param>
     /// <returns>The string in snake_case.</returns>
-    public static string ToSnakeCase(this string input)
+    public static string ToSnakeCase(this string text)
     {
-        if (string.IsNullOrWhiteSpace(input))
+        if (string.IsNullOrWhiteSpace(text))
         {
-            return input;
+            return text;
         }
 
-        var sb = new StringBuilder(input.Length + 10);
-        for (var i = 0; i < input.Length; i++)
+        var sb = new StringBuilder(text.Length + 10);
+        for (var i = 0; i < text.Length; i++)
         {
-            var c = input[i];
+            var c = text[i];
             if (char.IsUpper(c) && i > 0)
             {
-                var prev = input[i - 1];
+                var prev = text[i - 1];
                 if (!char.IsUpper(prev) && prev != '_' && prev != '-')
                 {
                     sb.Append('_');
@@ -1165,56 +1165,56 @@ public static class StringExtensions
     /// <summary>
     /// Converts a string to kebab-case.
     /// </summary>
-    /// <param name="input">The string to convert.</param>
+    /// <param name="text">The string to convert.</param>
     /// <returns>The string in kebab-case.</returns>
-    public static string ToKebabCase(this string input)
+    public static string ToKebabCase(this string text)
     {
-        if (string.IsNullOrWhiteSpace(input))
+        if (string.IsNullOrWhiteSpace(text))
         {
-            return input;
+            return text;
         }
 
-        var snake = input.ToSnakeCase();
+        var snake = text.ToSnakeCase();
         return snake.Replace('_', '-');
     }
 
     /// <summary>
     /// Masks a string by replacing characters with a mask character.
     /// </summary>
-    /// <param name="input">The string to mask.</param>
+    /// <param name="text">The string to mask.</param>
     /// <param name="visibleStart">Number of characters to keep visible at the start.</param>
     /// <param name="visibleEnd">Number of characters to keep visible at the end.</param>
     /// <param name="maskChar">The character to use for masking.</param>
     /// <returns>The masked string.</returns>
-    public static string Mask(this string input, int visibleStart = 0, int visibleEnd = 0, char maskChar = '*')
+    public static string Mask(this string text, int visibleStart = 0, int visibleEnd = 0, char maskChar = '*')
     {
-        if (string.IsNullOrEmpty(input))
+        if (string.IsNullOrEmpty(text))
         {
-            return input;
+            return text;
         }
 
         if (visibleStart < 0) visibleStart = 0;
         if (visibleEnd < 0) visibleEnd = 0;
 
-        if (visibleStart + visibleEnd >= input.Length)
+        if (visibleStart + visibleEnd >= text.Length)
         {
-            return input;
+            return text;
         }
 
-        var sb = new StringBuilder(input.Length);
+        var sb = new StringBuilder(text.Length);
         if (visibleStart > 0)
         {
-            sb.Append(input.Substring(0, visibleStart));
+            sb.Append(text.Substring(0, visibleStart));
         }
 
-        for (var i = 0; i < input.Length - visibleStart - visibleEnd; i++)
+        for (var i = 0; i < text.Length - visibleStart - visibleEnd; i++)
         {
             sb.Append(maskChar);
         }
 
         if (visibleEnd > 0)
         {
-            sb.Append(input.Substring(input.Length - visibleEnd));
+            sb.Append(text.Substring(text.Length - visibleEnd));
         }
 
         return sb.ToString();

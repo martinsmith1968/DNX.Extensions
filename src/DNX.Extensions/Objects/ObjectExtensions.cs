@@ -46,36 +46,36 @@ public static class ObjectExtensions
     /// Changes the value to the specified type
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="value">The value.</param>
+    /// <param name="obj">The object.</param>
     /// <returns>T.</returns>
-    public static T ChangeType<T>(this object value)
+    public static T ChangeType<T>(this object obj)
     {
-        return (T)ChangeType(value, typeof(T));
+        return (T)ChangeType(obj, typeof(T));
     }
 
     /// <summary>
     /// Changes the value to the specified type
     /// </summary>
-    /// <param name="value">The value.</param>
+    /// <param name="obj">The object.</param>
     /// <param name="type">The type.</param>
     /// <returns>object</returns>
-    public static object ChangeType(this object value, Type type)
+    public static object ChangeType(this object obj, Type type)
     {
-        return Convert.ChangeType(value, type);
+        return Convert.ChangeType(obj, type);
     }
 
     /// <summary>
     /// Changes the value to the specified type, with a default value if conversion fails
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="value">The value.</param>
+    /// <param name="obj">The object.</param>
     /// <param name="defaultValue">The default value.</param>
     /// <returns>T.</returns>
-    public static T ChangeType<T>(this object value, T defaultValue)
+    public static T ChangeType<T>(this object obj, T defaultValue)
     {
         try
         {
-            return ChangeType<T>(value);
+            return ChangeType<T>(obj);
         }
         catch
         {

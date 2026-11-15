@@ -123,14 +123,14 @@ public static class DictionaryExtensions
     /// </summary>
     /// <typeparam name="TK">The type of the tk.</typeparam>
     /// <typeparam name="TV">The type of the tv.</typeparam>
-    /// <param name="dict">The dictionary.</param>
+    /// <param name="dictionary">The dictionary.</param>
     /// <param name="other">The other.</param>
     /// <param name="mergeTechnique">The merge technique.</param>
     /// <returns>Dictionary&lt;TK, TV&gt;.</returns>
     /// <remarks>Source and target dictionaries are left untouched</remarks>
-    public static IDictionary<TK, TV> MergeWith<TK, TV>(this IDictionary<TK, TV> dict, IDictionary<TK, TV> other, MergeTechnique mergeTechnique = MergeTechnique.Unique)
+    public static IDictionary<TK, TV> MergeWith<TK, TV>(this IDictionary<TK, TV> dictionary, IDictionary<TK, TV> other, MergeTechnique mergeTechnique = MergeTechnique.Unique)
     {
-        var result = MergeAll(mergeTechnique, dict, other);
+        var result = MergeAll(mergeTechnique, dictionary, other);
 
         return result;
     }
