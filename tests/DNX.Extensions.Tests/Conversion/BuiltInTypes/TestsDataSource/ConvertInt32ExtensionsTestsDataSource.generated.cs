@@ -157,12 +157,12 @@ public class ConversionInt32ExtensionsTestsDataSource
             { "1", false },
             { Guid2.ToString(), true },
 #elif ConversionExtensionsTestsDataSource_DateTime
-            { "1.5a", false },
+            { "not-a-valid-date", false },
             { "2023-12-31 11:00:00.0000001", true },
             { "2023-12-31 11:00:00.00000001", true },
             { "2023-12-31 11:00:00.000000001", true },
 #elif ConversionExtensionsTestsDataSource_DateTimeOffset
-            { "1.5a", false },
+            { "not-a-valid-date", false },
             { "2023-12-31 11:00:00.0000001", true },
             { "2023-12-31 11:00:00.00000001", true },
             { "2023-12-31 11:00:00.000000001", true },
