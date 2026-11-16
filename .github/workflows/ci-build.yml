@@ -8,7 +8,6 @@ env:
   DOTNET_VERSION: |
     8.0.x
     10.0.x
-  NUGET_VERSION: 6.x
   BUILD_CONFIG: Release
   BUILD_PLATFORM: Any CPU
   PACK_PARAMETERS: ''
@@ -440,6 +439,9 @@ jobs:
     name: Publish to NuGet
     if: needs.setup.outputs.should_publish == 'true'
 
+    permissions:
+      id-token: write  # enable GitHub OIDC token issuance for this job
+
     needs:
       - setup
       - build
@@ -447,17 +449,18 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Install NuGet
-      uses: NuGet/setup-nuget@v4
-      with:
-        nuget-api-key: ${{ secrets.NUGET_API_KEY }}
-        nuget-version: ${{ env.NUGET_VERSION }}
-
     - name: Download NuGet Output
       uses: actions/download-artifact@v8
       with:
         name: nuget_output
         path: ${{ env.NUGET_OUTPUT_FOLDER }}
 
+    # Get a short-lived NuGet API key
+    - name: NuGet login (OIDC → temp API key)
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
     - name: Publish
-      run: nuget push "**/*.nupkg" -Source 'https://api.nuget.org/v3/index.json'
+      run: dotnet nuget push **/*.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
