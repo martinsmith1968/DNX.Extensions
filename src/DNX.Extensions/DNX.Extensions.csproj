@@ -19,7 +19,7 @@
 
   <PropertyGroup>
     <Authors>Martin Smith</Authors>
-    <Copyright>Copyright © 2016-2019 DNX Solutions Ltd</Copyright>
+    <Copyright>Copyright © 2016-2026 DNX Solutions Ltd</Copyright>
     <Title>DNX.Extensions</Title>
     <Description>.NET Extensions and helpers for Core and Common .NET types</Description>
     <Trademark>DNX.Extensions</Trademark>
@@ -31,6 +31,7 @@
     <PackageTags>DNX helpers extensions string array linq</PackageTags>
     <PackageIcon>favicon-32x32.png</PackageIcon>
     <PackageIconUrl>https://raw.githubusercontent.com/martinsmith1968/DNX.Extensions/main/images/favicon-32x32.png</PackageIconUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
       Migration from DNX.Helpers
     </PackageReleaseNotes>
