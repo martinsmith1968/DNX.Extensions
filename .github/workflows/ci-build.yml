@@ -5,7 +5,9 @@ env:
   PRODUCT_NAME: DNX.Extensions
   PRODUCT_VERSION: 2.0
   PRIMARY_BRANCH_NAME: main
-  DOTNET_VERSION: 10.0.x
+  DOTNET_VERSION: |
+    8.0.x
+    10.0.x
   NUGET_VERSION: 6.x
   BUILD_CONFIG: Release
   BUILD_PLATFORM: Any CPU
@@ -307,6 +309,39 @@ jobs:
         name: nuget_output
         path: "${{ env.NUGET_OUTPUT_FOLDER }}/**"
         if-no-files-found: error
+
+
+  ##########################################################
+  ## Cross-platform build/test matrix (Linux is covered by the build job above)
+  cross-platform-test:
+    name: Build & Test (${{ matrix.os }})
+
+    needs: setup
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - name: Install .NET SDK
+      uses: actions/setup-dotnet@v6
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore NuGet packages
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore --configuration ${{ env.BUILD_CONFIG }} /p:"Platform=${{ env.BUILD_PLATFORM }}" /p:"Version=${{ needs.setup.outputs.product_version }}" /p:"AssemblyVersion=${{ needs.setup.outputs.assembly_version }}"
+
+    - name: Test
+      run: dotnet test --no-restore --no-build --configuration ${{ env.BUILD_CONFIG }} --verbosity normal
 
 
   ##########################################################
