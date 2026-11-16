@@ -344,67 +344,6 @@ jobs:
 
 
   ##########################################################
-  ## Tag in git
-  tag:
-    name: Tag in GitHub
-    if: needs.setup.outputs.should_tag == 'true'
-
-    needs:
-      - setup
-      - build
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Tag git
-      uses: pkgdeps/git-tag-action@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        github_repo: ${{ github.repository }}
-        git_commit_sha: ${{ github.sha }}
-        git_tag_prefix: "v"
-        version: ${{ needs.setup.outputs.assembly_version }}
-
-
-  ##########################################################
-  ## Generate a GitHub Release
-  release:
-    name: Create GitHub Release
-    if: needs.setup.outputs.should_release == 'true'
-
-    needs:
-      - setup
-      - build
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v7
-
-    - uses: actions/download-artifact@v8
-      with:
-        name: nuget_output
-        path: nuget
-
-    - name: Build Changelog
-      uses: mikepenz/release-changelog-builder-action@v6
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Create Release
-      uses: ncipollo/release-action@v1
-      with:
-        tag: v${{ needs.setup.outputs.assembly_version }}
-        name: Release ${{ needs.setup.outputs.assembly_version }}
-        body: ${{ steps.build_changelog.outputs.changelog }}
-        draft: ${{ needs.setup.outputs.release_is_draft }}
-        prerelease: ${{ needs.setup.outputs.release_is_prerelease }}
-        removeArtifacts: true
-        artifacts: '**/*.nupkg'
-
-
-  ##########################################################
   ## Benchmark Performance
   benchmark:
     name: Benchmark Performance
@@ -464,3 +403,65 @@ jobs:
 
     - name: Publish
       run: dotnet nuget push **/*.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+
+  ##########################################################
+  ## Tag in git
+  tag:
+    name: Tag in GitHub
+    if: needs.setup.outputs.should_tag == 'true'
+
+    needs:
+      - setup
+      - build
+      - publish
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Tag git
+      uses: pkgdeps/git-tag-action@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_repo: ${{ github.repository }}
+        git_commit_sha: ${{ github.sha }}
+        git_tag_prefix: "v"
+        version: ${{ needs.setup.outputs.assembly_version }}
+
+
+  ##########################################################
+  ## Generate a GitHub Release
+  release:
+    name: Create GitHub Release
+    if: needs.setup.outputs.should_release == 'true'
+
+    needs:
+      - setup
+      - build
+      - publish
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - uses: actions/download-artifact@v8
+      with:
+        name: nuget_output
+        path: nuget
+
+    - name: Build Changelog
+      uses: mikepenz/release-changelog-builder-action@v6
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create Release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: v${{ needs.setup.outputs.assembly_version }}
+        name: Release ${{ needs.setup.outputs.assembly_version }}
+        body: ${{ steps.build_changelog.outputs.changelog }}
+        draft: ${{ needs.setup.outputs.release_is_draft }}
+        prerelease: ${{ needs.setup.outputs.release_is_prerelease }}
+        removeArtifacts: true
+        artifacts: '**/*.nupkg'
