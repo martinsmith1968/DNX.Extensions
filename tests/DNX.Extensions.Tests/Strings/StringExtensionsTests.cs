@@ -1344,7 +1344,7 @@ public class StringExtensionsTests
 
         public static TheoryData<string, Encoding, byte[]> GetBytes_with_Encoding_Data()
         {
-            var str1 = new string([ (char)100, (char)200, (char)300 ]);
+            var str1 = new string([(char)100, (char)200, (char)300]);
 
             return new TheoryData<string, Encoding, byte[]>
             {
