@@ -30,14 +30,14 @@ public static class RegexStringExtensions
     /// <summary>
     /// Parses regex results to key value pair.
     /// </summary>
-    /// <param name="input">The input.</param>
+    /// <param name="text">The text.</param>
     /// <param name="regExpression">The reg expression.</param>
     /// <param name="keyGroupName">Name of the key group.</param>
     /// <param name="valueGroupName">Name of the value group.</param>
     /// <returns>KeyValuePair&lt;System.String, System.String&gt;.</returns>
-    public static KeyValuePair<string, string> ParseToKeyValuePair(this string input, string regExpression, string keyGroupName = "1", string valueGroupName = "2")
+    public static KeyValuePair<string, string> ParseToKeyValuePair(this string text, string regExpression, string keyGroupName = "1", string valueGroupName = "2")
     {
-        var values = input.ParseFirstMatchToDictionary(regExpression);
+        var values = text.ParseFirstMatchToDictionary(regExpression);
 
         if (values == null)
         {
@@ -76,14 +76,14 @@ public static class RegexStringExtensions
     /// <summary>
     /// Parses regex results to a list of dictionaries.
     /// </summary>
-    /// <param name="input">The input.</param>
+    /// <param name="text">The text.</param>
     /// <param name="regExpression">The reg expression.</param>
     /// <returns>List&lt;Dictionary&lt;System.String, System.String&gt;&gt;.</returns>
-    public static List<Dictionary<string, string>> ParseToDictionaryList(this string input, string regExpression)
+    public static List<Dictionary<string, string>> ParseToDictionaryList(this string text, string regExpression)
     {
         var regex = new Regex(regExpression);
 
-        var matches = regex.Matches(input);
+        var matches = regex.Matches(text);
 
         var result = new List<Dictionary<string, string>>();
 
@@ -106,12 +106,12 @@ public static class RegexStringExtensions
     /// <summary>
     /// Parses the regex results first match to dictionary.
     /// </summary>
-    /// <param name="input">The input.</param>
+    /// <param name="text">The text.</param>
     /// <param name="regExpression">The regular expression.</param>
     /// <returns>Dictionary&lt;System.String, System.String&gt;.</returns>
-    public static Dictionary<string, string> ParseFirstMatchToDictionary(this string input, string regExpression)
+    public static Dictionary<string, string> ParseFirstMatchToDictionary(this string text, string regExpression)
     {
-        var dictionary = ParseToDictionaryList(input, regExpression);
+        var dictionary = ParseToDictionaryList(text, regExpression);
 
         return dictionary.FirstOrDefault();
     }

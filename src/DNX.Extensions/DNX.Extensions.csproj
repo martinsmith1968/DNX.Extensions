@@ -2,24 +2,36 @@
 
   <PropertyGroup>
     <LangVersion>Latest</LangVersion>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net8.0;net10.0</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Nullable>disable</Nullable>
     <IsPackable>true</IsPackable>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- Required for IDE0005 (unnecessary using directives) to be reported during build -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- CS1591: missing XML comment for publicly visible type or member -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
     <Authors>Martin Smith</Authors>
-    <Copyright>Copyright © 2016-2019 DNX Solutions Ltd</Copyright>
+    <Copyright>Copyright © 2016-2026 DNX Solutions Ltd</Copyright>
     <Title>DNX.Extensions</Title>
     <Description>.NET Extensions and helpers for Core and Common .NET types</Description>
     <Trademark>DNX.Extensions</Trademark>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/martinsmith1968/DNX.Extensions</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/martinsmith1968/DNX.Extensions</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageId>DNX.Extensions</PackageId>
     <PackageTags>DNX helpers extensions string array linq</PackageTags>
     <PackageIcon>favicon-32x32.png</PackageIcon>
     <PackageIconUrl>https://raw.githubusercontent.com/martinsmith1968/DNX.Extensions/main/images/favicon-32x32.png</PackageIconUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
       Migration from DNX.Helpers
     </PackageReleaseNotes>
@@ -40,8 +52,16 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <!-- dynamic/DLR support is in-box on modern .NET; only netstandard2.0 / .NET Framework consumers need this -->
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.404">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

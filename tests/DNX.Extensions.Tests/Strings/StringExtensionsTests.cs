@@ -4,8 +4,8 @@ using DNX.Extensions.Strings;
 using Shouldly;
 using Xunit;
 
-#pragma warning disable CA1861 // Arrays in InlineData
 #pragma warning disable xUnit1025   // Duplicate inline test cases
+#pragma warning disable xUnit1045   // Encoding might not be serializable
 
 namespace DNX.Extensions.Tests.Strings;
 
@@ -261,6 +261,20 @@ public class StringExtensionsTests
         public void Test_Between_ComparisonType(string text, string startText, string endText, StringComparison comparison, string expectedResult)
         {
             var result = text.Between(startText, endText, comparison);
+
+            // Assert
+            result.ShouldBe(expectedResult);
+        }
+
+        [Theory]
+        [InlineData("[Section Name]", "[", "]", StringComparison.CurrentCulture, "Section Name")]
+        [InlineData("[Section Name]", "(", ")", StringComparison.CurrentCulture, null)]
+        [InlineData("A123B", "a", "b", StringComparison.OrdinalIgnoreCase, "123")]
+        [InlineData("A123B", "a", "b", StringComparison.Ordinal, null)]
+        [InlineData("[Reference[0]]", "[", "]", StringComparison.CurrentCulture, "Reference[0]")]
+        public void Test_BetweenFirstAndLast_ComparisonType(string text, string startText, string endText, StringComparison comparison, string expectedResult)
+        {
+            var result = text.BetweenFirstAndLast(startText, endText, comparison);
 
             // Assert
             result.ShouldBe(expectedResult);
@@ -559,6 +573,9 @@ public class StringExtensionsTests
         [InlineData("1,234.56", "1234567890.", false)]
         [InlineData("1,234.56", "", false)]
         [InlineData("1,234.56", null, false)]
+        [InlineData(null, "a", false)]
+        [InlineData("aaaa", "a", true)]
+        [InlineData("aaab", "a", false)]
         public void Test_ContainsOnly(string text, string characters, bool expectedResult)
         {
             var result = text.ContainsOnly(characters);
@@ -573,6 +590,8 @@ public class StringExtensionsTests
         [InlineData("1,234.56", new char[] { }, false)]
         [InlineData("1,234.56", null, false)]
         [InlineData(null, new[] { 'a', 'e', 'i', 'o', 'u' }, false)]
+        [InlineData("aaaa", new[] { 'a' }, true)]
+        [InlineData("aaab", new[] { 'a' }, false)]
         public void Test_ContainsOnlyCharacterArray(string text, IList<char> characters, bool expectedResult)
         {
             var result = text.ContainsOnly(characters);
@@ -587,6 +606,9 @@ public class StringExtensionsTests
         [Theory]
         [InlineData("obviously this piece of text contains at least one of every vowel", "aeiou", "bvsly ths pc f txt cntns t lst n f vry vwl")]
         [InlineData("123,456,789.00", ",.", "12345678900")]
+        [InlineData(null, "aeiou", null)]
+        [InlineData("aeiou", null, "aeiou")]
+        [InlineData("", "aeiou", "")]
         public void Test_RemoveAny(string text, string charsToRemove, string expectedResult)
         {
             var result = text.RemoveAny(charsToRemove);
@@ -683,6 +705,9 @@ public class StringExtensionsTests
         // DE
         [InlineData("3,123.451", "de-DE", false)]
         [InlineData("3.123,451", "de-DE", true)]
+        // null / empty
+        [InlineData(null, "en-gb", false)]
+        [InlineData("", "en-gb", false)]
         public void Test_IsValidNumber_default_culture(string text, string cultureInfoName, bool expectedResult)
         {
             var previousCulture = CultureInfo.DefaultThreadCurrentCulture;
@@ -724,6 +749,9 @@ public class StringExtensionsTests
         // DE
         [InlineData("3,123.451", "de-DE", false)]
         [InlineData("3.123,451", "de-DE", true)]
+        // null / empty
+        [InlineData(null, "en-gb", false)]
+        [InlineData("", "en-gb", false)]
         public void Test_IsValidNumber(string text, string cultureInfoName, bool expectedResult)
         {
             var cultureInfo = CultureInfo.GetCultureInfo(cultureInfoName);
@@ -788,6 +816,16 @@ public class StringExtensionsTests
         }
 
         [Fact]
+        public void Test_SplitText_null_text()
+        {
+            string text = null;
+
+            var result = text.SplitText("-");
+
+            result.ShouldBeEmpty();
+        }
+
+        [Fact]
         public void Test_SplitText_InvalidDelimiterType()
         {
             // Arrange
@@ -826,7 +864,6 @@ public class StringExtensionsTests
         [InlineData("Line 1/Line 2//Line 4", StringSplitOptions.None, StringComparison.CurrentCulture, "Line 1/Line 2//Line 4")]
         [InlineData("Line 1/Line 2//Line 4", StringSplitOptions.RemoveEmptyEntries, StringComparison.CurrentCulture, "Line 1/Line 2/Line 4")]
         [InlineData("Line 1///Line 2//Line 4/", StringSplitOptions.None, StringComparison.CurrentCulture, "Line 1///Line 2//Line 4")]
-        [InlineData("Line 1/Line 2//Line 4", StringSplitOptions.RemoveEmptyEntries, StringComparison.CurrentCulture, "Line 1/Line 2/Line 4")]
         public void Test_SplitByText_ComplexDelimiter(string text, StringSplitOptions options, StringComparison comparison, string expectedResult)
         {
             var delimiters = Environment.NewLine;
@@ -838,6 +875,16 @@ public class StringExtensionsTests
 
             // Assert
             string.Join("/", lines).ShouldBe(expectedResult);
+        }
+
+        [Fact]
+        public void Test_SplitByText_null_text()
+        {
+            string text = null;
+
+            var result = text.SplitByText("-");
+
+            result.ShouldBeEmpty();
         }
     }
 
@@ -920,6 +967,27 @@ public class StringExtensionsTests
             // Assert
             result.ShouldBe(expectedResult);
         }
+
+        [Fact]
+        public void Test_CoalesceNull_null_list()
+        {
+            IList<string> list = null;
+
+            var result = list.CoalesceNull();
+
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void Test_CoalesceNullWith_list_null_text_and_null_items()
+        {
+            string text = null;
+            IList<string> items = null;
+
+            var result = text.CoalesceNullWith(items);
+
+            result.ShouldBeNull();
+        }
     }
 
     public class CoalesceNullOrEmpty
@@ -1000,6 +1068,16 @@ public class StringExtensionsTests
 
             // Assert
             result.ShouldBe(expectedResult);
+        }
+
+        [Fact]
+        public void Test_CoalesceNullOrEmpty_null_list()
+        {
+            IList<string> list = null;
+
+            var result = list.CoalesceNullOrEmpty();
+
+            result.ShouldBeNull();
         }
     }
 
@@ -1082,6 +1160,16 @@ public class StringExtensionsTests
             // Assert
             result.ShouldBe(expectedResult);
         }
+
+        [Fact]
+        public void Test_CoalesceNullOrWhitespace_null_list()
+        {
+            IList<string> list = null;
+
+            var result = list.CoalesceNullOrWhitespace();
+
+            result.ShouldBeNull();
+        }
     }
 
     public class Wordify
@@ -1152,6 +1240,9 @@ public class StringExtensionsTests
         [InlineData("", 0, "")]
         [InlineData("", 5, "")]
         [InlineData(null, 2, null)]
+        [InlineData("Some text", -5, " text")]
+        [InlineData("Some text", -9, "Some text")]
+        [InlineData("Some text", -20, "Some text")]
         public void Test_Left(string text, int length, string expectedResult)
         {
             var result = text.Left(length);
@@ -1171,6 +1262,9 @@ public class StringExtensionsTests
         [InlineData("", 0, "")]
         [InlineData("", 5, "")]
         [InlineData(null, 2, null)]
+        [InlineData("Some text", -5, "Some ")]
+        [InlineData("Some text", -9, "Some text")]
+        [InlineData("Some text", -20, "Some text")]
         public void Test_Right(string text, int length, string expectedResult)
         {
             var result = text.Right(length);
@@ -1184,9 +1278,21 @@ public class StringExtensionsTests
     {
         [Theory]
         [InlineData("ABCDEF", "414243444546")]
+        [InlineData("", "")]
+        [InlineData(null, null)]
         public void Test_ToHexString(string number, string expectedHexString)
         {
             var result = number.ToHexString();
+
+            result.ShouldBe(expectedHexString);
+        }
+
+        [Theory]
+        [InlineData("AB", "x2", "4142")]
+        [InlineData("AB", "D", "6566")]
+        public void Test_ToHexString_with_format(string number, string format, string expectedHexString)
+        {
+            var result = number.ToHexString(format);
 
             result.ShouldBe(expectedHexString);
         }
@@ -1206,6 +1312,26 @@ public class StringExtensionsTests
             bytesText.ShouldBe(expectedBytesText);
         }
 
+        [Fact]
+        public void Test_GetBytes_null_text()
+        {
+            string text = null;
+
+            var result = text.GetBytes();
+
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void Test_GetBytes_with_encoding_null_text()
+        {
+            string text = null;
+
+            var result = text.GetBytes(Encoding.UTF8);
+
+            result.ShouldBeNull();
+        }
+
         [Theory]
         [MemberData(nameof(GetBytes_with_Encoding_Data))]
         public void Test_GetBytes_with_encoding(string text, Encoding encoding, byte[] expectedResult)
@@ -1218,7 +1344,7 @@ public class StringExtensionsTests
 
         public static TheoryData<string, Encoding, byte[]> GetBytes_with_Encoding_Data()
         {
-            var str1 = new string(new[] { (char)100, (char)200, (char)300 });
+            var str1 = new string([(char)100, (char)200, (char)300]);
 
             return new TheoryData<string, Encoding, byte[]>
             {
@@ -1229,6 +1355,191 @@ public class StringExtensionsTests
                 { str1, Encoding.ASCII, Encoding.ASCII.GetBytes(str1) },
                 { str1, Encoding.UTF8, Encoding.UTF8.GetBytes(str1) },
             };
+        }
+    }
+
+    public class Truncate
+    {
+        [Theory]
+        [InlineData(null, 5, "...", null)]
+        [InlineData("", 5, "...", "")]
+        [InlineData("Hello", 0, "...", "")]
+        [InlineData("Hello", -1, "...", "")]
+        [InlineData("Hello", 5, "...", "Hello")]
+        [InlineData("Hello", 20, "...", "Hello")]
+        [InlineData("Hello world", 8, "...", "Hello...")]
+        [InlineData("Hello world", 7, "---", "Hell---")]
+        [InlineData("Hello world", 2, "...", "..")]
+        [InlineData("Hello world", 5, null, "Hello")]
+        public void Test_Truncate(string input, int maxLength, string ellipsis, string expectedResult)
+        {
+            var result = input.Truncate(maxLength, ellipsis);
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class CountOccurrences
+    {
+        [Theory]
+        [InlineData(null, "ab", StringComparison.Ordinal, 0)]
+        [InlineData("", "ab", StringComparison.Ordinal, 0)]
+        [InlineData("ababab", null, StringComparison.Ordinal, 0)]
+        [InlineData("ababab", "", StringComparison.Ordinal, 0)]
+        [InlineData("ababab", "ab", StringComparison.Ordinal, 3)]
+        [InlineData("aaaa", "aa", StringComparison.Ordinal, 2)]
+        [InlineData("abc", "xyz", StringComparison.Ordinal, 0)]
+        [InlineData("ABAB", "ab", StringComparison.Ordinal, 0)]
+        [InlineData("ABAB", "ab", StringComparison.OrdinalIgnoreCase, 2)]
+        public void Test_CountOccurrences_text(string input, string value, StringComparison comparison, int expectedResult)
+        {
+            var result = input.CountOccurrences(value, comparison);
+
+            result.ShouldBe(expectedResult);
+        }
+
+        [Theory]
+        [InlineData(null, 'a', 0)]
+        [InlineData("", 'a', 0)]
+        [InlineData("banana", 'a', 3)]
+        [InlineData("banana", 'z', 0)]
+        public void Test_CountOccurrences_char(string input, char value, int expectedResult)
+        {
+            var result = input.CountOccurrences(value);
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class ToPascalCase
+    {
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData(" ", " ")]
+        [InlineData("hello", "Hello")]
+        [InlineData("hello world", "HelloWorld")]
+        [InlineData("hello_world", "HelloWorld")]
+        [InlineData("hello-world", "HelloWorld")]
+        [InlineData("HELLO WORLD", "HelloWorld")]
+        [InlineData("hello   world", "HelloWorld")]
+        [InlineData("hello2world", "Hello2world")]
+        [InlineData("___", "___")]
+        [InlineData("---", "---")]
+        [InlineData("a", "A")]
+        [InlineData("a bb", "ABb")]
+        [InlineData("bb a", "BbA")]
+        [InlineData("_hello_", "Hello")]
+        [InlineData("hello\tworld", "HelloWorld")]
+        [InlineData("hello\rworld", "HelloWorld")]
+        [InlineData("hello\nworld", "HelloWorld")]
+        public void Test_ToPascalCase(string input, string expectedResult)
+        {
+            var result = input.ToPascalCase();
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class ToCamelCase
+    {
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData(" ", " ")]
+        [InlineData("hello", "hello")]
+        [InlineData("Hello World", "helloWorld")]
+        [InlineData("hello_world", "helloWorld")]
+        [InlineData("A", "a")]
+        [InlineData("___", "___")]
+        [InlineData("a bb", "aBb")]
+        [InlineData("hello\tworld", "helloWorld")]
+        public void Test_ToCamelCase(string input, string expectedResult)
+        {
+            var result = input.ToCamelCase();
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class ToSnakeCase
+    {
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData(" ", " ")]
+        [InlineData("HelloWorld", "hello_world")]
+        [InlineData("helloWorld", "hello_world")]
+        [InlineData("Hello World", "hello_world")]
+        [InlineData("hello-world", "hello_world")]
+        [InlineData("hello.world", "hello_world")]
+        [InlineData("HELLO", "hello")]
+        [InlineData("hello__world", "hello_world")]
+        [InlineData("_hello_", "hello")]
+        [InlineData("Item1Value", "item1_value")]
+        [InlineData("hello!world", "helloworld")]
+        public void Test_ToSnakeCase(string input, string expectedResult)
+        {
+            var result = input.ToSnakeCase();
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class ToKebabCase
+    {
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData(" ", " ")]
+        [InlineData("HelloWorld", "hello-world")]
+        [InlineData("hello_world", "hello-world")]
+        [InlineData("Hello World", "hello-world")]
+        public void Test_ToKebabCase(string input, string expectedResult)
+        {
+            var result = input.ToKebabCase();
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class Mask
+    {
+        [Theory]
+        [InlineData(null, 0, 0, '*', null)]
+        [InlineData("", 0, 0, '*', "")]
+        [InlineData("1234567890", 0, 0, '*', "**********")]
+        [InlineData("abcdef", 1, 1, '*', "a****f")]
+        [InlineData("abcdef", 3, 0, '*', "abc***")]
+        [InlineData("abcdef", 0, 3, '*', "***def")]
+        [InlineData("abcdef", 1, 1, '#', "a####f")]
+        [InlineData("abcdef", -1, -1, '*', "******")]
+        [InlineData("abcd", 2, 2, '*', "abcd")]
+        [InlineData("abcd", 3, 3, '*', "abcd")]
+        public void Test_Mask(string input, int visibleStart, int visibleEnd, char maskChar, string expectedResult)
+        {
+            var result = input.Mask(visibleStart, visibleEnd, maskChar);
+
+            result.ShouldBe(expectedResult);
+        }
+    }
+
+    public class MaskEmail
+    {
+        [Theory]
+        [InlineData(null, '*', null)]
+        [InlineData("", '*', "")]
+        [InlineData("notanemail", '*', "notanemail")]
+        [InlineData("john@example.com", '*', "j***@example.com")]
+        [InlineData("j@example.com", '*', "j@example.com")]
+        [InlineData("ab@example.com", '*', "a*@example.com")]
+        [InlineData("john@example.com", '#', "j###@example.com")]
+        [InlineData("@example.com", '*', "@example.com")]
+        public void Test_MaskEmail(string email, char maskChar, string expectedResult)
+        {
+            var result = email.MaskEmail(maskChar);
+
+            result.ShouldBe(expectedResult);
         }
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
-using DNX.Extensions.Validation;
+using DNX.Extensions.Validation.BuiltInTypes;
 
 namespace DNX.Extensions.Assemblies;
 

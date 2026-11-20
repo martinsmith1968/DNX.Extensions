@@ -1,4 +1,4 @@
-﻿namespace DNX.Extensions.Linq
+namespace DNX.Extensions.Linq
 {
     /// <summary>
     /// ItemComparison result for logical comparison of 2 objects.
@@ -51,12 +51,12 @@
         /// <summary>
         /// Creates an ItemComparison
         /// </summary>
-        /// <param name="item1">The item1.</param>
-        /// <param name="item2">The item2.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="target">The target.</param>
         /// <returns>ItemComparison&lt;T1, T2&gt;.</returns>
-        public static ItemComparison<T1, T2> Create(T1 item1, T2 item2)
+        public static ItemComparison<T1, T2> Create(T1 source, T2 target)
         {
-            return new ItemComparison<T1, T2>(item1, item2);
+            return new ItemComparison<T1, T2>(source, target);
         }
     }
 }

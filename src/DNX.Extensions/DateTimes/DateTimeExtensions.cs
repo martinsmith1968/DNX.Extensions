@@ -1,6 +1,6 @@
 using System;
-using DNX.Extensions.Linq;
 using System.Linq;
+using DNX.Extensions.Linq;
 
 namespace DNX.Extensions.DateTimes;
 

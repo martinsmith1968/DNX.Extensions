@@ -66,11 +66,11 @@ public class Mutex : IDisposable
     /// <param name="lockObject">The lock object.</param>
     internal Mutex(string name, object lockObject)
     {
-        State      = MutexState.Waiting;
+        State = MutexState.Waiting;
         LockObject = lockObject;
-        Name       = name;
-        Timestamp  = DateTime.UtcNow;
-        ThreadId   = Thread.CurrentThread.ManagedThreadId;
+        Name = name;
+        Timestamp = DateTime.UtcNow;
+        ThreadId = Thread.CurrentThread.ManagedThreadId;
 
         AcquireLock();
         MutexManager.Register(this);

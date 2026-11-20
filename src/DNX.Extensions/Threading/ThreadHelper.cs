@@ -1,5 +1,5 @@
 using System.Threading;
-using DNX.Extensions.Validation;
+using DNX.Extensions.Validation.BuiltInTypes;
 
 namespace DNX.Extensions.Threading;
 
@@ -45,7 +45,7 @@ public static class ThreadHelper
         Guard.IsNotNull(() => start);
 
         var t = new Thread(
-            delegate()
+            delegate ()
             {
                 start(value);
             }

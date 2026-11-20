@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using System;
 using System.Reflection;
 using DNX.Extensions.Dictionaries;
 using DNX.Extensions.Linq;
@@ -56,11 +56,11 @@ public static class ReflectionExtensions
     /// <summary>
     /// Gets the object properties as a dictionary.
     /// </summary>
-    /// <param name="obj">The object.</param>
+    /// <param name="instance">The object.</param>
     /// <returns>IDictionary&lt;System.String, System.Object&gt;.</returns>
-    public static IDictionary<string, object> GetPropertiesDictionary(object obj)
+    public static IDictionary<string, object> GetPropertiesDictionary(object instance)
     {
-        var dictionary = GetPropertiesDictionary(obj,
+        var dictionary = GetPropertiesDictionary(instance,
             Defaults.PropertyInfoReaderBindingFlags
             );
 
@@ -70,26 +70,26 @@ public static class ReflectionExtensions
     /// <summary>
     /// Gets the object properties as a dictionary.
     /// </summary>
-    /// <param name="obj">The object.</param>
+    /// <param name="instance">The object.</param>
     /// <param name="bindingFlags">The binding flags.</param>
     /// <returns>IDictionary&lt;System.String, System.Object&gt;.</returns>
-    public static IDictionary<string, object> GetPropertiesDictionary(object obj, BindingFlags bindingFlags)
+    public static IDictionary<string, object> GetPropertiesDictionary(object instance, BindingFlags bindingFlags)
     {
-        if (obj == null)
+        if (instance == null)
         {
             return null;
         }
 
-        var properties = GetPropertiesForType(obj.GetType(), bindingFlags)
+        var properties = GetPropertiesForType(instance.GetType(), bindingFlags)
             .ToDictionary(
                 pi => pi.Name,
-                pi => pi.GetValue(obj)
+                pi => pi.GetValue(instance)
             );
 
-        var fields = GetFieldsForType(obj.GetType(), bindingFlags)
+        var fields = GetFieldsForType(instance.GetType(), bindingFlags)
             .ToDictionary(
                 fi => fi.Name,
-                fi => fi.GetValue(obj)
+                fi => fi.GetValue(instance)
             );
 
         var dictionary = properties

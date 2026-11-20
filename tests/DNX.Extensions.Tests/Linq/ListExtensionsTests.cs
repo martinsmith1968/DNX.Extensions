@@ -147,7 +147,7 @@ public class ListExtensionsTests
     [InlineData("a,b,c,d,e,f,g,h,i,j", 5, 21, false)]
     [InlineData("a,b,c,d,e,f,g,h,i,j", 0, 14, false)]
     [InlineData("a,b,c,d,e,f,g,h,i,j", -1, 1023, false)]
-    public void  Test_Move_BadNewIndex(string commaDelimitedArray, int oldIndex, int newIndex, bool expectedResult)
+    public void Test_Move_BadNewIndex(string commaDelimitedArray, int oldIndex, int newIndex, bool expectedResult)
     {
         var enumerable = commaDelimitedArray?
             .Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
@@ -173,7 +173,7 @@ public class ListExtensionsTests
     [InlineData("a,b,c,d,e,f,g,h,i,j", 1, 5, "a,f,c,d,e,b,g,h,i,j")]
     [InlineData("a,b,c,d,e,f,g,h,i,j", 4, 0, "e,b,c,d,a,f,g,h,i,j")]
     [InlineData("a,b,c,d,e,f,g,h,i,j", 3, -1, "a,b,c,j,e,f,g,h,i,d")]
-    public void  Test_Swap(string commaDelimitedArray, int oldIndex, int newIndex, string expectedResult)
+    public void Test_Swap(string commaDelimitedArray, int oldIndex, int newIndex, string expectedResult)
     {
         var enumerable = commaDelimitedArray?
             .Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)

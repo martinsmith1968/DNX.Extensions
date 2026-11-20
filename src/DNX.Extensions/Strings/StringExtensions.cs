@@ -470,14 +470,28 @@ public static class StringExtensions
     /// <remarks>Also available as an extension method</remarks>
     public static bool ContainsOnly(this string text, IList<char> characters)
     {
-        if (text == null || !characters.HasAny())
+        if (text == null || characters == null || !characters.HasAny())
         {
             return false;
         }
 
+        if (characters.Count == 1)
+        {
+            var ch = characters[0];
+            foreach (var c in text)
+            {
+                if (c != ch)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        var charsSet = new HashSet<char>(characters);
         foreach (var ch in text)
         {
-            if (!characters.Contains(ch))
+            if (!charsSet.Contains(ch))
             {
                 return false;
             }
@@ -495,7 +509,7 @@ public static class StringExtensions
     /// <remarks>Also available as an extension method</remarks>
     public static string RemoveAny(this string text, string charsToRemove)
     {
-        return RemoveAny(text, charsToRemove.ToCharArray());
+        return RemoveAny(text, charsToRemove?.ToCharArray());
     }
 
     /// <summary>
@@ -507,15 +521,23 @@ public static class StringExtensions
     /// <remarks>Also available as an extension method</remarks>
     public static string RemoveAny(this string text, char[] charsToRemove)
     {
-        if (charsToRemove.HasAny() && !string.IsNullOrEmpty(text))
+        if (charsToRemove == null || !charsToRemove.HasAny() || string.IsNullOrEmpty(text))
         {
-            foreach (var c in charsToRemove)
+            return text;
+        }
+
+        var charsToRemoveSet = new HashSet<char>(charsToRemove);
+        var sb = new StringBuilder(text.Length);
+
+        foreach (var c in text)
+        {
+            if (!charsToRemoveSet.Contains(c))
             {
-                text = text.Replace(c.ToString(), string.Empty);
+                sb.Append(c);
             }
         }
 
-        return text;
+        return sb.ToString();
     }
 
     /// <summary>
@@ -590,6 +612,11 @@ public static class StringExtensions
     /// <remarks>Also available as an extension method</remarks>
     public static IEnumerable<string> SplitText(this string text, string delimiters, StringSplitOptions options = StringSplitOptions.None, SplitDelimiterType delimiterType = SplitDelimiterType.Any)
     {
+        if (text == null)
+        {
+            return [];
+        }
+
         return delimiterType switch
         {
             SplitDelimiterType.Any => text.Split(delimiters.ToCharArray(), options),
@@ -611,6 +638,11 @@ public static class StringExtensions
     public static IEnumerable<string> SplitByText(this string text, string delimiterText, StringSplitOptions options = StringSplitOptions.None, StringComparison comparison = StringComparison.CurrentCulture)
     {
         var elements = new List<string>();
+
+        if (text == null)
+        {
+            return elements;
+        }
 
         var tempText = text;
 
@@ -666,7 +698,7 @@ public static class StringExtensions
     /// <remarks>Also available as an extension method</remarks>
     public static string CoalesceNull(this IList<string> strings)
     {
-        var value = strings.FirstOrDefault(s => s != null);
+        var value = strings?.FirstOrDefault(s => s != null);
 
         return value;
     }
@@ -756,7 +788,7 @@ public static class StringExtensions
     /// <returns>System.String.</returns>
     internal static string BuildNumberValidationRegexForCulture(CultureInfo cultureInfo)
     {
-        var pattern =string.Format(
+        var pattern = string.Format(
             @"^[\{2}\{3}]?(0|[1-9][0-9]*|[1-9][0-9]{{0,{4}}}(\{0}[0-9]{{{5},{5}}})*)([\{1}]+[0-9]+)?$",
             cultureInfo.NumberFormat.NumberGroupSeparator,
             cultureInfo.NumberFormat.NumberDecimalSeparator,
@@ -776,6 +808,11 @@ public static class StringExtensions
     /// <returns><c>true</c> if the specified culture information is numeric; otherwise, <c>false</c>.</returns>
     public static bool IsValidNumber(this string text)
     {
+        if (string.IsNullOrEmpty(text))
+        {
+            return false;
+        }
+
         var pattern = BuildNumberValidationRegexForCulture(CultureInfo.DefaultThreadCurrentCulture);
 
         return Regex.IsMatch(text, pattern);
@@ -789,6 +826,11 @@ public static class StringExtensions
     /// <returns><c>true</c> if the specified culture information is numeric; otherwise, <c>false</c>.</returns>
     public static bool IsValidNumber(this string text, CultureInfo cultureInfo)
     {
+        if (string.IsNullOrEmpty(text))
+        {
+            return false;
+        }
+
         var pattern = BuildNumberValidationRegexForCulture(cultureInfo);
 
         return Regex.IsMatch(text, pattern);
@@ -845,53 +887,367 @@ public static class StringExtensions
     /// <summary>
     /// Truncates a string to the given length of the leftmost characters if it is longer than the given length, otherwise returns the original string.
     /// </summary>
-    public static string Left(this string input, int length)
+    public static string Left(this string text, int length)
     {
-        return input != null && input.Length > length
-            ? input.Substring(0, length)
-            : input;
+        if (text == null)
+        {
+            return null;
+        }
+
+        if (length == 0)
+        {
+            return string.Empty;
+        }
+
+        if (length < 0)
+        {
+            return text.Right(-length);
+        }
+
+        return text.Length > length
+            ? text.Substring(0, length)
+            : text;
     }
 
     /// <summary>
     /// Truncates a string to the given length of the rightmost characters if it is longer than the given length, otherwise returns the original string.
     /// </summary>
-    public static string Right(this string input, int length)
+    public static string Right(this string text, int length)
     {
-        return input != null && input.Length > length
-            ? input.Substring(input.Length - length, length)
-            : input;
+        if (text == null)
+        {
+            return null;
+        }
+
+        if (length == 0)
+        {
+            return string.Empty;
+        }
+
+        if (length < 0)
+        {
+            return text.Left(-length);
+        }
+
+        return text.Length > length
+            ? text.Substring(text.Length - length, length)
+            : text;
     }
 
     /// <summary>
     /// Converts an ASCII encoded string to Hexadecimal
     /// </summary>
-    /// <param name="input">ASCII Encoded Input</param>
+    /// <param name="text">ASCII Encoded Input</param>
     /// <param name="format">The format to use to generate the Hex value</param>
     /// <returns>Input as Hexadecimal</returns>
-    public static string ToHexString(this string input, string format = "X2")
+    public static string ToHexString(this string text, string format = "X2")
     {
-        return string.Join("", input.Select(c => ((int)c).ToString(format)));
+        if (string.IsNullOrEmpty(text))
+        {
+            return text;
+        }
+
+        return string.Join("", text.Select(c => ((int)c).ToString(format)));
     }
 
     /// <summary>
     /// Converts string into a byte[] using the default encoding (UTF-8)
     /// </summary>
-    /// <param name="input">The string to turn into the byte[]</param>
-    public static byte[] GetBytes(this string input)
+    /// <param name="text">The string to turn into the byte[]</param>
+    public static byte[] GetBytes(this string text)
     {
-        return input.GetBytes(Encoding.UTF8);
+        return text.GetBytes(Encoding.UTF8);
     }
 
     /// <summary>
     /// Converts string into a byte[] using the specified encoding
     /// </summary>
-    /// <param name="input">The string to turn into the byte[]</param>
+    /// <param name="text">The string to turn into the byte[]</param>
     /// <param name="encoding">The encoding.</param>
     /// <returns></returns>
-    public static byte[] GetBytes(this string input, Encoding encoding)
+    public static byte[] GetBytes(this string text, Encoding encoding)
     {
+        if (text == null)
+        {
+            return null;
+        }
+
         encoding ??= Encoding.UTF8;
 
-        return encoding.GetBytes(input);
+        return encoding.GetBytes(text);
+    }
+
+    /// <summary>
+    /// Truncates a string to the specified maximum length, adding an ellipsis if truncated.
+    /// </summary>
+    /// <param name="text">The string to truncate.</param>
+    /// <param name="maxLength">The maximum length.</param>
+    /// <param name="ellipsis">The ellipsis to append (default is "...").</param>
+    /// <returns>The truncated string.</returns>
+    public static string Truncate(this string text, int maxLength, string ellipsis = "...")
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return text;
+        }
+
+        if (maxLength <= 0)
+        {
+            return string.Empty;
+        }
+
+        ellipsis ??= string.Empty;
+
+        if (text.Length <= maxLength)
+        {
+            return text;
+        }
+
+        if (maxLength <= ellipsis.Length)
+        {
+            return ellipsis.Left(maxLength);
+        }
+
+        return text.Left(maxLength - ellipsis.Length) + ellipsis;
+    }
+
+    /// <summary>
+    /// Counts the number of occurrences of a substring.
+    /// </summary>
+    /// <param name="text">The string to search in.</param>
+    /// <param name="searchText">The substring to search for.</param>
+    /// <param name="comparison">The string comparison type.</param>
+    /// <returns>The number of occurrences.</returns>
+    public static int CountOccurrences(this string text, string searchText, StringComparison comparison = StringComparison.Ordinal)
+    {
+        if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(searchText))
+        {
+            return 0;
+        }
+
+        var count = 0;
+        var index = 0;
+
+        while ((index = text.IndexOf(searchText, index, comparison)) >= 0)
+        {
+            count++;
+            index += searchText.Length;
+        }
+
+        return count;
+    }
+
+    /// <summary>
+    /// Counts the number of occurrences of a character.
+    /// </summary>
+    /// <param name="text">The string to search in.</param>
+    /// <param name="value">The character to search for.</param>
+    /// <returns>The number of occurrences.</returns>
+    public static int CountOccurrences(this string text, char value)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return 0;
+        }
+
+        var count = 0;
+        for (var i = 0; i < text.Length; i++)
+        {
+            if (text[i] == value)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    /// <summary>
+    /// Converts a string to PascalCase.
+    /// </summary>
+    /// <param name="text">The string to convert.</param>
+    /// <returns>The string in PascalCase.</returns>
+    public static string ToPascalCase(this string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return text;
+        }
+
+        var words = text
+            .Replace("_", " ")
+            .Replace("-", " ")
+            .Split([' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
+
+        if (words.Length == 0)
+        {
+            return text;
+        }
+
+        var sb = new StringBuilder(text.Length);
+        foreach (var word in words)
+        {
+            sb.Append(char.ToUpperInvariant(word[0]));
+            if (word.Length > 1)
+            {
+                sb.Append(word.Substring(1).ToLowerInvariant());
+            }
+        }
+
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// Converts a string to camelCase.
+    /// </summary>
+    /// <param name="text">The string to convert.</param>
+    /// <returns>The string in camelCase.</returns>
+    public static string ToCamelCase(this string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return text;
+        }
+
+        var pascal = text.ToPascalCase();
+
+        return char.ToLowerInvariant(pascal[0]) + pascal.Substring(1);
+    }
+
+    /// <summary>
+    /// Converts a string to snake_case.
+    /// </summary>
+    /// <param name="text">The string to convert.</param>
+    /// <returns>The string in snake_case.</returns>
+    public static string ToSnakeCase(this string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return text;
+        }
+
+        var sb = new StringBuilder(text.Length + 10);
+        for (var i = 0; i < text.Length; i++)
+        {
+            var c = text[i];
+            if (char.IsUpper(c) && i > 0)
+            {
+                var prev = text[i - 1];
+                if (!char.IsUpper(prev) && prev != '_' && prev != '-')
+                {
+                    sb.Append('_');
+                }
+            }
+
+            if (char.IsWhiteSpace(c) || c == '-' || c == '.')
+            {
+                sb.Append('_');
+            }
+            else if (char.IsLetterOrDigit(c))
+            {
+                sb.Append(char.ToLowerInvariant(c));
+            }
+            else if (c == '_')
+            {
+                sb.Append(c);
+            }
+        }
+
+        var result = sb.ToString();
+        while (result.Contains("__"))
+        {
+            result = result.Replace("__", "_");
+        }
+
+        return result.Trim('_');
+    }
+
+    /// <summary>
+    /// Converts a string to kebab-case.
+    /// </summary>
+    /// <param name="text">The string to convert.</param>
+    /// <returns>The string in kebab-case.</returns>
+    public static string ToKebabCase(this string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return text;
+        }
+
+        var snake = text.ToSnakeCase();
+        return snake.Replace('_', '-');
+    }
+
+    /// <summary>
+    /// Masks a string by replacing characters with a mask character.
+    /// </summary>
+    /// <param name="text">The string to mask.</param>
+    /// <param name="visibleStart">Number of characters to keep visible at the start.</param>
+    /// <param name="visibleEnd">Number of characters to keep visible at the end.</param>
+    /// <param name="maskChar">The character to use for masking.</param>
+    /// <returns>The masked string.</returns>
+    public static string Mask(this string text, int visibleStart = 0, int visibleEnd = 0, char maskChar = '*')
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return text;
+        }
+
+        if (visibleStart < 0) visibleStart = 0;
+        if (visibleEnd < 0) visibleEnd = 0;
+
+        if (visibleStart + visibleEnd >= text.Length)
+        {
+            return text;
+        }
+
+        var sb = new StringBuilder(text.Length);
+        if (visibleStart > 0)
+        {
+            sb.Append(text.Substring(0, visibleStart));
+        }
+
+        for (var i = 0; i < text.Length - visibleStart - visibleEnd; i++)
+        {
+            sb.Append(maskChar);
+        }
+
+        if (visibleEnd > 0)
+        {
+            sb.Append(text.Substring(text.Length - visibleEnd));
+        }
+
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// Masks an email address, keeping only the first character of the local part and the domain.
+    /// </summary>
+    /// <param name="email">The email address to mask.</param>
+    /// <param name="maskChar">The character to use for masking.</param>
+    /// <returns>The masked email address.</returns>
+    public static string MaskEmail(this string email, char maskChar = '*')
+    {
+        if (string.IsNullOrEmpty(email) || !email.Contains("@"))
+        {
+            return email;
+        }
+
+        var parts = email.Split(['@'], 2);
+        var localPart = parts[0];
+        var domainPart = parts[1];
+
+        if (string.IsNullOrEmpty(localPart))
+        {
+            return email;
+        }
+
+        if (localPart.Length == 1)
+        {
+            return localPart + "@" + domainPart;
+        }
+
+        var maskedLocal = localPart[0] + new string(maskChar, Math.Max(1, localPart.Length - 1));
+        return maskedLocal + "@" + domainPart;
     }
 }

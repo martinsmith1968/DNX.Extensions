@@ -2,7 +2,6 @@ using DNX.Extensions.IO;
 using DNX.Extensions.Strings;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace DNX.Extensions.Tests.IO;
 

@@ -68,31 +68,31 @@ public static class EnumerableExtensions
     /// Determines whether input is one of the specified candidates.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="input">The input.</param>
+    /// <param name="value">The value.</param>
     /// <param name="candidates">The candidates.</param>
     /// <returns>
     ///   <c>true</c> if input is one of the specified candidates; otherwise, <c>false</c>.
     /// </returns>
-    public static bool IsOneOf<T>(this T input, IEnumerable<T> candidates)
+    public static bool IsOneOf<T>(this T value, IEnumerable<T> candidates)
     {
-        return candidates != null && candidates.Any() && candidates.Contains(input);
+        return candidates != null && candidates.Any() && candidates.Contains(value);
     }
 
     /// <summary>
     /// Determines whether input is one of the specified candidates, according to Comparison Method
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="input">The input.</param>
+    /// <param name="value">The value.</param>
     /// <param name="candidates">The candidates.</param>
     /// <param name="comparer">The comparer.</param>
     /// <returns>
     ///   <c>true</c> if input is one of the specified candidates; otherwise, <c>false</c>.
     /// </returns>
-    public static bool IsOneOf<T>(this T input, IEnumerable<T> candidates, IEqualityComparer<T> comparer)
+    public static bool IsOneOf<T>(this T value, IEnumerable<T> candidates, IEqualityComparer<T> comparer)
     {
         return candidates != null
                && candidates.Any()
-               && candidates.Contains(input, comparer);
+               && candidates.Contains(value, comparer);
     }
 
     /// <summary>
@@ -165,13 +165,13 @@ public static class EnumerableExtensions
     /// Gets the random item.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="items">The items.</param>
+    /// <param name="enumerable">The enumerable.</param>
     /// <param name="randomizer">The randomizer to use (optional)</param>
     /// <returns></returns>
-    public static T GetRandomItem<T>(this IEnumerable<T> items, Random randomizer = null)
+    public static T GetRandomItem<T>(this IEnumerable<T> enumerable, Random randomizer = null)
     {
-        return items.GetRandomItem(
-            () => (randomizer ?? Randomizer).Next(items.Count())
+        return enumerable.GetRandomItem(
+            () => (randomizer ?? Randomizer).Next(enumerable.Count())
         );
     }
 
@@ -179,15 +179,15 @@ public static class EnumerableExtensions
     /// Gets the random item.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="items">The items.</param>
+    /// <param name="enumerable">The enumerable.</param>
     /// <param name="indexProvider">The index provider.</param>
     /// <returns></returns>
-    public static T GetRandomItem<T>(this IEnumerable<T> items, Func<int> indexProvider)
+    public static T GetRandomItem<T>(this IEnumerable<T> enumerable, Func<int> indexProvider)
     {
-        if (!items.HasAny())
+        if (!enumerable.HasAny())
             return default;
 
-        var list = items.ToArray();
+        var list = enumerable.ToArray();
 
         var index = indexProvider.Invoke();
 
@@ -198,16 +198,16 @@ public static class EnumerableExtensions
     /// Gets the item at an index position, or default
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="items">The items.</param>
+    /// <param name="list">The list.</param>
     /// <param name="index">The index.</param>
     /// <returns></returns>
-    public static T GetAt<T>(this IList<T> items, int index)
+    public static T GetAt<T>(this IList<T> list, int index)
     {
         if (index < 0)
-            index = items.Count + index;
+            index = list.Count + index;
 
-        return items != null && index >= 0 && index < items.Count
-            ? items[index]
+        return list != null && index >= 0 && index < list.Count
+            ? list[index]
             : default;
     }
 
