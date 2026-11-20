@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DNX.Extensions.Maths;
-using DNX.Extensions.Validation;
+using DNX.Extensions.Validation.BuiltInTypes;
 
 namespace DNX.Extensions.Assemblies;
 
@@ -26,11 +26,11 @@ public static class VersionExtensions
             return null;
         }
 
-        var parts = new List<string>( version.ToString().Split('.'));
+        var parts = new List<string>(version.ToString().Split('.'));
 
         while (parts.Any() && parts.Last().Equals("0") && parts.Count > minimumPositions)
         {
-            parts = parts.Take(parts.Count - 1).ToList();
+            parts = [.. parts.Take(parts.Count - 1)];
         }
 
         var versionText = string.Join(".", parts);

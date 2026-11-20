@@ -40,7 +40,7 @@ public class ConversionException : Exception
     public ConversionException(string value, string message, Type type)
         : base(message)
     {
-        Value       = value;
+        Value = value;
         ConvertType = type;
     }
 }

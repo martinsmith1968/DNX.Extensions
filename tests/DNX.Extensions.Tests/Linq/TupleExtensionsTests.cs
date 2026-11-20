@@ -1,6 +1,6 @@
+using DNX.Extensions.Linq;
 using Shouldly;
 using Xunit;
-using DNX.Extensions.Linq;
 
 namespace DNX.Extensions.Tests.Linq;
 

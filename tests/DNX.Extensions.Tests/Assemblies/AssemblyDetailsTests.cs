@@ -109,6 +109,10 @@ public class AssemblyDetailsTests
     {
         var type = GetType();
 
+        Assert.SkipWhen(
+            Assembly.GetEntryAssembly() == type.Assembly,
+            "Entry assembly is the test assembly itself under the in-process test runner.");
+
         // Act
         var result = AssemblyDetails.ForEntryPoint();
 

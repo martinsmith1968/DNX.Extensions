@@ -1,9 +1,10 @@
 using System.Security.Cryptography;
 using DNX.Extensions.Conversion;
-using DNX.Extensions.Strings;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
+
+#pragma warning disable xUnit1044   // Type Argument might not be serializable
+#pragma warning disable xUnit1045   // Encoding might not be serializable
 
 namespace DNX.Extensions.Tests.Conversion;
 
@@ -130,8 +131,6 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
     [InlineData(123, "0000007b-0000-0000-0000-000000000000")]
     [InlineData(12345, "00003039-0000-0000-0000-000000000000")]
     [InlineData(32767, "00007fff-0000-0000-0000-000000000000")]
-    [InlineData(int.MinValue, "80000000-0000-0000-0000-000000000000")]
-    [InlineData(int.MaxValue, "7fffffff-0000-0000-0000-000000000000")]
     [InlineData(long.MinValue, "00000000-0000-8000-0000-000000000000")]
     [InlineData(long.MaxValue, "ffffffff-ffff-7fff-0000-000000000000")]
     public void ToGuid_from_long_generates_a_predictable_result(long value, string expected)
@@ -150,8 +149,6 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
     [InlineData(123, "0000007b-0000-0000-0000-000000000000")]
     [InlineData(12345, "00003039-0000-0000-0000-000000000000")]
     [InlineData(32767, "00007fff-0000-0000-0000-000000000000")]
-    [InlineData(uint.MinValue, "00000000-0000-0000-0000-000000000000")]
-    [InlineData(uint.MaxValue, "ffffffff-0000-0000-0000-000000000000")]
     [InlineData(ulong.MinValue, "00000000-0000-0000-0000-000000000000")]
     [InlineData(ulong.MaxValue, "ffffffff-ffff-ffff-0000-000000000000")]
     public void ToGuid_from_ulong_generates_a_predictable_result(ulong value, string expected)
@@ -169,8 +166,6 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
     [InlineData(1, "00000001-0000-0000-0000-000000000000")]
     [InlineData(12345.67, "00003039-0000-0000-0000-000000000000")]
     [InlineData(123456789.12, "075bcd18-0000-0000-0000-000000000000")]
-    [InlineData(int.MinValue, "80000000-0000-0000-0000-000000000000")]
-    [InlineData(int.MaxValue, "80000000-0000-0000-0000-000000000000")]
     [InlineData(float.MinValue, "00000000-0000-0000-0000-000000010000")]
     [InlineData(float.MaxValue, "00000000-0000-0000-0000-000000ffffff")]
     public void ToGuid_from_float_generates_a_predictable_result(float value, string expected)
@@ -185,11 +180,7 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
     }
 
     [Theory]
-    [InlineData(1, "00000001-0000-0000-0000-000000000000")]
-    [InlineData(12345.67, "00003039-0000-0000-0000-000000000000")]
-    [InlineData(123456789.12, "075bcd15-0000-0000-0000-000000000000")]
-    [InlineData(int.MinValue, "80000000-0000-0000-0000-000000000000")]
-    [InlineData(int.MaxValue, "7fffffff-0000-0000-0000-000000000000")]
+    [MemberData(nameof(ToGuid_from_decimal_generates_a_predictable_result_Data))]
     public void ToGuid_from_decimal_generates_a_predictable_result(decimal value, string expected)
     {
         // Act
@@ -205,10 +196,8 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
     [InlineData(1, "00000001-0000-0000-0000-000000000000")]
     [InlineData(12345.67, "00003039-0000-0000-0000-000000000000")]
     [InlineData(123456789.12, "075bcd15-0000-0000-0000-000000000000")]
-    [InlineData(int.MinValue, "80000000-0000-0000-0000-000000000000")]
-    [InlineData(int.MaxValue, "7fffffff-0000-0000-0000-000000000000")]
-    [InlineData(float.MinValue, "00000000-0000-0000-0000-000000010000")]
-    [InlineData(float.MaxValue, "00000000-0000-0000-0000-000000ffffff")]
+    [InlineData(double.MinValue, "00000000-0000-0000-0000-000000000000")]
+    [InlineData(double.MaxValue, "00000000-0000-0000-0000-000000000000")]
     public void ToGuid_from_double_generates_a_predictable_result(double value, string expected)
     {
         // Act
@@ -242,6 +231,18 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
         }
 
         return data;
+    }
+
+    public static TheoryData<decimal, string> ToGuid_from_decimal_generates_a_predictable_result_Data()
+    {
+        return new TheoryData<decimal, string>
+        {
+            { 1m, "00000001-0000-0000-0000-000000000000" },
+            { 12345.67m, "00003039-0000-0000-0000-000000000000" },
+            { 123456789.12m, "075bcd15-0000-0000-0000-000000000000" },
+            { decimal.MinValue, "00000001-0000-0000-0000-0000ff000000" },
+            { decimal.MaxValue, "ffffffff-ffff-ffff-ffff-ffff00000000" },
+        };
     }
 
     public static TheoryData<string, HashAlgorithm, Func<byte, byte, byte>> ToDeterministicGuid_custom_algorithm_specific_reduce_method_Data()

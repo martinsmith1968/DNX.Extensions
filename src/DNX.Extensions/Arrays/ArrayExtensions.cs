@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DNX.Extensions.Validation.BuiltInTypes;
 
 #pragma warning disable 1591
 
@@ -18,6 +19,8 @@ public static class ArrayExtensions
 
     public static T[] PadLeft<T>(this T[] input, int length)
     {
+        Guard.IsNotNull(() => input);
+
         var paddedArray = new T[length];
         var startIdx = length - input.Length;
         if (length >= input.Length)
@@ -70,6 +73,8 @@ public static class ArrayExtensions
 
     public static T[] Reduce<T>(this T[] inputArray, int targetSize, Func<T, T, T> method)
     {
+        Guard.IsNotNull(() => inputArray);
+
         if (inputArray.Length <= targetSize)
             return inputArray;
 

@@ -54,23 +54,14 @@ namespace DNX.Extensions.Maths
         /// <returns>System.String.</returns>
         public static string GetLimitDescriptionFormat(this IsBetweenBoundsType boundsType)
         {
-            switch (boundsType)
+            return boundsType switch
             {
-                case IsBetweenBoundsType.IncludeLowerAndUpper:
-                    return "between {0} and {1}";
-
-                case IsBetweenBoundsType.ExcludeLowerAndUpper:
-                    return "between but not including {0} and {1}";
-
-                case IsBetweenBoundsType.IncludeLowerExcludeUpper:
-                    return "greater than or equal to {0} but less than {1}";
-
-                case IsBetweenBoundsType.ExcludeLowerIncludeUpper:
-                    return "greater than {0} but less than or equal to {1}";
-
-                default:
-                    return null;
-            }
+                IsBetweenBoundsType.IncludeLowerAndUpper => "between {0} and {1}",
+                IsBetweenBoundsType.ExcludeLowerAndUpper => "between but not including {0} and {1}",
+                IsBetweenBoundsType.IncludeLowerExcludeUpper => "greater than or equal to {0} but less than {1}",
+                IsBetweenBoundsType.ExcludeLowerIncludeUpper => "greater than {0} but less than or equal to {1}",
+                _ => null
+            };
         }
     }
 }

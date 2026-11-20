@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-
 namespace DNX.Extensions.Strings;
 
 public static class BuiltInTypesExtensions

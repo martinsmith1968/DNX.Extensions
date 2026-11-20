@@ -45,6 +45,6 @@ public class ExceptionExtensionsTests
         list[0].ShouldBe(ex4.Message);
         list[1].ShouldBe(ex3.Message);
         list[2].ShouldBe(ex2.Message);
-        list[3].ShouldBe(ex1.Message );
+        list[3].ShouldBe(ex1.Message);
     }
 }

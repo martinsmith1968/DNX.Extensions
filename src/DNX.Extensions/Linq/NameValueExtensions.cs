@@ -36,9 +36,9 @@ public static class NameValueExtensions
 
         var dictionaries = new List<IDictionary<string, string>>();
 
-        for (var i=0; i < collection.Count; ++i)
+        for (var i = 0; i < collection.Count; ++i)
         {
-            var key    = collection.GetKey(i);
+            var key = collection.GetKey(i);
             var values = collection.GetValues(i) ?? Enumerable.Empty<string>();
 
             foreach (var value in values)
@@ -52,6 +52,6 @@ public static class NameValueExtensions
             }
         }
 
-        return DictionaryExtensions.Merge(mergeTechnique, dictionaries.ToArray());
+        return DictionaryExtensions.MergeAll(mergeTechnique, [.. dictionaries]);
     }
 }

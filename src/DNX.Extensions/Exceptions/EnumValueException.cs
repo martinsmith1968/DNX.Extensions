@@ -42,7 +42,7 @@ public class EnumValueException<T> : Exception
     public EnumValueException(T value, string messageTemplate)
         : base(string.Format(messageTemplate, value, typeof(T).Name))
     {
-        Type  = typeof(T);
+        Type = typeof(T);
         Value = value;
     }
 }

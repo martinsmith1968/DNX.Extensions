@@ -1,5 +1,5 @@
 using System;
-using DNX.Extensions.Validation;
+using DNX.Extensions.Validation.BuiltInTypes;
 
 namespace DNX.Extensions.Reflection;
 
