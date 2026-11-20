@@ -241,7 +241,8 @@ jobs:
     - name: Restore NuGet packages
       run: dotnet restore
 
-    - name: Verify generated files
+    - name: Verify generated files (Linux)
+      if: matrix.os == 'ubuntu-latest'
       run: |
         if ! git diff --quiet -- '*.generated.cs'; then
           echo "Generated files are out of date:"
@@ -254,6 +255,24 @@ jobs:
           echo "$untracked"
           exit 1
         fi
+
+    - name: Verify generated files (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        git diff --quiet -- '*.generated.cs'
+        if ($LASTEXITCODE -ne 0) {
+          Write-Output "Generated files are out of date:"
+          git --no-pager diff -- '*.generated.cs'
+          exit 1
+        }
+
+        $untracked = git ls-files --others --exclude-standard -- '*.generated.cs'
+        if ($untracked) {
+          Write-Output "Untracked generated files found:"
+          Write-Output $untracked
+          exit 1
+        }
 
     - name: Verify C# formatting
       run: dotnet format whitespace DNX.Extensions.sln --verify-no-changes --no-restore --verbosity quiet
