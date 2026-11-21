@@ -1,59 +1,190 @@
+using System.Linq.Expressions;
 using DNX.Extensions.Reflection;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
-
-#pragma warning disable xUnit1044   // TestData not serializable
 
 namespace DNX.Extensions.Tests.Reflection;
 
 public class ExpressionExtensionsTests
 {
-    // TODO: Not sure how to test these
+    private static int StaticProperty => 42;
+    private static int SomeMethod() => 5;
 
-
-
-
-    [Fact]
-    public void IsMemberExpression_func_Tests()
+    public class IsMemberExpressionTests
     {
-        ExpressionExtensions.IsMemberExpression(() => BooleanFunc()).Should().BeFalse();
-        ExpressionExtensions.IsMemberExpression(() => StringFunc()).Should().BeFalse();
-        ExpressionExtensions.IsMemberExpression(() => Int32Func()).Should().BeFalse();
-        ExpressionExtensions.IsMemberExpression(() => DoubleFunc()).Should().BeFalse();
+        [Fact]
+        public void Returns_true_for_a_captured_local_variable()
+        {
+            var localVar = 5;
+
+            ExpressionExtensions.IsMemberExpression(() => localVar).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void Returns_true_for_a_property_access()
+        {
+            ExpressionExtensions.IsMemberExpression(() => StaticProperty).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void Returns_false_for_a_method_call()
+        {
+            ExpressionExtensions.IsMemberExpression(() => SomeMethod()).ShouldBeFalse();
+        }
     }
 
-    [Fact]
-    public void IsMemberExpression_action_Tests()
+    public class IsLambdaExpressionTests
     {
-        // TODO: This looks wrong
-        ExpressionExtensions.IsMemberExpression<object>(() => Action1()).Should().BeFalse();
+        [Fact]
+        public void Returns_true_when_the_body_is_itself_a_lambda()
+        {
+            Expression<Func<Func<int>>> exp = () => () => 5;
+
+            ExpressionExtensions.IsLambdaExpression(exp).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void Returns_false_for_a_member_access()
+        {
+            var localVar = 5;
+
+            ExpressionExtensions.IsLambdaExpression(() => localVar).ShouldBeFalse();
+        }
+
+        [Fact]
+        public void Returns_false_for_a_method_call()
+        {
+            ExpressionExtensions.IsLambdaExpression(() => SomeMethod()).ShouldBeFalse();
+        }
     }
 
-    [Fact]
-    public void IsLambdaExpression_func_Tests()
+    public class IsUnaryExpressionTests
     {
-        ExpressionExtensions.IsLambdaExpression(() => BooleanFunc()).Should().BeFalse();
-        ExpressionExtensions.IsLambdaExpression(() => StringFunc()).Should().BeFalse();
-        ExpressionExtensions.IsLambdaExpression(() => Int32Func()).Should().BeFalse();
-        ExpressionExtensions.IsLambdaExpression(() => DoubleFunc()).Should().BeFalse();
+        [Fact]
+        public void Returns_true_for_a_boxing_conversion()
+        {
+            var localVar = 5;
+
+            ExpressionExtensions.IsUnaryExpression(() => (object)localVar).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void Returns_false_for_a_member_access()
+        {
+            var localVar = 5;
+
+            ExpressionExtensions.IsUnaryExpression(() => localVar).ShouldBeFalse();
+        }
+
+        [Fact]
+        public void Returns_false_for_a_method_call()
+        {
+            ExpressionExtensions.IsUnaryExpression(() => SomeMethod()).ShouldBeFalse();
+        }
     }
 
-    [Fact]
-    public void IsUnaryExpression_func_Tests()
+    public class GetMemberNameTests
     {
-        ExpressionExtensions.IsUnaryExpression(() => BooleanFunc()).Should().BeFalse();
-        ExpressionExtensions.IsUnaryExpression(() => StringFunc()).Should().BeFalse();
-        ExpressionExtensions.IsUnaryExpression(() => Int32Func()).Should().BeFalse();
-        ExpressionExtensions.IsUnaryExpression(() => DoubleFunc()).Should().BeFalse();
+        [Fact]
+        public void Returns_the_name_of_a_captured_local_variable()
+        {
+            var localVar = 5;
+
+            ExpressionExtensions.GetMemberName(() => localVar).ShouldBe(nameof(localVar));
+        }
+
+        [Fact]
+        public void Returns_the_name_of_a_property_access()
+        {
+            ExpressionExtensions.GetMemberName(() => StaticProperty).ShouldBe(nameof(StaticProperty));
+        }
+
+        [Fact]
+        public void Returns_null_for_a_method_call()
+        {
+            ExpressionExtensions.GetMemberName(() => SomeMethod()).ShouldBeNull();
+        }
     }
 
+    public class GetLambdaNameTests
+    {
+        [Fact]
+        public void Returns_the_name_of_a_manually_named_lambda()
+        {
+            var innerLambda = Expression.Lambda<Func<int>>(Expression.Constant(5), "MyNamedLambda", []);
+            var outerLambda = Expression.Lambda<Func<Func<int>>>(innerLambda);
 
+            ExpressionExtensions.GetLambdaName(outerLambda).ShouldBe("MyNamedLambda");
+        }
 
+        [Fact]
+        public void Returns_null_for_a_compiler_generated_nested_lambda_since_it_has_no_name()
+        {
+            Expression<Func<Func<int>>> exp = () => () => 5;
 
-    private static bool BooleanFunc() => DateTime.UtcNow.Millisecond % 2 == 0;
-    private static string StringFunc() => Environment.MachineName;
-    private static int Int32Func() => DateTime.UtcNow.Second;
-    private static double DoubleFunc() => DateTime.UtcNow.Millisecond;
+            ExpressionExtensions.GetLambdaName(exp).ShouldBeNull();
+        }
 
-    private static void Action1() { }
+        [Fact]
+        public void Returns_null_for_a_method_call()
+        {
+            ExpressionExtensions.GetLambdaName(() => SomeMethod()).ShouldBeNull();
+        }
+    }
+
+    public class GetUnaryNameTests
+    {
+        [Fact]
+        public void Returns_the_member_name_for_a_boxed_member_access()
+        {
+            var localVar = 5;
+
+            ExpressionExtensions.GetUnaryName(() => (object)localVar).ShouldBe(nameof(localVar));
+        }
+
+        [Fact]
+        public void Returns_null_when_the_boxed_operand_is_not_a_member_access()
+        {
+            ExpressionExtensions.GetUnaryName(() => (object)SomeMethod()).ShouldBeNull();
+        }
+
+        [Fact]
+        public void Returns_null_for_a_method_call()
+        {
+            ExpressionExtensions.GetUnaryName(() => SomeMethod()).ShouldBeNull();
+        }
+    }
+
+    public class GetExpressionNameTests
+    {
+        [Fact]
+        public void Delegates_to_GetMemberName_for_a_member_access()
+        {
+            var localVar = 5;
+
+            ExpressionExtensions.GetExpressionName(() => localVar).ShouldBe(nameof(localVar));
+        }
+
+        [Fact]
+        public void Delegates_to_GetLambdaName_for_a_nested_lambda_body()
+        {
+            Expression<Func<Func<int>>> exp = () => () => 5;
+
+            ExpressionExtensions.GetExpressionName(exp).ShouldBeNull();
+        }
+
+        [Fact]
+        public void Delegates_to_GetUnaryName_for_a_boxed_member_access()
+        {
+            var localVar = 5;
+
+            ExpressionExtensions.GetExpressionName(() => (object)localVar).ShouldBe(nameof(localVar));
+        }
+
+        [Fact]
+        public void Returns_null_for_a_method_call()
+        {
+            ExpressionExtensions.GetExpressionName(() => SomeMethod()).ShouldBeNull();
+        }
+    }
 }
