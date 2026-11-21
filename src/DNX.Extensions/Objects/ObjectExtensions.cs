@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using DNX.Extensions.Reflection;
 using DNX.Extensions.Strings;
 
@@ -50,12 +51,25 @@ public static class ObjectExtensions
     /// <returns></returns>
     public static Dictionary<string, object> ToDictionary(this object obj)
     {
-        if (obj == null)
-            return null;
+        return obj?.GetObjectPropertyValues(ReflectionExtensions.GetPropertiesForType(obj.GetType()));
+    }
 
-        var properties = ReflectionExtensions.GetPropertiesForType(obj.GetType());
+    /// <summary>
+    /// Converts the supplied object to dictionary.
+    /// </summary>
+    /// <param name="obj">The object.</param>
+    /// <param name="bindingFlags">The binding flags.</param>
+    /// <returns></returns>
+    public static Dictionary<string, object> ToDictionary(this object obj, BindingFlags bindingFlags)
+    {
+        return obj?.GetObjectPropertyValues(ReflectionExtensions.GetPropertiesForType(obj.GetType(), bindingFlags));
+    }
 
-        return properties.ToDictionary(p => p.Name, p => p.GetValue(obj));
+    private static Dictionary<string, object> GetObjectPropertyValues(this object obj, IList<PropertyInfo> properties)
+    {
+        return properties
+            .Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
+            .ToDictionary(p => p.Name, p => p.GetValue(obj));
     }
 
     /// <summary>
