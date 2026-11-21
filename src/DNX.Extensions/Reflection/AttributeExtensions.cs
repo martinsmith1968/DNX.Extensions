@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DNX.Extensions.Validation;
+using DNX.Extensions.Validation.BuiltInTypes;
 
 namespace DNX.Extensions.Reflection;
 
@@ -91,12 +91,12 @@ public static class AttributeExtensions
     /// Does the instance object have type attributes
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="obj">The object.</param>
+    /// <param name="instance">The object.</param>
     /// <param name="inherit">if set to <c>true</c> [inherit].</param>
     /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-    public static bool InstanceHasTypeAttributes<T>(this object obj, bool inherit)
+    public static bool InstanceHasTypeAttributes<T>(this object instance, bool inherit)
     {
-        var attributes = obj.GetTypeAttributesFromInstance<T>(inherit);
+        var attributes = instance.GetTypeAttributesFromInstance<T>(inherit);
 
         return attributes.Any();
     }

@@ -46,7 +46,7 @@ public class BigIntegerExtensionsTests
 
         StaticData()
             .ToList()
-            .ForEach(x => { data.Add(x.Item2, x.Item1);});
+            .ForEach(x => { data.Add(x.Item2, x.Item1); });
 
         return data;
     }

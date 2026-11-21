@@ -1,11 +1,8 @@
 using DNX.Extensions.Arrays;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
 
 // ReSharper disable UseUtf8StringLiteral
-
-#pragma warning disable IDE0290
 
 namespace DNX.Extensions.Tests.Arrays;
 
@@ -58,6 +55,16 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
             outputHelper.WriteLine($"Index: {i}");
             result[^i].ShouldBe(values[^i]);
         }
+    }
+
+    [Fact]
+    public void Test_PadLeft_null_array()
+    {
+        string[] values = null;
+
+        var ex = Should.Throw<ArgumentNullException>(() => values.PadLeft(4));
+
+        ex.ParamName.ShouldBe("input");
     }
 
     public class ShiftLeft
@@ -174,6 +181,16 @@ public class ArrayExtensionsTests(ITestOutputHelper outputHelper)
 
     public class Reduce
     {
+        [Fact]
+        public void Reduce_null_array()
+        {
+            byte[] input = null;
+
+            var ex = Should.Throw<ArgumentNullException>(() => input.Reduce(4, (a, b) => (byte)(a + b)));
+
+            ex.ParamName.ShouldBe("inputArray");
+        }
+
         [Theory]
         [MemberData(nameof(Reduce_Data_byte))]
         public void Reduce_can_produce_an_appropriate_output_for_bytes(byte[] input, int targetSize, Func<byte, byte, byte> method, byte[] expectedResult)

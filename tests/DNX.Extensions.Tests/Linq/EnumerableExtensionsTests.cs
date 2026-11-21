@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using DNX.Extensions.Comparers;
 using DNX.Extensions.Linq;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
 
 // ReSharper disable InconsistentNaming
 
