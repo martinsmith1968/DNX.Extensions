@@ -1,7 +1,7 @@
 {
   "commands": {
     "BuildAll": {
-      "fileName": "powershell.exe",
+      "fileName": "pwsh.exe",
       "workingDirectory": ".",
       "arguments": "-ExecutionPolicy Bypass -NonInteractive -File BuildAll.ps1"
     }

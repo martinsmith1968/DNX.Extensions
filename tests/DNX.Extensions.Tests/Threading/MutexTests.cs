@@ -49,6 +49,17 @@ public class MutexTests
     }
 
     [Fact]
+    public void Mutex_dispose_can_be_called_more_than_once_without_throwing()
+    {
+        var mutex = MutexManager.Acquire(Guid.NewGuid().ToString());
+
+        mutex.Dispose();
+
+        Should.NotThrow(() => mutex.Dispose());
+        mutex.State.ShouldBe(MutexState.Released);
+    }
+
+    [Fact]
     public void Public_mutex_constructor_acquires_named_lock()
     {
         var name = Guid.NewGuid().ToString();

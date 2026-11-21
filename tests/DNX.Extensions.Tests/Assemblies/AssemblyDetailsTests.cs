@@ -135,6 +135,14 @@ public class AssemblyDetailsTests
     }
 
     [Fact]
+    public void AssemblyDetails_ForAssemblyContaining_null_type_throws()
+    {
+        var ex = Should.Throw<ArgumentNullException>(() => AssemblyDetails.ForAssemblyContaining(null));
+
+        ex.ParamName.ShouldBe("type");
+    }
+
+    [Fact]
     public void AssemblyDetails_ForAssemblyContainingType_T_accesses_the_appropriate_assembly()
     {
         var type = typeof(AssemblyDetails);

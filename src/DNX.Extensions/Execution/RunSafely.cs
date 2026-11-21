@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace DNX.Extensions.Execution;
@@ -8,6 +9,22 @@ namespace DNX.Extensions.Execution;
 /// </summary>
 public class RunSafely
 {
+    /// <summary>
+    /// Invokes the exception handler, tracing (rather than silently discarding) any exception
+    /// the handler itself throws.
+    /// </summary>
+    private static void InvokeExceptionHandler(Action<Exception> exceptionHandler, Exception ex)
+    {
+        try
+        {
+            exceptionHandler?.Invoke(ex);
+        }
+        catch (Exception handlerEx)
+        {
+            Trace.WriteLine($"RunSafely: exceptionHandler itself threw: {handlerEx}");
+        }
+    }
+
     /// <summary>
     /// Executes the specified action.
     /// </summary>
@@ -21,7 +38,7 @@ public class RunSafely
         }
         catch (Exception ex)
         {
-            Execute(() => exceptionHandler?.Invoke(ex));
+            InvokeExceptionHandler(exceptionHandler, ex);
         }
     }
 
@@ -53,7 +70,7 @@ public class RunSafely
         }
         catch (Exception ex)
         {
-            Execute(() => exceptionHandler?.Invoke(ex));
+            InvokeExceptionHandler(exceptionHandler, ex);
 
             return defaultValue;
         }
@@ -72,7 +89,7 @@ public class RunSafely
         }
         catch (Exception ex)
         {
-            Execute(() => exceptionHandler?.Invoke(ex));
+            InvokeExceptionHandler(exceptionHandler, ex);
         }
     }
 
@@ -104,7 +121,7 @@ public class RunSafely
         }
         catch (Exception ex)
         {
-            Execute(() => exceptionHandler?.Invoke(ex));
+            InvokeExceptionHandler(exceptionHandler, ex);
 
             return defaultValue;
         }

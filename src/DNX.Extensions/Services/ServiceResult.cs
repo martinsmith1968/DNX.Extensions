@@ -26,6 +26,20 @@ public readonly struct ServiceResult<T>
         Error = error;
     }
 
+    /// <summary>
+    /// Creates a successful result. The implicit conversion from <typeparamref name="T"/> is
+    /// ambiguous when <typeparamref name="T"/> is itself <see cref="Exception"/> - use this
+    /// factory method instead in that case.
+    /// </summary>
+    public static ServiceResult<T> Success(T data) => new(data);
+
+    /// <summary>
+    /// Creates a failed result. The implicit conversion from <see cref="Exception"/> is
+    /// ambiguous when <typeparamref name="T"/> is itself <see cref="Exception"/> - use this
+    /// factory method instead in that case.
+    /// </summary>
+    public static ServiceResult<T> Failure(Exception error) => new(error);
+
     // Implicit operator for data
     public static implicit operator ServiceResult<T>(T data) => new(data);
 

@@ -27,7 +27,7 @@ public static class ConvertDoubleExtensions
 
 #if ConvertDateTimeExtensions
         var flags = DateTimeStyles.AssumeUniversal;
-        if (text.TrimEnd().EndsWith("Z"))
+        if (!string.IsNullOrEmpty(text) && text.TrimEnd().EndsWith("Z"))
         {
             flags |= DateTimeStyles.AdjustToUniversal;
         }

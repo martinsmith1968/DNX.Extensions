@@ -10,6 +10,8 @@ namespace DNX.Extensions.Exceptions;
 /// <seealso cref="System.Exception" />
 public class ReadOnlyListException<T> : Exception
 {
+    private const string MessageTemplate = "The list of type {0} is read-only and cannot be modified";
+
     /// <summary>
     /// Gets the list.
     /// </summary>
@@ -21,6 +23,7 @@ public class ReadOnlyListException<T> : Exception
     /// </summary>
     /// <param name="list">The list.</param>
     public ReadOnlyListException(IList<T> list)
+        : base(string.Format(MessageTemplate, list?.GetType().Name))
     {
         List = list;
     }

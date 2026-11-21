@@ -322,7 +322,7 @@ public abstract class ProducerConsumerQueue<T> : IDisposable, IProducerConsumerQ
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine("Exception handled by the Queue: {0}", Describe(ex));
+                    Trace.WriteLine($"Exception handled by the Queue: {Describe(ex)}");
                 }
                 finally
                 {
@@ -424,26 +424,26 @@ public abstract class ProducerConsumerQueue<T> : IDisposable, IProducerConsumerQ
         // Process it
         try
         {
-            Trace.WriteLine("Processing Queue item: {0}", item == null ? "NULL" : item.GetType().Name);
+            Trace.WriteLine($"Processing Queue item: {(item == null ? "NULL" : item.GetType().Name)}");
 
             // Simply hand-off to ProcessItem as we're operating in single-thread mode
             ProcessItem(item);
         }
         catch (Exception ex)
         {
-            Trace.WriteLine("Exception from ProcessItem for Queue item: {0}", Describe(ex));
+            Trace.WriteLine($"Exception from ProcessItem for Queue item: {Describe(ex)}");
         }
 
         // Run any completion steps
         try
         {
-            Trace.WriteLine("Completing Queue item: {0}", item == null ? "NULL" : item.GetType().Name);
+            Trace.WriteLine($"Completing Queue item: {(item == null ? "NULL" : item.GetType().Name)}");
 
             ItemComplete(item);
         }
         catch (Exception ex)
         {
-            Trace.WriteLine("Exception from ItemComplete for Queue item: {0}", Describe(ex));
+            Trace.WriteLine($"Exception from ItemComplete for Queue item: {Describe(ex)}");
         }
     }
 
@@ -493,7 +493,7 @@ public abstract class ProducerConsumerQueue<T> : IDisposable, IProducerConsumerQ
     {
         lock (_lockerQueue)
         {
-            _queuedItems.Clear();
+            _queuedItems?.Clear();
         }
     }
 

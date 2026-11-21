@@ -22,6 +22,16 @@ public class ByteArrayExtensionsTests
         result.ShouldBe(expectedResult);
     }
 
+    [Fact]
+    public void Test_GetAsciiString_null_array()
+    {
+        byte[] bytes = null;
+
+        var result = bytes.GetAsciiString();
+
+        result.ShouldBeNull();
+    }
+
     [Theory]
     [InlineData("1,2,3,4,5,6", "010203040506")]
     [InlineData("", "")]
@@ -35,5 +45,15 @@ public class ByteArrayExtensionsTests
         var result = bytes.ToHexString();
 
         result.ShouldBe(expectedResult);
+    }
+
+    [Fact]
+    public void Test_ToHexString_null_array()
+    {
+        byte[] bytes = null;
+
+        var result = bytes.ToHexString();
+
+        result.ShouldBeNull();
     }
 }

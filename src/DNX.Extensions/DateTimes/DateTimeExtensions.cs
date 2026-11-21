@@ -174,17 +174,14 @@ public static class DateTimeExtensions
         if (dateTime.Month == month)
             return dateTime;
 
+        // A month-only change can never alter the year on its own, so maintainYear has no
+        // distinct effect here - it's accepted purely for signature symmetry with SetDay.
         var year = dateTime.Year;
-        var day = dateTime.Day;
+        var day = maintainDay
+            ? Math.Min(dateTime.Day, DateTime.DaysInMonth(year, month))
+            : 1;
 
-        var result = dateTime.AddMonths(month - dateTime.Month);
-
-        if (maintainDay)
-            result = result.SetDay(day, false, false);
-        if (maintainYear)
-            result = result.SetYear(year);
-
-        return result;
+        return new DateTime(year, month, day, dateTime.Hour, dateTime.Minute, dateTime.Second, dateTime.Millisecond, dateTime.Kind);
     }
 
     /// <summary>
@@ -200,17 +197,23 @@ public static class DateTimeExtensions
         if (dateTime.Day == day)
             return dateTime;
 
-        var year = dateTime.Year;
-        var month = dateTime.Month;
+        if (maintainMonth)
+        {
+            // Clamp rather than roll over - e.g. SetDay(31) on an April date lands on April 30,
+            // not May 1.
+            var clampedDay = Math.Min(day, DateTime.DaysInMonth(dateTime.Year, dateTime.Month));
 
+            return new DateTime(dateTime.Year, dateTime.Month, clampedDay, dateTime.Hour, dateTime.Minute, dateTime.Second, dateTime.Millisecond, dateTime.Kind);
+        }
+
+        // Not maintaining the month: treat "day" as a day-of-month offset allowed to roll into
+        // adjacent months/years.
+        var year = dateTime.Year;
         var result = dateTime.AddDays(day - dateTime.Day);
 
-        if (maintainMonth)
-            result = result.SetMonth(month, false, false);
-        if (maintainYear)
-            result = result.SetYear(year);
-
-        return result;
+        return maintainYear
+            ? result.SetYear(year)
+            : result;
     }
 
     /// <summary>

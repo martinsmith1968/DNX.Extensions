@@ -56,9 +56,27 @@ public class StringComparisonEqualityComparer : IEqualityComparer<string>
     /// </returns>
     public int GetHashCode(string obj)
     {
-        if (Equals(obj?.ToLowerInvariant(), obj?.ToUpperInvariant()))
-            return obj?.ToLowerInvariant().GetHashCode() ?? 0;
+        // Delegating to the matching StringComparer guarantees a GetHashCode that's consistent
+        // with Equals for every StringComparison value - unlike hashing via ToLowerInvariant(),
+        // which can disagree with culture-aware Equals comparisons (e.g. Turkish "I"/"ı" casing
+        // rules). StringComparer.FromComparison isn't available on netstandard2.0, hence the
+        // explicit mapping.
+        if (obj == null)
+        {
+            return 0;
+        }
 
-        return obj.GetHashCode();
+        var comparer = StringComparisonMethod switch
+        {
+            StringComparison.CurrentCulture => StringComparer.CurrentCulture,
+            StringComparison.CurrentCultureIgnoreCase => StringComparer.CurrentCultureIgnoreCase,
+            StringComparison.InvariantCulture => StringComparer.InvariantCulture,
+            StringComparison.InvariantCultureIgnoreCase => StringComparer.InvariantCultureIgnoreCase,
+            StringComparison.Ordinal => StringComparer.Ordinal,
+            StringComparison.OrdinalIgnoreCase => StringComparer.OrdinalIgnoreCase,
+            _ => StringComparer.Ordinal
+        };
+
+        return comparer.GetHashCode(obj);
     }
 }

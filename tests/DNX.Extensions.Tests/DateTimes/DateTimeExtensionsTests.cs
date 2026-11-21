@@ -231,6 +231,18 @@ public class DateTimeExtensionsTests
         result.Day.ShouldBe(day);
     }
 
+    [Fact]
+    public void SetMonth_clamps_day_when_target_month_is_shorter()
+    {
+        var dateTime = new DateTime(2023, 3, 31);
+
+        var result = dateTime.SetMonth(2);
+
+        result.Year.ShouldBe(2023);
+        result.Month.ShouldBe(2);
+        result.Day.ShouldBe(28);
+    }
+
     [Theory]
     [MemberData(nameof(ResetDateTime_Data))]
     public void SetDay_can_operate_as_expected(DateTime dateTime)

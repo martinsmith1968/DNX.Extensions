@@ -29,6 +29,31 @@ public class BigIntegerExtensionsTests
         result.ShouldBe(expectedResult);
     }
 
+    [Theory]
+    [MemberData(nameof(RoundTrip_Data))]
+    public void ToBigInteger_and_back_to_ToGuid_round_trips_without_corruption(Guid value)
+    {
+        // Act
+        var result = value.ToBigInteger().ToGuid();
+
+        // Assert
+        result.ShouldBe(value);
+    }
+
+    public static TheoryData<Guid> RoundTrip_Data()
+    {
+        return new TheoryData<Guid>
+        {
+            Guid.Empty,
+            Guid.Parse("00000000-0000-0000-0000-000000000001"),
+            // The last raw byte (most significant for BigInteger's little-endian interpretation)
+            // is 0xFF, making the BigInteger negative - this previously corrupted on the way back
+            // because the implementation zero-filled rather than sign-extended the padding.
+            new Guid([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0xFF, 0xFF]),
+            Guid.NewGuid(),
+        };
+    }
+
     public static TheoryData<BigInteger, Guid> ToGuid_Data()
     {
         var data = new TheoryData<BigInteger, Guid>();
