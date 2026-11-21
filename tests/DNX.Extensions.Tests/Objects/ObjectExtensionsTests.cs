@@ -1,3 +1,4 @@
+using System.Reflection;
 using DNX.Extensions.Objects;
 using Shouldly;
 using Xunit;
@@ -9,6 +10,55 @@ internal class MyHashCodeClass
     public int Id { get; set; }
 
     public string Name { get; set; }
+}
+
+public class ToDictionaryBase
+{
+    public string InheritedProperty { get; set; } = "base-value";
+}
+
+public class ToDictionarySimple : ToDictionaryBase
+{
+    public int Id { get; set; } = 1;
+
+    public string Name { get; set; } = "bob";
+
+    public string NullProperty { get; set; } = null;
+
+    private string PrivateProperty { get; set; } = "private-value";
+
+    protected string ProtectedProperty { get; set; } = "protected-value";
+
+    public static string StaticProperty { get; set; } = "static-value";
+
+    public string ReadPrivateProperty() => PrivateProperty;
+
+    public string ReadProtectedProperty() => ProtectedProperty;
+}
+
+public class ToDictionaryEmpty
+{
+}
+
+public class ToDictionaryWithIndexer
+{
+    public string Name { get; set; } = "bob";
+
+    public string this[int index] => $"item{index}";
+}
+
+public class ToDictionaryWithWriteOnlyProperty
+{
+    public string Name { get; set; } = "bob";
+
+    private string _secret;
+
+    public string Secret
+    {
+        set => _secret = value;
+    }
+
+    public string ReadSecret() => _secret;
 }
 
 public class ObjectExtensionsTests
@@ -111,6 +161,139 @@ public class ObjectExtensionsTests
             var result = instance.To<TestClass1>(defaultValue);
             result.ShouldNotBeNull();
             result.ShouldBe(defaultValue);
+        }
+    }
+
+    public class ToDictionary
+    {
+        [Fact]
+        public void ToDictionary_for_null_object_returns_null()
+        {
+            object instance = null;
+
+            var result = instance.ToDictionary();
+
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ToDictionary_with_binding_flags_for_null_object_returns_null()
+        {
+            object instance = null;
+
+            var result = instance.ToDictionary(BindingFlags.Instance | BindingFlags.Public);
+
+            result.ShouldBeNull();
+        }
+
+        [Fact]
+        public void ToDictionary_can_convert_public_properties_successfully()
+        {
+            var instance = new ToDictionarySimple();
+
+            var result = instance.ToDictionary();
+
+            result.ShouldNotBeNull();
+            result["Id"].ShouldBe(1);
+            result["Name"].ShouldBe("bob");
+            result["NullProperty"].ShouldBeNull();
+        }
+
+        [Fact]
+        public void ToDictionary_includes_inherited_public_properties()
+        {
+            var instance = new ToDictionarySimple();
+
+            var result = instance.ToDictionary();
+
+            result.ShouldContainKey("InheritedProperty");
+            result["InheritedProperty"].ShouldBe("base-value");
+        }
+
+        [Fact]
+        public void ToDictionary_excludes_non_public_and_static_properties_by_default()
+        {
+            var instance = new ToDictionarySimple();
+
+            var result = instance.ToDictionary();
+
+            result.ShouldNotContainKey("PrivateProperty");
+            result.ShouldNotContainKey("ProtectedProperty");
+            result.ShouldNotContainKey("StaticProperty");
+        }
+
+        [Fact]
+        public void ToDictionary_for_type_with_no_public_properties_returns_empty_dictionary()
+        {
+            var instance = new ToDictionaryEmpty();
+
+            var result = instance.ToDictionary();
+
+            result.ShouldNotBeNull();
+            result.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ToDictionary_skips_indexer_properties_instead_of_throwing()
+        {
+            var instance = new ToDictionaryWithIndexer();
+
+            var result = instance.ToDictionary();
+
+            result.ShouldNotBeNull();
+            result.ShouldNotContainKey("Item");
+            result["Name"].ShouldBe("bob");
+        }
+
+        [Fact]
+        public void ToDictionary_skips_write_only_properties_instead_of_throwing()
+        {
+            var instance = new ToDictionaryWithWriteOnlyProperty();
+
+            var result = instance.ToDictionary();
+
+            result.ShouldNotBeNull();
+            result.ShouldNotContainKey("Secret");
+            result["Name"].ShouldBe("bob");
+        }
+
+        [Fact]
+        public void ToDictionary_with_binding_flags_can_include_non_public_properties()
+        {
+            var instance = new ToDictionarySimple();
+
+            var result = instance.ToDictionary(BindingFlags.Instance | BindingFlags.NonPublic);
+
+            result.ShouldNotBeNull();
+            result["PrivateProperty"].ShouldBe(instance.ReadPrivateProperty());
+            result["ProtectedProperty"].ShouldBe(instance.ReadProtectedProperty());
+            result.ShouldNotContainKey("Id");
+            result.ShouldNotContainKey("Name");
+        }
+
+        [Fact]
+        public void ToDictionary_with_binding_flags_can_include_static_properties()
+        {
+            var instance = new ToDictionarySimple();
+
+            var result = instance.ToDictionary(BindingFlags.Static | BindingFlags.Public);
+
+            result.ShouldNotBeNull();
+            result["StaticProperty"].ShouldBe(ToDictionarySimple.StaticProperty);
+            result.ShouldNotContainKey("Id");
+        }
+
+        [Fact]
+        public void ToDictionary_with_binding_flags_still_skips_indexer_and_write_only_properties()
+        {
+            var indexed = new ToDictionaryWithIndexer();
+            var writeOnly = new ToDictionaryWithWriteOnlyProperty();
+
+            var indexedResult = indexed.ToDictionary(BindingFlags.Instance | BindingFlags.Public);
+            var writeOnlyResult = writeOnly.ToDictionary(BindingFlags.Instance | BindingFlags.Public);
+
+            indexedResult.ShouldNotContainKey("Item");
+            writeOnlyResult.ShouldNotContainKey("Secret");
         }
     }
 
