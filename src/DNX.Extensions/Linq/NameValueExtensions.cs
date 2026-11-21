@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -11,6 +12,16 @@ namespace DNX.Extensions.Linq;
 public static class NameValueExtensions
 {
     /// <summary>
+    /// Create a Dictionary from a NameValueCollection, preserving the default merge behavior.
+    /// </summary>
+    /// <param name="collection">The collection.</param>
+    /// <returns>IDictionary&lt;System.String, System.String&gt;.</returns>
+    public static IDictionary<string, string> ToDictionary(this NameValueCollection collection)
+    {
+        return collection.ToDictionary(MergeTechnique.Unique);
+    }
+
+    /// <summary>
     /// Create a Dictionary from a NameValueCollection
     /// </summary>
     /// <param name="collection">The collection.</param>
@@ -18,11 +29,21 @@ public static class NameValueExtensions
     /// <returns>IDictionary&lt;System.String, System.String&gt;.</returns>
     public static IDictionary<string, string> ToDictionary(this NameValueCollection collection, MergeTechnique mergeTechnique)
     {
+        if (collection == null)
+        {
+            throw new ArgumentNullException(nameof(collection));
+        }
+
         var dictionaries = new List<IDictionary<string, string>>();
 
         for (var i = 0; i < collection.Count; ++i)
         {
             var key = collection.GetKey(i);
+            if (key == null)
+            {
+                continue;
+            }
+
             var values = collection.GetValues(i) ?? Enumerable.Empty<string>();
 
             foreach (var value in values)
