@@ -39,6 +39,11 @@ public static class NameValueExtensions
         for (var i = 0; i < collection.Count; ++i)
         {
             var key = collection.GetKey(i);
+            if (key == null)
+            {
+                continue;
+            }
+
             var values = collection.GetValues(i) ?? Enumerable.Empty<string>();
 
             foreach (var value in values)
