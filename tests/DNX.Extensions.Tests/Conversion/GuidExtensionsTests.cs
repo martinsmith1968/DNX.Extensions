@@ -77,7 +77,7 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
     [InlineData(1, "00000001-0000-0000-0000-000000000000")]
     [InlineData(123, "0000007b-0000-0000-0000-000000000000")]
     [InlineData(12345, "00003039-0000-0000-0000-000000000000")]
-    [InlineData(short.MinValue, "00008000-0000-0000-0000-000000000000")]
+    [InlineData(short.MinValue, "ffff8000-ffff-ffff-ffff-ffffffffffff")]
     [InlineData(short.MaxValue, "00007fff-0000-0000-0000-000000000000")]
     public void ToGuid_from_short_generates_a_predictable_result(short value, string expected)
     {
@@ -95,7 +95,7 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
     [InlineData(123, "0000007b-0000-0000-0000-000000000000")]
     [InlineData(12345, "00003039-0000-0000-0000-000000000000")]
     [InlineData(32767, "00007fff-0000-0000-0000-000000000000")]
-    [InlineData(int.MinValue, "80000000-0000-0000-0000-000000000000")]
+    [InlineData(int.MinValue, "80000000-ffff-ffff-ffff-ffffffffffff")]
     [InlineData(int.MaxValue, "7fffffff-0000-0000-0000-000000000000")]
     public void ToGuid_from_int_generates_a_predictable_result(int value, string expected)
     {
@@ -131,7 +131,7 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
     [InlineData(123, "0000007b-0000-0000-0000-000000000000")]
     [InlineData(12345, "00003039-0000-0000-0000-000000000000")]
     [InlineData(32767, "00007fff-0000-0000-0000-000000000000")]
-    [InlineData(long.MinValue, "00000000-0000-8000-0000-000000000000")]
+    [InlineData(long.MinValue, "00000000-0000-8000-ffff-ffffffffffff")]
     [InlineData(long.MaxValue, "ffffffff-ffff-7fff-0000-000000000000")]
     public void ToGuid_from_long_generates_a_predictable_result(long value, string expected)
     {
@@ -240,7 +240,7 @@ public class GuidExtensionsTests(ITestOutputHelper outputHelper)
             { 1m, "00000001-0000-0000-0000-000000000000" },
             { 12345.67m, "00003039-0000-0000-0000-000000000000" },
             { 123456789.12m, "075bcd15-0000-0000-0000-000000000000" },
-            { decimal.MinValue, "00000001-0000-0000-0000-0000ff000000" },
+            { decimal.MinValue, "00000001-0000-0000-0000-0000ffffffff" },
             { decimal.MaxValue, "ffffffff-ffff-ffff-ffff-ffff00000000" },
         };
     }

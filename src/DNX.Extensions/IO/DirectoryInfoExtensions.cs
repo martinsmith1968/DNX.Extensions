@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DNX.Extensions.Strings;
+using DNX.Extensions.Validation.BuiltInTypes;
 
 namespace DNX.Extensions.IO;
 
@@ -79,6 +80,24 @@ public static class DirectoryInfoExtensions
             .SelectMany(p => directoryInfo.FindDirectories(p, recurseDirectories));
 
         return directoryInfos;
+    }
+
+    /// <summary>
+    /// Ensures the directory exists, creating it (and any missing parent directories) if not.
+    /// </summary>
+    /// <param name="directoryInfo">The directory information.</param>
+    /// <returns>The same <see cref="DirectoryInfo"/>, refreshed to reflect its existence.</returns>
+    public static DirectoryInfo EnsureExists(this DirectoryInfo directoryInfo)
+    {
+        Guard.IsNotNull(() => directoryInfo);
+
+        if (!directoryInfo.Exists)
+        {
+            directoryInfo.Create();
+            directoryInfo.Refresh();
+        }
+
+        return directoryInfo;
     }
 
     /// <summary>

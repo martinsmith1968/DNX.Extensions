@@ -110,4 +110,96 @@ public class StreamExtensionsTests
         // Assert
         result.ShouldBeNull();
     }
+
+    [Fact]
+    public void WriteAllText_should_write_text_successfully()
+    {
+        // Arrange
+        var text = Faker.Lorem.Sentences(Faker.Random.Int(5, 10));
+
+        using var stream = new MemoryStream();
+
+        // Act
+        stream.WriteAllText(text);
+
+        // Assert
+        stream.ToArray().ShouldBe(Encoding.UTF8.GetBytes(text));
+    }
+
+    [Fact]
+    public void WriteAllText_uses_the_specified_encoding_when_supplied()
+    {
+        // Arrange
+        var text = Faker.Lorem.Sentences(Faker.Random.Int(5, 10));
+
+        using var stream = new MemoryStream();
+
+        // Act
+        stream.WriteAllText(text, Encoding.Unicode);
+
+        // Assert
+        stream.ToArray().ShouldBe(Encoding.Unicode.GetBytes(text));
+    }
+
+    [Fact]
+    public void WriteAllText_handles_null_streams_and_text_appropriately()
+    {
+        // Arrange
+        MemoryStream stream = null;
+
+        // Act / Assert
+        Should.NotThrow(() => stream.WriteAllText("text"));
+
+        using var otherStream = new MemoryStream();
+        Should.NotThrow(() => otherStream.WriteAllText(null));
+        otherStream.ToArray().ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void WriteAllBytes_should_write_bytes_successfully()
+    {
+        // Arrange
+        var text = Faker.Lorem.Sentences(Faker.Random.Int(5, 10));
+        var bytes = Encoding.UTF8.GetBytes(text);
+
+        using var stream = new MemoryStream();
+
+        // Act
+        stream.WriteAllBytes(bytes);
+
+        // Assert
+        stream.ToArray().ShouldBe(bytes);
+    }
+
+    [Fact]
+    public void WriteAllBytes_handles_null_streams_and_bytes_appropriately()
+    {
+        // Arrange
+        MemoryStream stream = null;
+
+        // Act / Assert
+        Should.NotThrow(() => stream.WriteAllBytes([1, 2, 3]));
+
+        using var otherStream = new MemoryStream();
+        Should.NotThrow(() => otherStream.WriteAllBytes(null));
+        otherStream.ToArray().ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void WriteAllBytes_followed_by_ReadAllBytes_round_trips()
+    {
+        // Arrange
+        var text = Faker.Lorem.Sentences(Faker.Random.Int(5, 10));
+        var bytes = Encoding.UTF8.GetBytes(text);
+
+        using var stream = new MemoryStream();
+
+        // Act
+        stream.WriteAllBytes(bytes);
+        stream.Position = 0;
+        var result = stream.ReadAllBytes();
+
+        // Assert
+        result.ShouldBe(bytes);
+    }
 }

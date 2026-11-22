@@ -20,5 +20,6 @@ public class ReadOnlyListExceptionTests
         // Assert
         ex.ShouldNotBeNull();
         ex.List.ShouldBe(list);
+        ex.Message.ShouldNotBeNullOrEmpty();
     }
 }

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using DNX.Extensions.Linq;
 using DNX.Extensions.Reflection;
 
 // ReSharper disable InvertIf
@@ -140,6 +142,35 @@ public static partial class Guard
     public static void IsNotNullOrEmpty(Expression<Func<string>> exp, string val)
     {
         if (string.IsNullOrEmpty(val))
+        {
+            var memberName = ExpressionExtensions.GetMemberName(exp);
+
+            throw new ArgumentException(
+                $"{memberName} must not be null or empty", memberName
+            );
+        }
+    }
+
+    /// <summary>
+    /// Ensures the specified exp is not null or empty
+    /// </summary>
+    /// <typeparam name="T">The element type of the enumerable</typeparam>
+    /// <param name="exp">The linq expression of the argument to check</param>
+    public static void IsNotNullOrEmpty<T>(Expression<Func<IEnumerable<T>>> exp)
+    {
+        IsNotNullOrEmpty(exp, exp.Compile().Invoke());
+    }
+
+    /// <summary>
+    /// Ensures the specified exp is not null or empty
+    /// </summary>
+    /// <typeparam name="T">The element type of the enumerable</typeparam>
+    /// <param name="exp">The linq expression of the argument to check</param>
+    /// <param name="val">value of argument in exp</param>
+    /// <remarks>Use this if you are not happy that the expression exp will be invoked more than once by your method.</remarks>
+    public static void IsNotNullOrEmpty<T>(Expression<Func<IEnumerable<T>>> exp, IEnumerable<T> val)
+    {
+        if (!val.HasAny())
         {
             var memberName = ExpressionExtensions.GetMemberName(exp);
 

@@ -240,6 +240,8 @@ public class AssemblyDetails : IAssemblyDetails
     /// <returns>IAssemblyDetails.</returns>
     public static IAssemblyDetails ForAssemblyContaining(Type type)
     {
+        Guard.IsNotNull(() => type);
+
         return ForAssembly(type.Assembly);
     }
 

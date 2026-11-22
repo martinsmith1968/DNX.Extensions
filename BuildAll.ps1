@@ -95,7 +95,7 @@ foreach ($template in $templates) {
   }
   Remove-Item -Path (Join-Path $template.DirectoryName $wildcard) -ErrorAction SilentlyContinue
 
-  $template_content = (Get-Content -Path $template.FullName -Raw)
+  $template_content = (Get-Content -Path $template.FullName -Raw -Encoding UTF8)
   Start-Sleep -Milliseconds $sleep_time
 
   # Iterate each definition

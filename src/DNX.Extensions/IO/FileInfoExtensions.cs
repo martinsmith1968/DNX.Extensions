@@ -35,7 +35,7 @@ public static class FileInfoExtensions
     /// </summary>
     /// <param name="fileInfo">The file information.</param>
     /// <returns>System.String.</returns>
-    public static string GetFriendlyFileSize(FileInfo fileInfo)
+    public static string GetFriendlyFileSize(this FileInfo fileInfo)
     {
         return GetFriendlyFileSize(fileInfo?.Length ?? 0);
     }
@@ -49,7 +49,7 @@ public static class FileInfoExtensions
     /// <remarks>
     /// Based on: https://stackoverflow.com/questions/281640/how-do-i-get-a-human-readable-file-size-in-bytes-abbreviation-using-net
     /// </remarks>
-    public static string GetFriendlyFileSize(long fileSize)
+    public static string GetFriendlyFileSize(this long fileSize)
     {
         string[] suffixes = { "B", "KB", "MB", "GB", "TB", "PB", "EB" }; //Longs run out around EB
 
@@ -58,7 +58,9 @@ public static class FileInfoExtensions
 
         if (fileSize > 0)
         {
-            var bytes = Math.Abs(fileSize);
+            // Abs via double avoids OverflowException for long.MinValue, which has no positive
+            // long counterpart.
+            var bytes = Math.Abs((double)fileSize);
 
             place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
             num = Math.Round(bytes / Math.Pow(1024, place), 1);

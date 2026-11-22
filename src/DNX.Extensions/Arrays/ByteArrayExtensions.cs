@@ -15,7 +15,9 @@ public static class ByteArrayExtensions
     /// <param name="input">The byte[] to turn into the string</param>
     public static string GetAsciiString(this byte[] input)
     {
-        return Encoding.ASCII.GetString(input);
+        return input == null
+            ? null
+            : Encoding.ASCII.GetString(input);
     }
 
     /// <summary>
@@ -25,6 +27,11 @@ public static class ByteArrayExtensions
     /// <param name="format">The format to use for each byte</param>
     public static string ToHexString(this byte[] input, string format = "X2")
     {
+        if (input == null)
+        {
+            return null;
+        }
+
         var hex = new StringBuilder(input.Length * 2);
         var byteFormat = "{0:" + format + "}";
         foreach (var b in input)

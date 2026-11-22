@@ -13,8 +13,6 @@ namespace DNX.Extensions.Threading.Mutexes;
 /// <seealso cref="T:System.IDisposable" />
 public class Mutex : IDisposable
 {
-    private static readonly object MutexLocker = new object();
-
     private static readonly ConcurrentDictionary<string, object> LockObjects;
 
 
@@ -50,13 +48,9 @@ public class Mutex : IDisposable
 
     static Mutex()
     {
-        lock (MutexLocker)
-        {
-            if (LockObjects == null)
-            {
-                LockObjects = new ConcurrentDictionary<string, object>();
-            }
-        }
+        // The CLR already guarantees a static constructor runs exactly once before first use,
+        // so no locking or null-check is needed here.
+        LockObjects = new ConcurrentDictionary<string, object>();
     }
 
     /// <summary>
@@ -97,6 +91,11 @@ public class Mutex : IDisposable
     /// </summary>
     public void Dispose()
     {
+        if (State == MutexState.Released)
+        {
+            return;
+        }
+
         MutexManager.Release(this);
         ReleaseLock();
     }

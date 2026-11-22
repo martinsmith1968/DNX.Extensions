@@ -540,7 +540,8 @@ public class EnumerableExtensionsTests
         public void Test_Append_CaseInsensitiveComparer(string commaDelimitedArray, string value, string expectedResult)
         {
             var comparer = EqualityComparerFunc<string>.Create(
-                (s1, s2) => string.Equals(s1, s2, StringComparison.OrdinalIgnoreCase)
+                (s1, s2) => string.Equals(s1, s2, StringComparison.OrdinalIgnoreCase),
+                s => s?.ToUpperInvariant().GetHashCode() ?? 0
             );
 
             var enumerable = commaDelimitedArray?

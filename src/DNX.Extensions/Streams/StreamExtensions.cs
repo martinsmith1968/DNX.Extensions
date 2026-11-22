@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace DNX.Extensions.Streams;
 
@@ -75,5 +76,37 @@ public static class StreamExtensions
         }
 
         return memoryStream.ToArray();
+    }
+
+    /// <summary>
+    /// Writes the specified text to the stream
+    /// </summary>
+    /// <param name="stream">The stream.</param>
+    /// <param name="text">The text.</param>
+    /// <param name="encoding">The encoding to use. Defaults to UTF8 if not specified.</param>
+    public static void WriteAllText(this Stream stream, string text, Encoding encoding = null)
+    {
+        if (stream == null || text == null)
+        {
+            return;
+        }
+
+        stream.WriteAllBytes((encoding ?? Encoding.UTF8).GetBytes(text));
+    }
+
+    /// <summary>
+    /// Writes the specified bytes to the stream
+    /// </summary>
+    /// <param name="stream">The stream.</param>
+    /// <param name="bytes">The bytes.</param>
+    public static void WriteAllBytes(this Stream stream, byte[] bytes)
+    {
+        if (stream == null || bytes == null)
+        {
+            return;
+        }
+
+        stream.Write(bytes, 0, bytes.Length);
+        stream.Flush();
     }
 }

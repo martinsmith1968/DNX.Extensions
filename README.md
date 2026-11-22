@@ -2,9 +2,64 @@
 
 [![CI Build](https://github.com/martinsmith1968/DNX.Extensions/actions/workflows/ci-build.yml/badge.svg?branch=main)](https://github.com/martinsmith1968/DNX.Extensions/actions/workflows/ci-build.yml)
 
-A collection of useful .NET Extensions methods
+A .NET package that contains the bits that are often found lacking or missing from the .NET
+standard library. It has minimal dependencies on other packages and so is designed to be
+included in your projects with little or no disruption.
+
+It is designed around the premise that code should be as readable as possible at the highest
+level possible.
+
+E.g. Replaces code that would normally look something like:
+```csharp
+var escapedCode = string.Format("{0}{1}{2}",
+    code != null && code.StartsWith("[") ? null : "[",
+    code,
+    code != null && code.EndsWith("]") ? null : "]"
+    );
+```
+
+with
+
+```csharp
+var escapedCode = code.EnsureStartsAndEndsWith("[", "]");
+```
 
 Replaces the previous collection [DNX.Helpers](https://github.com/martinsmith1968/DNX.Helpers)
+
+## Installation
+
+From NuGet package explorer:
+
+`Install-Package DNX.Extensions`
+
+or via the .NET CLI:
+
+`dotnet add package DNX.Extensions`
+
+## Namespaces
+
+| Namespace | Purpose |
+|---|---|
+| `Arrays` | Array/byte-array helpers - null/empty checks, padding, shifting, reducing, hex/ASCII conversion |
+| `Assemblies` | Assembly metadata (`AssemblyDetails`) and type-discovery helpers |
+| `Comparers` | Functional `IComparer<T>`/`IEqualityComparer<T>` adapters built from delegates |
+| `Conversion` | String-to-type parsing (`To{Type}`/`Is{Type}`) for 16 built-in types, plus Guid/BigInteger conversion |
+| `DateTimes` | DateTime manipulation - set/reset date and time parts, quarters, month spans |
+| `Dictionaries` | `IDictionary` merging, key renaming, dictionary/`ExpandoObject` conversion |
+| `Enumerations` | Enum parsing, attribute/description lookup, flag manipulation |
+| `Exceptions` | Custom exception types and exception-chain helpers |
+| `Execution` | `RunSafely` - safe execution wrappers (sync and async) with optional exception handling |
+| `IO` | `DirectoryInfo`/`FileInfo`/path helpers - searching, relative paths, friendly file sizes, ensuring directories exist |
+| `Linq` | `IEnumerable`/`IList` helpers, tuple lists, `NameValueCollection` conversion |
+| `Maths` | Numeric/comparable range checks (`IsBetween`, bounds) for 15 built-in types |
+| `Objects` | Generic object helpers - type conversion, dictionary projection, null-coalescing |
+| `Providers` | Functional `IFormatProvider` adapter built from a delegate |
+| `Reflection` | Attribute, expression, property/field, and type-default reflection helpers |
+| `Services` | `ServiceResult<T>` - lightweight success/failure result wrapper |
+| `Streams` | `Stream` read/write helpers |
+| `Strings` | Case conversion, substring extraction, masking, splitting, regex parsing, interpolation |
+| `Threading` | Thread-start helpers, producer/consumer queue, named mutexes, `Task` helpers (timeout, fire-and-forget, aggregated `WhenAll` failures) |
+| `Validation` | `Guard` - expression-based parameter guard clauses, capturing the parameter name automatically |
 
 ## Repository conventions
 
@@ -17,3 +72,19 @@ The Conversion extension sources are stored under `src/DNX.Extensions/Conversion
 public namespace is `DNX.Extensions.Converters.BuiltInTypes`. This directory/namespace
 difference is intentional and preserves the existing public API; new Conversion extensions
 should follow that namespace.
+
+## To Do
+
+See [To Do.md](To%20Do.md)
+
+## Contributing
+
+Contributions welcome. All code must be comprehensively covered by unit tests using [xUnit](https://xunit.net).
+
+## Credits
+
+By Martin Smith, 2001 onwards
+
+## Licence
+
+[Licence](LICENSE)

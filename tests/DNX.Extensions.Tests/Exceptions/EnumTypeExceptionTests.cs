@@ -21,6 +21,16 @@ public class EnumTypeExceptionTests
     }
 
     [Fact]
+    public void Test_EnumTypeException_constructor_null_type_does_not_throw()
+    {
+        var ex = new EnumTypeException(null);
+
+        ex.ShouldNotBeNull();
+        ex.Type.ShouldBeNull();
+        ex.Message.ShouldNotBeNull();
+    }
+
+    [Fact]
     public void Test_EnumTypeException_constructor_type_messageTemplate()
     {
         // Arrange

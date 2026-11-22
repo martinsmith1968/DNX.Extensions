@@ -35,7 +35,7 @@ public class EnumTypeException : Exception
     /// <param name="type">The type.</param>
     /// <param name="messageTemplate">The message template.</param>
     public EnumTypeException(Type type, string messageTemplate)
-        : base(string.Format(messageTemplate, type.Name))
+        : base(string.Format(messageTemplate, type?.Name))
     {
         Type = type;
     }

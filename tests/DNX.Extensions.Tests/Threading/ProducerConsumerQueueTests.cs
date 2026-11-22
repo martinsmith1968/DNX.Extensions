@@ -210,6 +210,20 @@ public class ProducerConsumerQueueTests
     }
 
     [Fact]
+    public void Clear_after_dispose_does_not_throw()
+    {
+        var queue = new TestQueue(
+            _ => { },
+            autoCleanup: false,
+            canHandle: _ => false,
+            timeout: TimeSpan.FromMilliseconds(20));
+
+        queue.Dispose();
+
+        Should.NotThrow(() => queue.Clear());
+    }
+
+    [Fact]
     public void Queue_can_defer_items_until_the_can_handle_hook_allows_them()
     {
         using var processed = new ManualResetEventSlim();

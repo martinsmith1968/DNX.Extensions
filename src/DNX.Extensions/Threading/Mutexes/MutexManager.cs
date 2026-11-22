@@ -23,13 +23,9 @@ public static class MutexManager
     /// </summary>
     static MutexManager()
     {
-        lock (MutexManagerLocker)
-        {
-            if (Mutexes == null)
-            {
-                Mutexes = new Dictionary<string, Mutex>();
-            }
-        }
+        // The CLR already guarantees a static constructor runs exactly once before first use,
+        // so no locking or null-check is needed here.
+        Mutexes = new Dictionary<string, Mutex>();
     }
 
     /// <summary>
@@ -56,13 +52,16 @@ public static class MutexManager
     {
         lock (MutexManagerLocker)
         {
+            // Must stay inside this same lock scope as the Acquire() call below - releasing and
+            // re-acquiring the lock here would open a window for another thread to register the
+            // same name in between, causing Acquire() to block instead of returning immediately.
             if (Mutexes.ContainsKey(name))
             {
                 return null;
             }
-        }
 
-        return Acquire(name);
+            return Acquire(name);
+        }
     }
 
     /// <summary>
