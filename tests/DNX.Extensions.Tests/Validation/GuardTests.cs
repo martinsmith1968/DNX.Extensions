@@ -101,6 +101,28 @@ public class GuardTests
     }
 
     [Fact]
+    public void IsNotNullOrEmpty_throws_when_enumerable_is_null_or_empty()
+    {
+        IEnumerable<int> value = [1, 2, 3];
+
+        Guard.IsNotNullOrEmpty(() => value);
+
+        Should.Throw<ArgumentException>(() => Guard.IsNotNullOrEmpty(() => Array.Empty<int>().AsEnumerable()));
+        Should.Throw<ArgumentException>(() => Guard.IsNotNullOrEmpty(() => (IEnumerable<int>)null));
+    }
+
+    [Fact]
+    public void IsNotNullOrEmpty_with_precomputed_enumerable_throws_when_null_or_empty()
+    {
+        IEnumerable<int> value = [1, 2, 3];
+
+        Guard.IsNotNullOrEmpty(() => value, value);
+
+        Should.Throw<ArgumentException>(() => Guard.IsNotNullOrEmpty(() => value, Array.Empty<int>()));
+        Should.Throw<ArgumentException>(() => Guard.IsNotNullOrEmpty(() => value, null));
+    }
+
+    [Fact]
     public void IsNotNullOrWhitespace_throws_when_string_is_null_or_whitespace()
     {
         var value = "hello";

@@ -306,4 +306,34 @@ public class DirectoryInfoExtensionsTests : IDisposable
 
         return data;
     }
+
+    [Fact]
+    public void EnsureExists_creates_the_directory_when_missing()
+    {
+        var directoryInfo = new DirectoryInfo(Path.Combine(_directoryInfo.FullName, "missing-subdir"));
+        directoryInfo.Exists.ShouldBeFalse();
+
+        var result = directoryInfo.EnsureExists();
+
+        result.Exists.ShouldBeTrue();
+        result.ShouldBeSameAs(directoryInfo);
+    }
+
+    [Fact]
+    public void EnsureExists_is_a_no_op_when_the_directory_already_exists()
+    {
+        _directoryInfo.Exists.ShouldBeTrue();
+
+        var result = _directoryInfo.EnsureExists();
+
+        result.Exists.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void EnsureExists_throws_for_a_null_directory()
+    {
+        DirectoryInfo directoryInfo = null;
+
+        Should.Throw<ArgumentNullException>(() => directoryInfo.EnsureExists());
+    }
 }
