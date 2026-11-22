@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Numerics;
 using System.Reflection;
 using DNX.Extensions.Maths;
 using DNX.Extensions.Validation.BuiltInTypes;
@@ -24,7 +25,8 @@ public class GeneratedGuardTests
         typeof(Guid),
         typeof(ushort),
         typeof(uint),
-        typeof(ulong)
+        typeof(ulong),
+        typeof(BigInteger)
     };
 
     public static IEnumerable<object[]> GuardedTypeData()
@@ -186,6 +188,11 @@ public class GeneratedGuardTests
         if (valueType == typeof(TimeSpan))
         {
             return TimeSpan.FromDays(value);
+        }
+
+        if (valueType == typeof(BigInteger))
+        {
+            return new BigInteger(value);
         }
 
         if (valueType == typeof(Guid))

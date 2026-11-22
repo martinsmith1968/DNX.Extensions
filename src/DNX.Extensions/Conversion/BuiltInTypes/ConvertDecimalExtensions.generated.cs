@@ -1,4 +1,4 @@
-#define ConvertdecimalExtensions
+#define ConvertDecimalExtensions
 
 using System;
 using System.Globalization;

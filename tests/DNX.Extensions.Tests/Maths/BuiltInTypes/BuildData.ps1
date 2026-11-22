@@ -9,6 +9,7 @@ $build_data = @{
     "TimeSpan" = @{ "Name" = "TimeSpan"; "Type" = "TimeSpan" }
 
     "Guid" = @{ "Name" = "Guid"; "Type" = "Guid" }
+    "BigInteger" = @{ "Name" = "BigInteger"; "Type" = "System.Numerics.BigInteger" }
 
     "Byte" = @{ "Name" = "Byte"; "Type" = "byte" }
     "SByte" = @{ "Name" = "SByte"; "Type" = "sbyte" }

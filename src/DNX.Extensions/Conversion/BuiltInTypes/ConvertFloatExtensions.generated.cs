@@ -1,4 +1,4 @@
-#define ConvertfloatExtensions
+#define ConvertFloatExtensions
 
 using System;
 using System.Globalization;

@@ -1,4 +1,4 @@
-#define ConvertbyteExtensions
+#define ConvertByteExtensions
 
 using System;
 using System.Globalization;

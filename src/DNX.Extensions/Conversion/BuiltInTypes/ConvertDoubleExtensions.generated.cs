@@ -1,4 +1,4 @@
-#define ConvertdoubleExtensions
+#define ConvertDoubleExtensions
 
 using System;
 using System.Globalization;

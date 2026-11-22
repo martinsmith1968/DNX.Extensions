@@ -1,4 +1,4 @@
-#define ConvertulongExtensions
+#define ConvertUInt64Extensions
 
 using System;
 using System.Globalization;

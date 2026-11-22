@@ -1,4 +1,4 @@
-#define ConvertushortExtensions
+#define ConvertUInt16Extensions
 
 using System;
 using System.Globalization;

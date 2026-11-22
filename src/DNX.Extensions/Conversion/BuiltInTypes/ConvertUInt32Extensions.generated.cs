@@ -1,4 +1,4 @@
-#define ConvertuintExtensions
+#define ConvertUInt32Extensions
 
 using System;
 using System.Globalization;

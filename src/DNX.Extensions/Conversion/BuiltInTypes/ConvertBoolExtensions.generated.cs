@@ -1,4 +1,4 @@
-#define ConvertboolExtensions
+#define ConvertBoolExtensions
 
 using System;
 using System.Globalization;

@@ -81,6 +81,17 @@ public class ConversionDateTimeOffsetExtensionsTestsDataSource
             { "0:00:01", true },
             { "0:01:00", true },
             { "1:00:00", true },
+#elif ConversionExtensionsTestsDataSource_BigInteger
+            { "0", true },
+            { "1", true },
+            { "-1", true },
+            { "100", true },
+            { "-100", true },
+            { " 100", true },
+            { "100 ", true },
+            { "1.5", false },
+            { "£100", false },
+            { new BigInteger(long.MaxValue).ToString() + "000", true },
 #else
             { DateTimeOffset.MinValue.ToString(), true },
             { DateTimeOffset.MaxValue.ToString(), true },
@@ -132,6 +143,13 @@ public class ConversionDateTimeOffsetExtensionsTestsDataSource
             { "0:00:01", TimeSpan.FromSeconds(1) },
             { "0:01:00", TimeSpan.FromMinutes(1) },
             { "1:00:00", TimeSpan.FromHours(1) },
+#elif ConversionExtensionsTestsDataSource_BigInteger
+            { "0", 0 },
+            { "100", 100 },
+            { "10", 10 },
+            { "10 ", 10 },
+            { "-12345678901234567890", BigInteger.Parse("-12345678901234567890") },
+            { new BigInteger(long.MaxValue).ToString() + "000", BigInteger.Parse(new BigInteger(long.MaxValue).ToString() + "000") },
 #else
             { DateTimeOffset.MinValue.ToString(), DateTimeOffset.MinValue },
             { DateTimeOffset.MaxValue.ToString(), DateTimeOffset.MaxValue },
@@ -171,6 +189,10 @@ public class ConversionDateTimeOffsetExtensionsTestsDataSource
             { "1:00:00.0000001", true },
             { "1:00:00.00000001", true },
             { "1:00:00.000000001", true },
+#elif ConversionExtensionsTestsDataSource_BigInteger
+            { "abcdef", false },
+            { "1,000", false },
+            { (new BigInteger(long.MaxValue) * 1000).ToString(), true },
 #else
             { "abcdef", false },
             { "1,000", HasDecimalPlaces },
@@ -214,6 +236,11 @@ public class ConversionDateTimeOffsetExtensionsTestsDataSource
             { "50.5", TimeSpan.FromDays(25), TimeSpan.FromDays(25) },
             { "100,000", TimeSpan.FromDays(100), TimeSpan.FromDays(100) },
             { "100", TimeSpan.FromDays(25), TimeSpan.FromDays(100) },
+#elif ConversionExtensionsTestsDataSource_BigInteger
+            { "abcdef", (BigInteger)25, (BigInteger)25 },
+            { "50.5", (BigInteger)25, (BigInteger)25 },
+            { "100,000", (BigInteger)100, (BigInteger)100 },
+            { "100", (BigInteger)25, (BigInteger)100 },
 #else
             { "abcdef", (DateTimeOffset)25, 25 },
             { "50.5", (DateTimeOffset)25, HasDecimalPlaces ? CreateValue("50.5") : (DateTimeOffset)25 },

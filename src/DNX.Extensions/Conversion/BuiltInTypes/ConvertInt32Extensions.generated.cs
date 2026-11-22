@@ -1,4 +1,4 @@
-#define ConvertintExtensions
+#define ConvertInt32Extensions
 
 using System;
 using System.Globalization;
