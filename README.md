@@ -42,8 +42,9 @@ or via the .NET CLI:
 |---|---|
 | `Arrays` | Array/byte-array helpers - null/empty checks, padding, shifting, reducing, hex/ASCII conversion |
 | `Assemblies` | Assembly metadata (`AssemblyDetails`) and type-discovery helpers |
+| `Collections` | `HashSet<T>`/`Queue<T>`/`Stack<T>` helpers - null/empty checks and bulk add/enqueue/push |
 | `Comparers` | Functional `IComparer<T>`/`IEqualityComparer<T>` adapters built from delegates |
-| `Conversion` | String-to-type parsing (`To{Type}`/`Is{Type}`) for 16 built-in types, plus Guid/BigInteger conversion |
+| `Conversion` | String-to-type parsing (`To{Type}`/`Is{Type}`) for 17 built-in types (including BigInteger), plus Guid conversion |
 | `DateTimes` | DateTime manipulation - set/reset date and time parts, quarters, month spans |
 | `Dictionaries` | `IDictionary` merging, key renaming, dictionary/`ExpandoObject` conversion |
 | `Enumerations` | Enum parsing, attribute/description lookup, flag manipulation |
@@ -51,7 +52,7 @@ or via the .NET CLI:
 | `Execution` | `RunSafely` - safe execution wrappers (sync and async) with optional exception handling; `Retry` - retry with configurable backoff |
 | `IO` | `DirectoryInfo`/`FileInfo`/path helpers - searching, relative paths, friendly file sizes, ensuring directories exist |
 | `Linq` | `IEnumerable`/`IList` helpers, tuple lists, `NameValueCollection` conversion |
-| `Maths` | Numeric/comparable range checks (`IsBetween`, bounds) for 15 built-in types |
+| `Maths` | Numeric/comparable range checks (`IsBetween`, bounds) for 16 built-in types (including BigInteger) |
 | `Objects` | Generic object helpers - type conversion, dictionary projection, null-coalescing |
 | `Providers` | Functional `IFormatProvider` adapter built from a delegate |
 | `Reflection` | Attribute, expression, property/field, and type-default reflection helpers |

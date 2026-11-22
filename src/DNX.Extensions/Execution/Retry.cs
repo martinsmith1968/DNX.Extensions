@@ -1,10 +1,7 @@
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using DNX.Extensions.Validation.BuiltInTypes;
-
-[assembly: InternalsVisibleTo("DNX.Extensions.Tests")]
 
 namespace DNX.Extensions.Execution;
 

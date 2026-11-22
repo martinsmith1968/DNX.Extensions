@@ -52,6 +52,13 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Lets DNX.Extensions.Tests unit test internal-only members (e.g. Retry.DefaultDelayProvider) -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>$(AssemblyName).Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <!-- dynamic/DLR support is in-box on modern .NET; only netstandard2.0 / .NET Framework consumers need this -->
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
