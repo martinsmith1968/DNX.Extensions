@@ -221,6 +221,22 @@ public class RunSafelyTests
             message.ShouldNotBeNullOrEmpty();
             message.ShouldContain("divide by zero");
         }
+
+        [Fact]
+        public async Task Propagates_cancellation_instead_of_routing_it_through_the_exception_handler()
+        {
+            // Arrange
+            Exception caught = null;
+
+            using var cts = new CancellationTokenSource();
+            cts.Cancel();
+            var task = Task.FromCanceled(cts.Token);
+
+            // Act / Assert
+            await Should.ThrowAsync<OperationCanceledException>(() => RunSafely.ExecuteAsync(task, ex => caught = ex));
+
+            caught.ShouldBeNull();
+        }
     }
 
     public class ExecuteAsyncT_Tests
@@ -313,6 +329,22 @@ public class RunSafelyTests
             value.ShouldBe(defaultResult);
             message.ShouldNotBeNull();
             message.ShouldContain("divide by zero");
+        }
+
+        [Fact]
+        public async Task Propagates_cancellation_instead_of_routing_it_through_the_exception_handler()
+        {
+            // Arrange
+            Exception caught = null;
+
+            using var cts = new CancellationTokenSource();
+            cts.Cancel();
+            var task = Task.FromCanceled<int>(cts.Token);
+
+            // Act / Assert
+            await Should.ThrowAsync<OperationCanceledException>(() => RunSafely.ExecuteAsync(task, ex => caught = ex));
+
+            caught.ShouldBeNull();
         }
     }
 }

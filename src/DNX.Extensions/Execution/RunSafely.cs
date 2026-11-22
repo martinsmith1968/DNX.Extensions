@@ -87,6 +87,12 @@ public class RunSafely
         {
             await task.ConfigureAwait(false);
         }
+        catch (OperationCanceledException)
+        {
+            // Cancellation is an intentional outcome, not a fault - let it propagate rather
+            // than routing it through exceptionHandler like a genuine failure.
+            throw;
+        }
         catch (Exception ex)
         {
             InvokeExceptionHandler(exceptionHandler, ex);
@@ -118,6 +124,12 @@ public class RunSafely
         try
         {
             return await task.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            // Cancellation is an intentional outcome, not a fault - let it propagate rather
+            // than routing it through exceptionHandler like a genuine failure.
+            throw;
         }
         catch (Exception ex)
         {

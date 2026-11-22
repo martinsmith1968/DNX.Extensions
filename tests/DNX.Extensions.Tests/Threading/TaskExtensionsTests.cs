@@ -13,7 +13,7 @@ public class TaskExtensionsTests
         {
             var task = Task.Delay(TimeSpan.FromMilliseconds(10), TestContext.Current.CancellationToken);
 
-            await task.WithTimeout(TimeSpan.FromSeconds(5));
+            await task.WithTimeout(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
         }
 
         [Fact]
@@ -34,6 +34,20 @@ public class TaskExtensionsTests
 
             await Should.ThrowAsync<InvalidOperationException>(() => task.WithTimeout(TimeSpan.FromSeconds(5)));
         }
+
+        [Fact]
+        public async Task Throws_OperationCanceledException_rather_than_TimeoutException_when_the_token_is_cancelled_first()
+        {
+            using var neverCompletes = new ManualResetEventSlim();
+            var task = Task.Run(
+                () => neverCompletes.Wait(TimeSpan.FromSeconds(30), TestContext.Current.CancellationToken),
+                TestContext.Current.CancellationToken);
+
+            using var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromMilliseconds(10));
+
+            await Should.ThrowAsync<OperationCanceledException>(() => task.WithTimeout(TimeSpan.FromSeconds(30), cts.Token));
+        }
     }
 
     public class WithTimeoutT_Tests
@@ -43,7 +57,7 @@ public class TaskExtensionsTests
         {
             var task = Task.FromResult(42);
 
-            var result = await task.WithTimeout(TimeSpan.FromSeconds(5));
+            var result = await task.WithTimeout(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
 
             result.ShouldBe(42);
         }
@@ -92,6 +106,24 @@ public class TaskExtensionsTests
             handled.Wait(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ShouldBeTrue();
             caught.ShouldBeOfType<InvalidOperationException>();
         }
+
+        [Fact]
+        public async Task Swallows_a_cancelled_task_without_invoking_the_exception_handler()
+        {
+            Exception caught = null;
+
+            using var cts = new CancellationTokenSource();
+            cts.Cancel();
+            var task = Task.FromCanceled(cts.Token);
+
+            task.FireAndForget(ex => caught = ex);
+
+            // There is nothing to await (that is the point of fire-and-forget), so give the
+            // background continuation a moment to run before asserting nothing was reported.
+            await Task.Delay(TimeSpan.FromMilliseconds(50), TestContext.Current.CancellationToken);
+
+            caught.ShouldBeNull();
+        }
     }
 
     public class WhenAllOrThrow_Tests
@@ -102,7 +134,7 @@ public class TaskExtensionsTests
             var cancellationToken = TestContext.Current.CancellationToken;
             var tasks = new[] { Task.Delay(1, cancellationToken), Task.Delay(1, cancellationToken), Task.Delay(1, cancellationToken) };
 
-            await tasks.WhenAllOrThrow();
+            await tasks.WhenAllOrThrow(cancellationToken);
         }
 
         [Fact]
@@ -121,6 +153,23 @@ public class TaskExtensionsTests
             ex.InnerExceptions.ShouldContain(e => e is InvalidOperationException);
             ex.InnerExceptions.ShouldContain(e => e is ArgumentException);
         }
+
+        [Fact]
+        public async Task Throws_OperationCanceledException_when_the_token_is_cancelled_before_completion()
+        {
+            using var neverCompletes = new ManualResetEventSlim();
+            var tasks = new[]
+            {
+                Task.Run(
+                    () => neverCompletes.Wait(TimeSpan.FromSeconds(30), TestContext.Current.CancellationToken),
+                    TestContext.Current.CancellationToken),
+            };
+
+            using var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromMilliseconds(10));
+
+            await Should.ThrowAsync<OperationCanceledException>(() => tasks.WhenAllOrThrow(cts.Token));
+        }
     }
 
     public class WhenAllOrThrowT_Tests
@@ -130,7 +179,7 @@ public class TaskExtensionsTests
         {
             var tasks = new[] { Task.FromResult(1), Task.FromResult(2), Task.FromResult(3) };
 
-            var results = await tasks.WhenAllOrThrow();
+            var results = await tasks.WhenAllOrThrow(TestContext.Current.CancellationToken);
 
             results.ShouldBe([1, 2, 3]);
         }

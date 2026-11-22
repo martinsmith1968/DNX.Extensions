@@ -48,7 +48,7 @@ or via the .NET CLI:
 | `Dictionaries` | `IDictionary` merging, key renaming, dictionary/`ExpandoObject` conversion |
 | `Enumerations` | Enum parsing, attribute/description lookup, flag manipulation |
 | `Exceptions` | Custom exception types and exception-chain helpers |
-| `Execution` | `RunSafely` - safe execution wrappers (sync and async) with optional exception handling |
+| `Execution` | `RunSafely` - safe execution wrappers (sync and async) with optional exception handling; `Retry` - retry with configurable backoff |
 | `IO` | `DirectoryInfo`/`FileInfo`/path helpers - searching, relative paths, friendly file sizes, ensuring directories exist |
 | `Linq` | `IEnumerable`/`IList` helpers, tuple lists, `NameValueCollection` conversion |
 | `Maths` | Numeric/comparable range checks (`IsBetween`, bounds) for 15 built-in types |
