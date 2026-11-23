@@ -12,7 +12,7 @@
 
 ## Better Test Reporting ?
 
-- [ ] https://github.com/marketplace/actions/dotnet-test-reporter
+- [X] https://github.com/marketplace/actions/dotnet-test-reporter
 
 ## NuGet signing
 

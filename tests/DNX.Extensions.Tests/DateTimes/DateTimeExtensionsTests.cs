@@ -93,6 +93,19 @@ public class DateTimeExtensionsTests
     }
 
     [Fact]
+    public void ParseDateAsUtc_with_default_value_invokes_the_exceptionHandler_only_when_parsing_fails()
+    {
+        Exception caught = null;
+        var defaultDateTime = DateTime.Now;
+
+        DateTime.Now.ToLongDateString().ParseDateAsUtc(defaultDateTime, ex => caught = ex);
+        caught.ShouldBeNull();
+
+        "Not a datetime string".ParseDateAsUtc(defaultDateTime, ex => caught = ex);
+        caught.ShouldNotBeNull();
+    }
+
+    [Fact]
     public void ParseDateAsUtc_can_parse_a_date_using_a_format_provider()
     {
         // Arrange
@@ -161,6 +174,21 @@ public class DateTimeExtensionsTests
         parsedDateTime.Minute.ShouldBe(defaultDateTime.Minute);
         parsedDateTime.Second.ShouldBe(defaultDateTime.Second);
         parsedDateTime.Millisecond.ShouldBe(defaultDateTime.Millisecond);
+    }
+
+    [Fact]
+    public void ParseDateAsUtc_with_format_provider_and_default_value_invokes_the_exceptionHandler_only_when_parsing_fails()
+    {
+        var formatProvider = new CustomDateTimeFormatProvider();
+        Exception caught = null;
+        var defaultDateTime = DateTime.Now;
+        var dateTimeString = DateTime.Now.ToString(CustomDateTimeFormatProvider.FormatString);
+
+        dateTimeString.ParseDateAsUtc(formatProvider, defaultDateTime, ex => caught = ex);
+        caught.ShouldBeNull();
+
+        "Not a datetime string".ParseDateAsUtc(formatProvider, defaultDateTime, ex => caught = ex);
+        caught.ShouldNotBeNull();
     }
 
     [Theory]

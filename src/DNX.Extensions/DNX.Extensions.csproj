@@ -10,6 +10,8 @@
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <!-- Required for IDE0005 (unnecessary using directives) to be reported during build -->
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -32,9 +34,7 @@
     <PackageIcon>favicon-32x32.png</PackageIcon>
     <PackageIconUrl>https://raw.githubusercontent.com/martinsmith1968/DNX.Extensions/main/images/favicon-32x32.png</PackageIconUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>
-      Migration from DNX.Helpers
-    </PackageReleaseNotes>
+    <PackageReleaseNotes>Release notes: $(PackageProjectUrl)/releases</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

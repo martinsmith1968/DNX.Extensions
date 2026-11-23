@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DNX.Extensions.Execution;
 using DNX.Extensions.Reflection;
 using DNX.Extensions.Strings;
 
@@ -31,17 +32,11 @@ public static class ObjectExtensions
     /// <typeparam name="T"></typeparam>
     /// <param name="obj">The object.</param>
     /// <param name="defaultValue">The default value.</param>
+    /// <param name="exceptionHandler">Invoked with the exception if the cast fails, instead of discarding it silently.</param>
     /// <returns>T.</returns>
-    public static T To<T>(this object obj, T defaultValue = default)
+    public static T To<T>(this object obj, T defaultValue = default, Action<Exception> exceptionHandler = null)
     {
-        try
-        {
-            return (T)obj ?? defaultValue;
-        }
-        catch
-        {
-            return defaultValue;
-        }
+        return RunSafely.Execute(() => (T)obj ?? defaultValue, defaultValue, exceptionHandler);
     }
 
     /// <summary>
@@ -100,17 +95,11 @@ public static class ObjectExtensions
     /// <typeparam name="T"></typeparam>
     /// <param name="obj">The object.</param>
     /// <param name="defaultValue">The default value.</param>
+    /// <param name="exceptionHandler">Invoked with the exception if the conversion fails, instead of discarding it silently.</param>
     /// <returns>T.</returns>
-    public static T ChangeType<T>(this object obj, T defaultValue)
+    public static T ChangeType<T>(this object obj, T defaultValue, Action<Exception> exceptionHandler = null)
     {
-        try
-        {
-            return ChangeType<T>(obj);
-        }
-        catch
-        {
-            return defaultValue;
-        }
+        return RunSafely.Execute(() => ChangeType<T>(obj), defaultValue, exceptionHandler);
     }
 
     /// <summary>

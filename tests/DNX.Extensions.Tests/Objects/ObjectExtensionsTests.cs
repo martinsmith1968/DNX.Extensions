@@ -375,6 +375,20 @@ public class ObjectExtensionsTests
     }
 
     [Fact]
+    public void ChangeType_invokes_the_exceptionHandler_only_when_conversion_fails()
+    {
+        Exception caught = null;
+
+        var success = "42".ChangeType(0, ex => caught = ex);
+        success.ShouldBe(42);
+        caught.ShouldBeNull();
+
+        var failure = "not-an-int".ChangeType(99, ex => caught = ex);
+        failure.ShouldBe(99);
+        caught.ShouldNotBeNull();
+    }
+
+    [Fact]
     public void To_can_return_default_when_conversion_fails()
     {
         var good = ((object)42).To<int>();
@@ -382,5 +396,19 @@ public class ObjectExtensionsTests
 
         good.ShouldBe(42);
         bad.ShouldBe(99);
+    }
+
+    [Fact]
+    public void To_invokes_the_exceptionHandler_only_when_conversion_fails()
+    {
+        Exception caught = null;
+
+        var success = ((object)42).To(0, ex => caught = ex);
+        success.ShouldBe(42);
+        caught.ShouldBeNull();
+
+        var failure = "abc".To(99, ex => caught = ex);
+        failure.ShouldBe(99);
+        caught.ShouldNotBeNull();
     }
 }

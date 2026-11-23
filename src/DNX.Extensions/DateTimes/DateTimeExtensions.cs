@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using DNX.Extensions.Execution;
 using DNX.Extensions.Linq;
 
 namespace DNX.Extensions.DateTimes;
@@ -55,19 +56,14 @@ public static class DateTimeExtensions
     /// </summary>
     /// <param name="dateString">The date string.</param>
     /// <param name="defaultDateTime">The default date time.</param>
+    /// <param name="exceptionHandler">Invoked with the exception if parsing fails, instead of discarding it silently.</param>
     /// <returns>DateTime.</returns>
-    public static DateTime ParseDateAsUtc(this string dateString, DateTime defaultDateTime)
+    public static DateTime ParseDateAsUtc(this string dateString, DateTime defaultDateTime, Action<Exception> exceptionHandler = null)
     {
-        try
-        {
-            var dateTime = ParseDateAsUtc(dateString);
-
-            return dateTime;
-        }
-        catch
-        {
-            return DateTime.SpecifyKind(defaultDateTime, DateTimeKind.Utc);
-        }
+        return RunSafely.Execute(
+            () => ParseDateAsUtc(dateString),
+            DateTime.SpecifyKind(defaultDateTime, DateTimeKind.Utc),
+            exceptionHandler);
     }
 
     /// <summary>
@@ -76,19 +72,14 @@ public static class DateTimeExtensions
     /// <param name="dateString">The date string.</param>
     /// <param name="formatProvider">The format provider.</param>
     /// <param name="defaultDateTime">The default date time.</param>
+    /// <param name="exceptionHandler">Invoked with the exception if parsing fails, instead of discarding it silently.</param>
     /// <returns>System.DateTime.</returns>
-    public static DateTime ParseDateAsUtc(this string dateString, IFormatProvider formatProvider, DateTime defaultDateTime)
+    public static DateTime ParseDateAsUtc(this string dateString, IFormatProvider formatProvider, DateTime defaultDateTime, Action<Exception> exceptionHandler = null)
     {
-        try
-        {
-            var dateTime = ParseDateAsUtc(dateString, formatProvider);
-
-            return dateTime;
-        }
-        catch
-        {
-            return DateTime.SpecifyKind(defaultDateTime, DateTimeKind.Utc);
-        }
+        return RunSafely.Execute(
+            () => ParseDateAsUtc(dateString, formatProvider),
+            DateTime.SpecifyKind(defaultDateTime, DateTimeKind.Utc),
+            exceptionHandler);
     }
 
     /// <summary>
