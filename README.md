@@ -40,27 +40,27 @@ or via the .NET CLI:
 
 | Namespace | Purpose |
 |---|---|
-| `Arrays` | Array/byte-array helpers - null/empty checks, padding, shifting, reducing, hex/ASCII conversion |
-| `Assemblies` | Assembly metadata (`AssemblyDetails`) and type-discovery helpers |
-| `Collections` | `HashSet<T>`/`Queue<T>`/`Stack<T>` helpers - null/empty checks and bulk add/enqueue/push |
-| `Comparers` | Functional `IComparer<T>`/`IEqualityComparer<T>` adapters built from delegates |
-| `Conversion` | String-to-type parsing (`To{Type}`/`Is{Type}`) for 17 built-in types (including BigInteger), plus Guid conversion |
-| `DateTimes` | DateTime manipulation - set/reset date and time parts, quarters, month spans |
-| `Dictionaries` | `IDictionary` merging, key renaming, dictionary/`ExpandoObject` conversion |
-| `Enumerations` | Enum parsing, attribute/description lookup, flag manipulation |
-| `Exceptions` | Custom exception types and exception-chain helpers |
-| `Execution` | `RunSafely` - safe execution wrappers (sync and async) with optional exception handling; `Retry` - retry with configurable backoff |
-| `IO` | `DirectoryInfo`/`FileInfo`/path helpers - searching, relative paths, friendly file sizes, ensuring directories exist |
-| `Linq` | `IEnumerable`/`IList` helpers, tuple lists, `NameValueCollection` conversion |
-| `Maths` | Numeric/comparable range checks (`IsBetween`, bounds) for 16 built-in types (including BigInteger) |
-| `Objects` | Generic object helpers - type conversion, dictionary projection, null-coalescing |
-| `Providers` | Functional `IFormatProvider` adapter built from a delegate |
-| `Reflection` | Attribute, expression, property/field, and type-default reflection helpers |
-| `Services` | `ServiceResult<T>` - lightweight success/failure result wrapper |
-| `Streams` | `Stream` read/write helpers |
-| `Strings` | Case conversion, substring extraction, masking, splitting, regex parsing, interpolation |
-| `Threading` | Thread-start helpers, producer/consumer queue, named mutexes, `Task` helpers (timeout, fire-and-forget, aggregated `WhenAll` failures) |
-| `Validation` | `Guard` - expression-based parameter guard clauses, capturing the parameter name automatically |
+| `Arrays` ([docs](docs/Arrays.md)) | Array/byte-array helpers - null/empty checks, padding, shifting, reducing, hex/ASCII conversion |
+| `Assemblies` ([docs](docs/Assemblies.md)) | Assembly metadata (`AssemblyDetails`) and type-discovery helpers |
+| `Collections` ([docs](docs/Collections.md)) | `HashSet<T>`/`Queue<T>`/`Stack<T>` helpers - null/empty checks and bulk add/enqueue/push |
+| `Comparers` ([docs](docs/Comparers.md)) | Functional `IComparer<T>`/`IEqualityComparer<T>` adapters built from delegates |
+| `Conversion` ([docs](docs/Conversion.md)) | String-to-type parsing (`To{Type}`/`Is{Type}`) for 17 built-in types (including BigInteger), plus Guid conversion |
+| `DateTimes` ([docs](docs/DateTimes.md)) | DateTime manipulation - set/reset date and time parts, quarters, month spans |
+| `Dictionaries` ([docs](docs/Dictionaries.md)) | `IDictionary` merging, key renaming, dictionary/`ExpandoObject` conversion |
+| `Enumerations` ([docs](docs/Enumerations.md)) | Enum parsing, attribute/description lookup, flag manipulation |
+| `Exceptions` ([docs](docs/Exceptions.md)) | Custom exception types and exception-chain helpers |
+| `Execution` ([docs](docs/Execution.md)) | `RunSafely` - safe execution wrappers (sync and async) with optional exception handling; `Retry` - retry with configurable backoff |
+| `IO` ([docs](docs/IO.md)) | `DirectoryInfo`/`FileInfo`/path helpers - searching, relative paths, friendly file sizes, ensuring directories exist |
+| `Linq` ([docs](docs/Linq.md)) | `IEnumerable`/`IList` helpers, tuple lists, `NameValueCollection` conversion |
+| `Maths` ([docs](docs/Maths.md)) | Numeric/comparable range checks (`IsBetween`, bounds) for 16 built-in types (including BigInteger) |
+| `Objects` ([docs](docs/Objects.md)) | Generic object helpers - type conversion, dictionary projection, null-coalescing |
+| `Providers` ([docs](docs/Providers.md)) | Functional `IFormatProvider` adapter built from a delegate |
+| `Reflection` ([docs](docs/Reflection.md)) | Attribute, expression, property/field, and type-default reflection helpers |
+| `Services` ([docs](docs/Services.md)) | `ServiceResult<T>` - lightweight success/failure result wrapper |
+| `Streams` ([docs](docs/Streams.md)) | `Stream` read/write helpers |
+| `Strings` ([docs](docs/Strings.md)) | Case conversion, substring extraction, masking, splitting, regex parsing, interpolation |
+| `Threading` ([docs](docs/Threading.md)) | Thread-start helpers, producer/consumer queue, named mutexes, `Task` helpers (timeout, fire-and-forget, aggregated `WhenAll` failures) |
+| `Validation` ([docs](docs/Validation.md)) | `Guard` - expression-based parameter guard clauses, capturing the parameter name automatically |
 
 ## Repository conventions
 

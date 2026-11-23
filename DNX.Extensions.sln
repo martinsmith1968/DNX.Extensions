@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.9.12120.119 stable
+VisualStudioVersion = 18.9.12120.119
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{9E70C755-0A39-46EA-8063-0A3B594B7271}"
 	ProjectSection(SolutionItems) = preProject
@@ -34,6 +34,31 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNX.Extensions.Tests", "tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNX.Extensions.Benchmarks", "tests\DNX.Extensions.Benchmarks\DNX.Extensions.Benchmarks.csproj", "{D9664527-B415-498F-B8A9-9AF016D7D91F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{51A10567-D551-4C3F-A71F-7751D008031E}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Arrays.md = docs\Arrays.md
+		docs\Assemblies.md = docs\Assemblies.md
+		docs\Collections.md = docs\Collections.md
+		docs\Comparers.md = docs\Comparers.md
+		docs\Conversion.md = docs\Conversion.md
+		docs\DateTimes.md = docs\DateTimes.md
+		docs\Dictionaries.md = docs\Dictionaries.md
+		docs\Enumerations.md = docs\Enumerations.md
+		docs\Exceptions.md = docs\Exceptions.md
+		docs\Execution.md = docs\Execution.md
+		docs\IO.md = docs\IO.md
+		docs\Linq.md = docs\Linq.md
+		docs\Maths.md = docs\Maths.md
+		docs\Objects.md = docs\Objects.md
+		docs\Providers.md = docs\Providers.md
+		docs\Reflection.md = docs\Reflection.md
+		docs\Services.md = docs\Services.md
+		docs\Streams.md = docs\Streams.md
+		docs\Strings.md = docs\Strings.md
+		docs\Threading.md = docs\Threading.md
+		docs\Validation.md = docs\Validation.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +85,7 @@ Global
 		{E2B8F640-BCFE-4BD7-B158-E7FE957A38CB} = {E832563B-3DD6-4CCD-B5DA-91F89AE3B98A}
 		{B14EFA70-CA77-4439-9C08-357061B97E4D} = {27BBD260-1C33-4F57-925A-12AB922D6AB5}
 		{D9664527-B415-498F-B8A9-9AF016D7D91F} = {330ACF3B-A824-4203-9CC1-ACAD65FD201C}
+		{51A10567-D551-4C3F-A71F-7751D008031E} = {8700E3D9-9248-4679-A0E8-8AB3E0B3B09D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A971C3D4-3729-43C6-88E7-16371F03161F}
